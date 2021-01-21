@@ -74,7 +74,9 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
-          <div class="text-weight-bold">Name Lastname</div>
+          <div class="text-weight-bold">
+            {{ data.name }} {{ data.lastName }}
+          </div>
         </div>
       </q-img>
     </q-drawer>
@@ -86,16 +88,37 @@
 
 <script>
 import firebase from "firebase";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       drawer: false,
+      currentUid: localStorage.getItem("mgAppUid"),
+      data: {},
     };
   },
   methods: {
+    ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
     logoutUser() {
       firebase.auth().signOut();
+      localStorage.removeItem("mgAppUid");
+      this.$router.push("/");
+    },
+    getUserGrades() {
+      this.$http
+        .get(`https://gradesapp-ccfd8.firebaseio.com/${this.currentUid}.json`)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          const resultArray = [];
+          for (let key in data) {
+            resultArray.push(data[key]);
+          }
+          this.data = resultArray[0];
+          console.log(this.data);
+        });
     },
   },
   computed: {
@@ -107,6 +130,10 @@ export default {
       title = title.substring(1);
       return `${first}${title}`;
     },
+  },
+  mounted() {
+    this.getUserGrades();
+    this.getUserInfoAndAssignatures();
   },
 };
 </script>

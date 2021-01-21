@@ -96,8 +96,8 @@ export default {
     return {
       tab: "login",
       loginUserData: {
-        email: "",
-        pass: "",
+        email: "amilland29@gmail.com",
+        pass: "123456",
       },
       registerUserData: {
         email: "",
@@ -110,7 +110,26 @@ export default {
   },
   methods: {
     loginUser() {
-      console.log("login the user", this.loginUserData);
+      let v = this;
+
+      v.xhrRequest = true;
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(
+          this.loginUserData.email,
+          this.loginUserData.pass
+        )
+        .then(
+          (resp) => {
+            v.xhrRequest = false;
+            localStorage.setItem("mgAppUid", resp.user.uid);
+            this.$router.push("/my-assignatures");
+          },
+          (err) => {
+            v.xhrRequest = false;
+            alert(`Error - ${err.message}`);
+          }
+        );
     },
     registerUser() {
       let v = this;
@@ -124,12 +143,30 @@ export default {
         )
         .then(
           (resp) => {
-            alert("registered successfully!");
-            console.log(resp);
+            localStorage.setItem("mgAppUid", resp.user.uid);
+            this.registerUserInDatabase(resp.user.uid);
           },
           (err) => {
             this.xhrRequest = false;
             alert(`Error - ${err.message}`);
+          }
+        );
+    },
+    registerUserInDatabase(uid) {
+      let userData = {
+        name: this.registerUserData.name,
+        lastName: this.registerUserData.lastName,
+        email: this.registerUserData.email,
+        profileColor: "primary",
+      };
+      this.$http
+        .post(`https://gradesapp-ccfd8.firebaseio.com/${uid}.json`, userData)
+        .then(
+          (response) => {
+            this.$router.push("/my-assignatures");
+          },
+          (error) => {
+            console.log(error);
           }
         );
     },

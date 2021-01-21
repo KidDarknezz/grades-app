@@ -5,8 +5,13 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import "./quasar";
+import VueResource from "vue-resource";
 
 Vue.config.productionTip = false;
+
+Vue.use(VueResource);
+
+Vue.http.options.root = "https://gradesapp-ccfd8.firebaseio.com/data.json";
 
 var firebaseConfig = {
   apiKey: "AIzaSyAKMEq7Rw5gV0Q62X0ByrYmqLq9Rbixc3U",

@@ -357,9 +357,6 @@ export default {
       if (grade > 0 && grade < 61) return "F";
       else return "F";
     },
-    pushToArray() {
-      this.assignatures[0].items[0].grades.push(89);
-    },
   },
 };
 </script>
