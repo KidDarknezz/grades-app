@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-btn dense flat round icon="menu" @click="drawer = !drawer" />
-          My Assignatures
+          {{ returnTitle }}
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -90,6 +90,16 @@ export default {
     return {
       drawer: false,
     };
+  },
+  computed: {
+    returnTitle() {
+      let title = this.$route.fullPath;
+      title = title.replace(/\//g, "");
+      title = title.replace(/-/g, " ");
+      let first = title[0].toUpperCase();
+      title = title.substring(1);
+      return `${first}${title}`;
+    },
   },
 };
 </script>
