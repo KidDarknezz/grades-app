@@ -43,10 +43,14 @@ const actions = {
             });
         },
         (err) => {
-          // this.xhrRequest = false;
           alert(`Error - ${err.message}`);
         }
       );
+  },
+  logoutCurrentUser({}, payload) {
+    firebase.auth().signOut();
+    localStorage.removeItem("mgAppUid");
+    router.push("/");
   },
 };
 

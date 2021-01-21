@@ -76,10 +76,8 @@
               class="full-width text-bold"
               color="primary"
               @click="registerUser(registerUserData)"
-              :disable="xhrRequest"
             >
-              <span v-if="!xhrRequest">Register</span>
-              <q-spinner v-else color="white" />
+              <span>Register</span>
             </q-btn>
           </q-tab-panel>
         </q-tab-panels>
@@ -106,51 +104,10 @@ export default {
         name: "",
         lastName: "",
       },
-      xhrRequest: false,
     };
   },
   methods: {
     ...mapActions("authStore", ["loginUser", "registerUser"]),
-
-    // registerUser() {
-    //   let v = this;
-
-    //   this.xhrRequest = true;
-    //   firebase
-    //     .auth()
-    //     .createUserWithEmailAndPassword(
-    //       this.registerUserData.email,
-    //       this.registerUserData.pass
-    //     )
-    //     .then(
-    //       (resp) => {
-    //         localStorage.setItem("mgAppUid", resp.user.uid);
-    //         this.registerUserInDatabase(resp.user.uid);
-    //       },
-    //       (err) => {
-    //         this.xhrRequest = false;
-    //         alert(`Error - ${err.message}`);
-    //       }
-    //     );
-    // },
-    // registerUserInDatabase(uid) {
-    //   let userData = {
-    //     name: this.registerUserData.name,
-    //     lastName: this.registerUserData.lastName,
-    //     email: this.registerUserData.email,
-    //     profileColor: "primary",
-    //   };
-    //   this.$http
-    //     .post(`https://gradesapp-ccfd8.firebaseio.com/${uid}.json`, userData)
-    //     .then(
-    //       (response) => {
-    //         this.$router.push("/my-assignatures");
-    //       },
-    //       (error) => {
-    //         console.log(error);
-    //       }
-    //     );
-    // },
   },
 };
 </script>

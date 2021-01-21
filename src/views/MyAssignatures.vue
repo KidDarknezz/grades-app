@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
-    <div class="row" v-for="(assignature, i) in assignatures" :key="i">
+    <div class="row" v-for="(assignature, i) in userData.assignatures" :key="i">
       <div class="col q-px-md q-py-sm">
         <q-card>
           <q-card-section :class="`bg-${assignature.color} text-white`">
@@ -9,13 +9,18 @@
           </q-card-section>
 
           <q-card-section>
-            <div
-              class="text-subtitle2"
-              v-for="(item, i) in assignature.items"
-              :key="i"
-            >
-              {{ item.name }} - {{ item.percentage * 100 }}%
-            </div>
+            <template v-if="assignature.items">
+              <div
+                class="text-subtitle2"
+                v-for="(item, i) in assignature.items"
+                :key="i"
+              >
+                {{ item.name }} - {{ item.percentage * 100 }}%
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-subtitle2">No items yet.</div>
+            </template>
           </q-card-section>
           <q-separator />
           <q-card-actions align="right">
@@ -58,6 +63,8 @@
             label="Color"
             class="q-mb-md"
             v-model="newAssignature.color"
+            emit-value
+            map-options
           >
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
@@ -74,7 +81,12 @@
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Create" v-close-popup />
+          <q-btn
+            flat
+            label="Create"
+            v-close-popup
+            @click="createNewAssignature(newAssignature)"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -191,6 +203,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -270,7 +284,7 @@ export default {
           value: "light-blue",
         },
         {
-          label: "cyan",
+          label: "Cyan",
           value: "cyan",
         },
         {
@@ -282,7 +296,7 @@ export default {
           value: "green",
         },
         {
-          label: "Verde claro",
+          label: "Light Green",
           value: "light-green",
         },
         {
@@ -321,6 +335,8 @@ export default {
     };
   },
   methods: {
+    ...mapActions("myAssignaturesStore", ["createNewAssignature"]),
+
     selectAssignature(index) {
       this.selectedAssignature = this.assignatures[index];
       this.assignatureDialog = true;
@@ -357,6 +373,9 @@ export default {
       if (grade > 0 && grade < 61) return "F";
       else return "F";
     },
+  },
+  computed: {
+    ...mapState("myAssignaturesStore", ["userData"]),
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-primary text-white">
+    <q-header elevated :class="`bg-${userData.profileColor} text-white`">
       <q-toolbar>
         <q-toolbar-title>
           <q-btn dense flat round icon="menu" @click="drawer = !drawer" />
@@ -75,7 +75,7 @@
             <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
           <div class="text-weight-bold">
-            {{ data.name }} {{ data.lastName }}
+            {{ userData.name }} {{ userData.lastName }}
           </div>
         </div>
       </q-img>
@@ -98,12 +98,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions("myAssignaturesStore", [
-      "getUserInfoAndAssignatures",
-      "logoutCurrentUser",
-    ]),
+    ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
+    ...mapActions("authStore", ["logoutCurrentUser"]),
   },
   computed: {
+    ...mapState("myAssignaturesStore", ["userData"]),
     returnTitle() {
       let title = this.$route.fullPath;
       title = title.replace(/\//g, "");
