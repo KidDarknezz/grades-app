@@ -5,14 +5,14 @@ import Auth from "@/layouts/Auth";
 import MainApp from "@/layouts/MainApp";
 
 import AuthView from "@/views/AuthView";
-import Home from "@/views/Home";
+import MyAssignatures from "@/views/MyAssignatures";
+import ClosedAssignatures from "@/views/ClosedAssignatures"
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Auth",
     component: Auth,
     children: [
       {
@@ -23,14 +23,18 @@ const routes = [
     ],
   },
   {
-    path: "/home",
-    name: "MainApp",
+    path: "/my-assignatures",
     component: MainApp,
     children: [
       {
         path: "",
-        name: "Home",
-        component: Home,
+        name: "MyAssignatures",
+        component: MyAssignatures,
+      },
+      {
+        path: "/closed-assignatures",
+        name: "ClosedAssignatures",
+        component: ClosedAssignatures,
       },
     ],
   },

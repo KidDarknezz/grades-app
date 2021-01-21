@@ -1,5 +1,5 @@
 <template>
   <q-page>
-    home
+    closed assignatures
   </q-page>
 </template>

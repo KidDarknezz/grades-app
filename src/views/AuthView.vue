@@ -23,7 +23,12 @@
           <q-tab-panel name="login">
             <q-input type="text" label="Email" filled class="q-mb-md" />
             <q-input type="password" label="Password" filled class="q-mb-md" />
-            <q-btn label="Login" class="full-width text-bold" color="primary" />
+            <q-btn
+              label="Login"
+              class="full-width text-bold"
+              color="primary"
+              to="/my-assignatures"
+            />
           </q-tab-panel>
 
           <q-tab-panel name="register">
