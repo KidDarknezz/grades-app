@@ -6,13 +6,6 @@ import myAssignaturesStore from "./myAssignaturesStore";
 
 Vue.use(Vuex);
 
-// export default new Vuex.Store({
-//   state: {},
-//   mutations: {},
-//   actions: {},
-//   modules: {},
-// });
-
 export default function() {
   const Store = new Vuex.Store({
     modules: {

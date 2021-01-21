@@ -53,7 +53,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple @click="logoutUser()">
+          <q-item clickable v-ripple @click="logoutCurrentUser()">
             <q-item-section avatar>
               <q-icon name="login" />
             </q-item-section>
@@ -87,7 +87,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -99,27 +98,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
-    logoutUser() {
-      firebase.auth().signOut();
-      localStorage.removeItem("mgAppUid");
-      this.$router.push("/");
-    },
-    getUserGrades() {
-      this.$http
-        .get(`https://gradesapp-ccfd8.firebaseio.com/${this.currentUid}.json`)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          const resultArray = [];
-          for (let key in data) {
-            resultArray.push(data[key]);
-          }
-          this.data = resultArray[0];
-          console.log(this.data);
-        });
-    },
+    ...mapActions("myAssignaturesStore", [
+      "getUserInfoAndAssignatures",
+      "logoutCurrentUser",
+    ]),
   },
   computed: {
     returnTitle() {
@@ -132,8 +114,7 @@ export default {
     },
   },
   mounted() {
-    this.getUserGrades();
-    this.getUserInfoAndAssignatures();
+    this.getUserInfoAndAssignatures(this.currentUid);
   },
 };
 </script>

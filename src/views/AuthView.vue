@@ -39,7 +39,7 @@
               label="Login"
               class="full-width text-bold"
               color="primary"
-              @click="loginUser()"
+              @click="loginUser(loginUserData)"
             />
           </q-tab-panel>
 
@@ -75,7 +75,7 @@
             <q-btn
               class="full-width text-bold"
               color="primary"
-              @click="registerUser()"
+              @click="registerUser(registerUserData)"
               :disable="xhrRequest"
             >
               <span v-if="!xhrRequest">Register</span>
@@ -90,6 +90,7 @@
 
 <script>
 import firebase from "firebase";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
@@ -109,67 +110,47 @@ export default {
     };
   },
   methods: {
-    loginUser() {
-      let v = this;
+    ...mapActions("authStore", ["loginUser", "registerUser"]),
 
-      v.xhrRequest = true;
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(
-          this.loginUserData.email,
-          this.loginUserData.pass
-        )
-        .then(
-          (resp) => {
-            v.xhrRequest = false;
-            localStorage.setItem("mgAppUid", resp.user.uid);
-            this.$router.push("/my-assignatures");
-          },
-          (err) => {
-            v.xhrRequest = false;
-            alert(`Error - ${err.message}`);
-          }
-        );
-    },
-    registerUser() {
-      let v = this;
+    // registerUser() {
+    //   let v = this;
 
-      this.xhrRequest = true;
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(
-          this.registerUserData.email,
-          this.registerUserData.pass
-        )
-        .then(
-          (resp) => {
-            localStorage.setItem("mgAppUid", resp.user.uid);
-            this.registerUserInDatabase(resp.user.uid);
-          },
-          (err) => {
-            this.xhrRequest = false;
-            alert(`Error - ${err.message}`);
-          }
-        );
-    },
-    registerUserInDatabase(uid) {
-      let userData = {
-        name: this.registerUserData.name,
-        lastName: this.registerUserData.lastName,
-        email: this.registerUserData.email,
-        profileColor: "primary",
-      };
-      this.$http
-        .post(`https://gradesapp-ccfd8.firebaseio.com/${uid}.json`, userData)
-        .then(
-          (response) => {
-            this.$router.push("/my-assignatures");
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-    },
+    //   this.xhrRequest = true;
+    //   firebase
+    //     .auth()
+    //     .createUserWithEmailAndPassword(
+    //       this.registerUserData.email,
+    //       this.registerUserData.pass
+    //     )
+    //     .then(
+    //       (resp) => {
+    //         localStorage.setItem("mgAppUid", resp.user.uid);
+    //         this.registerUserInDatabase(resp.user.uid);
+    //       },
+    //       (err) => {
+    //         this.xhrRequest = false;
+    //         alert(`Error - ${err.message}`);
+    //       }
+    //     );
+    // },
+    // registerUserInDatabase(uid) {
+    //   let userData = {
+    //     name: this.registerUserData.name,
+    //     lastName: this.registerUserData.lastName,
+    //     email: this.registerUserData.email,
+    //     profileColor: "primary",
+    //   };
+    //   this.$http
+    //     .post(`https://gradesapp-ccfd8.firebaseio.com/${uid}.json`, userData)
+    //     .then(
+    //       (response) => {
+    //         this.$router.push("/my-assignatures");
+    //       },
+    //       (error) => {
+    //         console.log(error);
+    //       }
+    //     );
+    // },
   },
 };
 </script>
