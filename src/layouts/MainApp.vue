@@ -53,7 +53,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple>
+          <q-item clickable v-ripple @click="logoutUser()">
             <q-item-section avatar>
               <q-icon name="login" />
             </q-item-section>
@@ -85,11 +85,18 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   data() {
     return {
       drawer: false,
     };
+  },
+  methods: {
+    logoutUser() {
+      firebase.auth().signOut();
+    },
   },
   computed: {
     returnTitle() {
