@@ -57,49 +57,59 @@
     <!-- CREATE ASSIGNATURE DIALOG -->
     <q-dialog v-model="newAssignatureDialog">
       <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">New assignature</div>
-        </q-card-section>
+        <q-form
+          @submit="
+            createNewAssignature(newAssignature);
+            newAssignatureDialog = false;
+            newAssignature = { name: '', color: '' };
+          "
+        >
+          <q-card-section>
+            <div class="text-h6">New assignature</div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            autofocus
-            label="Name"
-            v-model="newAssignature.name"
-            class="q-mb-md"
-          />
-          <q-select
-            filled
-            :options="colorOptions"
-            label="Color"
-            class="q-mb-md"
-            v-model="newAssignature.color"
-            emit-value
-            map-options
-          >
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                <q-item-section avatar>
-                  <q-icon name="palette" :color="scope.opt.value" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label v-html="scope.opt.label" />
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </q-card-section>
+          <q-card-section class="q-pt-none">
+            <q-input
+              filled
+              autofocus
+              label="Name"
+              v-model="newAssignature.name"
+              class="q-mb-md"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
+            />
+            <q-select
+              filled
+              :options="colorOptions"
+              label="Color"
+              class="q-mb-md"
+              v-model="newAssignature.color"
+              emit-value
+              map-options
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please select a color',
+              ]"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                  <q-item-section avatar>
+                    <q-icon name="palette" :color="scope.opt.value" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label v-html="scope.opt.label" />
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </q-card-section>
 
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Create"
-            v-close-popup
-            @click="createNewAssignature(newAssignature)"
-          />
-        </q-card-actions>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn flat label="Create" type="submit" />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
     <!-- END CREATE ASSIGNATURE DIALOG -->
