@@ -259,37 +259,48 @@
     <!-- NEW ITEM DIALOG -->
     <q-dialog v-model="newItemDialog">
       <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">New item</div>
-        </q-card-section>
+        <q-form
+          @submit="
+            createNewItem({ item: newItem, assId: selectedAssignature.id });
+            newItemDialog = false;
+            newItem = { name: '', percentage: '' };
+          "
+        >
+          <q-card-section>
+            <div class="text-h6">New item</div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            autofocus
-            label="Name"
-            v-model="newItem.name"
-            class="q-mb-md"
-          />
-          <q-input
-            type="number"
-            filled
-            label="Percentage"
-            v-model="newItem.percentage"
-            class="q-mb-md"
-          />
-        </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Create"
-            v-close-popup
-            @click="
-              createNewItem({ item: newItem, assId: selectedAssignature.id })
-            "
-          />
-        </q-card-actions>
+          <q-card-section class="q-pt-none">
+            <q-input
+              filled
+              autofocus
+              label="Name"
+              v-model="newItem.name"
+              class="q-mb-md"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
+            />
+            <q-input
+              type="number"
+              filled
+              label="Percentage"
+              v-model="newItem.percentage"
+              class="q-mb-md"
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please insert a value',
+                (val) =>
+                  (val > 0 && val <= 100) ||
+                  'Please insert a value between 1 and 100',
+              ]"
+            />
+          </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn flat label="Create" type="submit" />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
     <!-- END NEW ITEM DIALOG -->
