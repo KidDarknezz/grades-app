@@ -118,13 +118,13 @@
           <q-space />
           <q-btn dense flat icon="close" @click="assignatureDialog = false" />
         </q-bar>
-        <!-- <q-card-section>
+        <q-card-section>
           <div class="text-h6 text-center">
             Final Grade:
             {{ calculateFinalGrade(selectedAssignature.items).final }} -
             {{ calculateFinalGrade(selectedAssignature.items).letter }}
           </div>
-        </q-card-section> -->
+        </q-card-section>
 
         <q-card-section v-for="(item, i) in selectedAssignature.items" :key="i">
           <div class="bg-white rounded-borders">
@@ -134,9 +134,9 @@
                   <q-item-label
                     >{{ item.name }} - {{ item.percentage }}%</q-item-label
                   >
-                  <!-- <q-item-label caption
+                  <q-item-label caption v-if="item.grades.length > 0"
                     >Grade: {{ calculateAverage(item.grades) }}</q-item-label
-                  > -->
+                  >
                 </q-item-section>
                 <q-item-section avatar>
                   <q-btn-group flat>
@@ -415,12 +415,12 @@ export default {
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
-      return (avg * perc).toFixed(2);
+      return ((avg * perc) / 100).toFixed(2);
     },
     calculateAverage(grades) {
       let sum = 0;
       grades.forEach((grade) => {
-        sum += grade;
+        sum += parseFloat(grade.grd);
       });
       return (sum / grades.length).toFixed(2);
     },
@@ -428,9 +428,11 @@ export default {
       if (items == undefined) return 0;
       let finalGrade = 0;
       items.forEach((itm) => {
-        finalGrade += parseFloat(
-          this.calculatePercentageValue(ass.grades, ass.percentage)
-        );
+        if (itm.grades.length > 0) {
+          finalGrade += parseFloat(
+            this.calculatePercentageValue(itm.grades, itm.percentage)
+          );
+        }
       });
       return {
         final: finalGrade,
