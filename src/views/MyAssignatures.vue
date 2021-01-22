@@ -1,34 +1,46 @@
 <template>
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
-    <div class="row" v-for="(assignature, i) in userData.assignatures" :key="i">
-      <div class="col q-px-md q-py-sm">
-        <q-card>
-          <q-card-section :class="`bg-${assignature.color} text-white`">
-            <div class="text-h6">{{ assignature.name }}</div>
-          </q-card-section>
+    <template v-if="userData.assignatures.length > 0">
+      <div
+        class="row"
+        v-for="(assignature, i) in userData.assignatures"
+        :key="i"
+      >
+        <div class="col q-px-md q-py-sm">
+          <q-card>
+            <q-card-section :class="`bg-${assignature.color} text-white`">
+              <div class="text-h6">{{ assignature.name }}</div>
+            </q-card-section>
 
-          <q-card-section>
-            <template v-if="assignature.items">
-              <div
-                class="text-subtitle2"
-                v-for="(item, i) in assignature.items"
-                :key="i"
-              >
-                {{ item.name }} - {{ item.percentage * 100 }}%
-              </div>
-            </template>
-            <template v-else>
-              <div class="text-subtitle2">No items yet.</div>
-            </template>
-          </q-card-section>
-          <q-separator />
-          <q-card-actions align="right">
-            <q-btn flat @click="selectAssignature(i)">Grades</q-btn>
-          </q-card-actions>
-        </q-card>
+            <q-card-section>
+              <template v-if="assignature.items.length > 0">
+                <div
+                  class="text-subtitle2"
+                  v-for="(item, i) in assignature.items"
+                  :key="i"
+                >
+                  {{ item.name }} - {{ item.percentage }}%
+                </div>
+              </template>
+              <template v-else>
+                <div class="text-subtitle2">No items yet.</div>
+              </template>
+            </q-card-section>
+            <q-separator />
+            <q-card-actions align="right">
+              <q-btn flat @click="selectAssignature(i)">Grades</q-btn>
+            </q-card-actions>
+          </q-card>
+        </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <div class="text-h6 fixed-center full-width text-center text-grey-4">
+        No assignatures yet.
+      </div>
+    </template>
+
     <!-- END ASSIGNATURES LIST -->
 
     <!-- FLOATING BTN -->
@@ -106,13 +118,13 @@
           <q-space />
           <q-btn dense flat icon="close" @click="assignatureDialog = false" />
         </q-bar>
-        <q-card-section>
+        <!-- <q-card-section>
           <div class="text-h6 text-center">
             Final Grade:
             {{ calculateFinalGrade(selectedAssignature.items).final }} -
             {{ calculateFinalGrade(selectedAssignature.items).letter }}
           </div>
-        </q-card-section>
+        </q-card-section> -->
 
         <q-card-section v-for="(item, i) in selectedAssignature.items" :key="i">
           <div class="bg-white rounded-borders">
@@ -120,12 +132,11 @@
               <q-item :class="`bg-${selectedAssignature.color}-4`">
                 <q-item-section>
                   <q-item-label
-                    >{{ item.name }} -
-                    {{ item.percentage * 100 }}%</q-item-label
+                    >{{ item.name }} - {{ item.percentage }}%</q-item-label
                   >
-                  <q-item-label caption
+                  <!-- <q-item-label caption
                     >Grade: {{ calculateAverage(item.grades) }}</q-item-label
-                  >
+                  > -->
                 </q-item-section>
                 <q-item-section avatar>
                   <q-btn-group flat>
@@ -191,14 +202,53 @@
               external-label
               label-position="left"
               color="green"
-              icon="mail"
+              icon="add"
               label="Add item"
+              @click="newItemDialog = true"
             />
           </q-fab>
         </div>
       </q-card>
     </q-dialog>
     <!-- END ASSIGNATURE DIALOG -->
+
+    <!-- NEW ITEM DIALOG -->
+    <q-dialog v-model="newItemDialog">
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">New item</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            filled
+            autofocus
+            label="Name"
+            v-model="newItem.name"
+            class="q-mb-md"
+          />
+          <q-input
+            type="number"
+            filled
+            label="Percentage"
+            v-model="newItem.percentage"
+            class="q-mb-md"
+          />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            label="Create"
+            v-close-popup
+            @click="
+              createNewItem({ item: newItem, assId: selectedAssignature.id })
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- END NEW ITEM DIALOG -->
   </q-page>
 </template>
 
@@ -211,49 +261,16 @@ export default {
       newAssignatureDialog: false,
       assignatureDialog: false,
       assignatureActions: false,
-      selectedAssignature: {},
       newAssignature: {
         name: "",
         color: "",
       },
-      assignatures: [
-        {
-          owner: "djahsvkdkajs12y8",
-          name: "Math",
-          status: "on-course",
-          color: "red",
-          items: [
-            {
-              name: "tests",
-              percentage: 0.7,
-              grades: [100, 90, 45],
-            },
-            {
-              name: "homeworks",
-              percentage: 0.3,
-              grades: [90],
-            },
-          ],
-        },
-        {
-          owner: "djahsvkdkajs12y8",
-          name: "Science",
-          status: "on-course",
-          color: "pink",
-          items: [
-            {
-              name: "tests",
-              percentage: 0.5,
-              grades: [10, 90, 45],
-            },
-            {
-              name: "homeworks",
-              percentage: 0.5,
-              grades: [73],
-            },
-          ],
-        },
-      ],
+      newItemDialog: false,
+      newItem: {
+        name: "",
+        percentage: "",
+      },
+      selectedAssignature: {},
       colorOptions: [
         {
           label: "Red",
@@ -335,10 +352,13 @@ export default {
     };
   },
   methods: {
-    ...mapActions("myAssignaturesStore", ["createNewAssignature"]),
+    ...mapActions("myAssignaturesStore", [
+      "createNewAssignature",
+      "createNewItem",
+    ]),
 
     selectAssignature(index) {
-      this.selectedAssignature = this.assignatures[index];
+      this.selectedAssignature = this.userData.assignatures[index];
       this.assignatureDialog = true;
     },
     calculatePercentageValue(grades, perc) {
@@ -355,7 +375,7 @@ export default {
     calculateFinalGrade(items) {
       if (items == undefined) return 0;
       let finalGrade = 0;
-      items.forEach((ass) => {
+      items.forEach((itm) => {
         finalGrade += parseFloat(
           this.calculatePercentageValue(ass.grades, ass.percentage)
         );

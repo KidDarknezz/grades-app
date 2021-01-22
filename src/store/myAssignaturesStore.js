@@ -1,7 +1,9 @@
 import firebase from "firebase";
 
 const state = {
-  userData: {},
+  userData: {
+    assignatures: []
+  },
 };
 
 const mutations = {
@@ -9,8 +11,16 @@ const mutations = {
     state.userData = payload;
   },
   setNewAssignature(state, payload) {
-    state.userData.assignatures[payload.id] = payload;
+    state.userData.assignatures.push(payload);
   },
+  setNewItem(state, payload) {
+    for (let i = 0; i < state.userData.assignatures.length; i++) {
+      if (state.userData.assignatures[i].id == payload.assId) {
+        state.userData.assignatures[i].items.push(payload)
+        break
+      }
+    }
+  }
 };
 
 const actions = {
@@ -21,15 +31,23 @@ const actions = {
       .database()
       .ref(`${payload}`)
       .once("value", (snapshot) => {
-        for (let assignature in snapshot.val().assignatures) {
-          // assignature.id = assignature;
-          // assignature = snapshot.val()[assignature];
-          // assignature.id = assignature;
-          // allAssignatures.push(assignature);
-          // allAssignatures.push(assignature);
+        
+        for (let ass in snapshot.val().assignatures) {
+          assignature = snapshot.val().assignatures[ass];
+          assignature.id = ass
+          let allItems = []
+          let item = {}
+          for(let itm in assignature.items) {
+            item = assignature.items[itm]
+            item.id = itm
+            allItems.push(item)
+          }
+          assignature.items = allItems
+          allAssignatures.push(assignature);
         }
-        console.log(allAssignatures);
-        commit("setUserData", snapshot.val());
+        let data = snapshot.val()
+        data.assignatures = allAssignatures
+        commit("setUserData", data);
       });
   },
   createNewAssignature({ commit }, payload) {
@@ -45,7 +63,24 @@ const actions = {
       .then((response) => {
         console.log(response);
         assignature.id = response.key;
+        assignature.items = []
         commit("setNewAssignature", assignature);
+      });
+  },
+  createNewItem({ commit }, payload) {
+    let item = {
+      name: payload.item.name,
+      percentage: payload.item.percentage,
+    };
+    firebase
+      .database()
+      .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.assId}/items`)
+      .push(item)
+      .then((response) => {
+        console.log(response);
+        item.id = response.key;
+        item.assId = payload.assId
+        commit("setNewItem", item);
       });
   },
 };
