@@ -142,14 +142,21 @@
                   <q-btn-group flat>
                     <q-btn dense icon="delete" />
                     <q-btn dense icon="edit" />
-                    <q-btn dense icon="add" class="on-right" />
+                    <q-btn
+                      dense
+                      icon="add"
+                      class="on-right"
+                      @click="selectItem(i)"
+                    />
                   </q-btn-group>
                 </q-item-section>
               </q-item>
 
               <q-item v-for="(grade, i) in item.grades" :key="i">
                 <q-item-section>
-                  <q-item-label class="text-black">{{ grade }}</q-item-label>
+                  <q-item-label class="text-black">{{
+                    grade.grd
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section avatar>
                   <q-btn-group flat>
@@ -249,6 +256,41 @@
       </q-card>
     </q-dialog>
     <!-- END NEW ITEM DIALOG -->
+
+    <!-- NEW GRADE DIALOG -->
+    <q-dialog v-model="newGradeDialog">
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Add grade</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            filled
+            autofocus
+            label="Grade"
+            v-model="newGrade.grade"
+            class="q-mb-md"
+          />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            label="Create"
+            v-close-popup
+            @click="
+              createNewGrade({
+                grade: newGrade,
+                assId: selectedAssignature.id,
+                itmId: selectedItem.id,
+              })
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- END NEW GRADE DIALOG -->
   </q-page>
 </template>
 
@@ -270,7 +312,12 @@ export default {
         name: "",
         percentage: "",
       },
+      newGradeDialog: false,
+      newGrade: {
+        grade: "",
+      },
       selectedAssignature: {},
+      selectedItem: {},
       colorOptions: [
         {
           label: "Red",
@@ -355,8 +402,13 @@ export default {
     ...mapActions("myAssignaturesStore", [
       "createNewAssignature",
       "createNewItem",
+      "createNewGrade",
     ]),
 
+    selectItem(index) {
+      this.selectedItem = this.selectedAssignature.items[index];
+      this.newGradeDialog = true;
+    },
     selectAssignature(index) {
       this.selectedAssignature = this.userData.assignatures[index];
       this.assignatureDialog = true;
