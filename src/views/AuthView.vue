@@ -109,5 +109,10 @@ export default {
   methods: {
     ...mapActions("authStore", ["loginUser", "registerUser"]),
   },
+  mounted() {
+    if (localStorage.getItem("mgAppUid")) {
+      this.$router.push("/my-assignatures");
+    }
+  },
 };
 </script>
