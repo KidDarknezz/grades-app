@@ -4,6 +4,7 @@ const state = {
   userData: {
     assignatures: [],
   },
+  loadingStatus: false,
 };
 
 const mutations = {
@@ -44,10 +45,14 @@ const mutations = {
       1
     );
   },
+  setLoadingStatus(state, payload) {
+    state.loadingStatus = payload;
+  },
 };
 
 const actions = {
   getUserInfoAndAssignatures({ commit }, payload) {
+    commit("setLoadingStatus", true);
     let allAssignatures = [];
     let assignature = {};
     firebase
@@ -78,6 +83,7 @@ const actions = {
         let data = snapshot.val();
         data.assignatures = allAssignatures;
         commit("setUserData", data);
+        commit("setLoadingStatus", false);
       });
   },
   createNewAssignature({ commit }, payload) {

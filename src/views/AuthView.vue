@@ -36,12 +36,15 @@
               v-model="loginUserData.pass"
             />
             <q-btn
-              label="Login"
               push
               class="full-width text-bold"
               color="primary"
               @click="loginUser(loginUserData)"
-            />
+              :disable="loadingStatus"
+            >
+              <span v-if="!loadingStatus">Login</span>
+              <q-spinner v-else color="white" size="1em" />
+            </q-btn>
           </q-tab-panel>
 
           <q-tab-panel name="register">
@@ -78,8 +81,10 @@
               class="full-width text-bold"
               color="primary"
               @click="registerUser(registerUserData)"
+              :disable="loadingStatus"
             >
-              <span>Register</span>
+              <span v-if="!loadingStatus">Register</span>
+              <q-spinner v-else color="white" size="1em" />
             </q-btn>
           </q-tab-panel>
         </q-tab-panels>
@@ -110,6 +115,9 @@ export default {
   },
   methods: {
     ...mapActions("authStore", ["loginUser", "registerUser"]),
+  },
+  computed: {
+    ...mapState("authStore", ["loadingStatus"]),
   },
   mounted() {
     if (localStorage.getItem("mgAppUid")) {

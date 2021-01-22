@@ -350,6 +350,23 @@
       </q-card>
     </q-dialog>
     <!-- END NEW GRADE DIALOG -->
+
+    <!-- LOADING DIALOG -->
+    <q-dialog
+      v-model="loadingStatus"
+      persistent
+      maximized
+      transition-show="fade"
+      transition-hide="fade"
+    >
+      <q-card :class="`bg-accent text-white`">
+        <div class="fixed-center full-width text-center">
+          <q-spinner color="white" size="3em" class="q-mb-lg" />
+          <div class="text-h5">Loading...</div>
+        </div>
+      </q-card>
+    </q-dialog>
+    <!-- END LOADING DIALOG -->
   </q-page>
 </template>
 
@@ -517,7 +534,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("myAssignaturesStore", ["userData"]),
+    ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
 
     validPercentage() {
       let sum = 0;
