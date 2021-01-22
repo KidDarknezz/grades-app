@@ -93,8 +93,6 @@ export default {
   data() {
     return {
       drawer: false,
-      currentUid: localStorage.getItem("mgAppUid"),
-      data: {},
     };
   },
   methods: {
@@ -113,7 +111,7 @@ export default {
     },
   },
   mounted() {
-    this.getUserInfoAndAssignatures(this.currentUid);
+    this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
   },
 };
 </script>
