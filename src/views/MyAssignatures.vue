@@ -140,13 +140,23 @@
                 </q-item-section>
                 <q-item-section avatar>
                   <q-btn-group flat>
-                    <q-btn dense icon="delete" />
+                    <q-btn
+                      dense
+                      icon="delete"
+                      @click="
+                        selectItem(i, 'delete');
+                        deleteItem({
+                          itm: selectedItem,
+                          ass: selectedAssignature,
+                        });
+                      "
+                    />
                     <q-btn dense icon="edit" />
                     <q-btn
                       dense
                       icon="add"
                       class="on-right"
-                      @click="selectItem(i)"
+                      @click="selectItem(i, 'new')"
                     />
                   </q-btn-group>
                 </q-item-section>
@@ -408,11 +418,13 @@ export default {
       "createNewItem",
       "createNewGrade",
       "deleteAssignature",
+      "deleteItem",
     ]),
 
-    selectItem(index) {
+    selectItem(index, action) {
       this.selectedItem = this.selectedAssignature.items[index];
-      this.newGradeDialog = true;
+      this.selectedItem.index = index;
+      if (action == "new") this.newGradeDialog = true;
     },
     selectAssignature(index) {
       this.selectedAssignature = this.userData.assignatures[index];

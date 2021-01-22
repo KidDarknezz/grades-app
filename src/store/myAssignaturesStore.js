@@ -35,6 +35,9 @@ const mutations = {
   setDeleteAssignature(state, payload) {
     state.userData.assignatures.splice(payload, 1);
   },
+  setDeleteItem(state, payload) {
+    state.userData.assignatures[payload.ass].items.splice(payload.itm, 1);
+  },
 };
 
 const actions = {
@@ -137,6 +140,24 @@ const actions = {
         .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
         .remove();
       commit("setDeleteAssignature", payload.index);
+    }
+  },
+  deleteItem({ commit }, payload) {
+    console.log("assignature", payload.ass.id);
+    console.log("item", payload.itm.id);
+    if (confirm("Delete item?")) {
+      firebase
+        .database()
+        .ref(
+          `${localStorage.getItem("mgAppUid")}/assignatures/${
+            payload.ass.id
+          }/items/${payload.itm.id}`
+        )
+        .remove();
+      commit("setDeleteItem", {
+        ass: payload.ass.index,
+        itm: payload.itm.index,
+      });
     }
   },
 };
