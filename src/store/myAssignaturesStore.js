@@ -99,6 +99,7 @@ const actions = {
         console.log(response);
         item.id = response.key;
         item.assId = payload.assId
+        item.grades= []
         commit("setNewItem", item);
       });
   },
