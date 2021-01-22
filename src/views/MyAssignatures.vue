@@ -162,7 +162,7 @@
                 </q-item-section>
               </q-item>
 
-              <q-item v-for="(grade, i) in item.grades" :key="i">
+              <q-item v-for="(grade, j) in item.grades" :key="j">
                 <q-item-section>
                   <q-item-label class="text-black">{{
                     grade.grd
@@ -170,7 +170,20 @@
                 </q-item-section>
                 <q-item-section avatar>
                   <q-btn-group flat>
-                    <q-btn dense icon="close" class="text-red" />
+                    <q-btn
+                      dense
+                      icon="close"
+                      class="text-red"
+                      @click="
+                        selectItem(i, 'delete');
+                        selectGrade(j);
+                        deleteGrade({
+                          ass: selectedAssignature,
+                          itm: selectedItem,
+                          grd: selectedGrade,
+                        });
+                      "
+                    />
                     <q-btn dense icon="edit" :class="`text-warning`" />
                   </q-btn-group>
                 </q-item-section>
@@ -332,6 +345,7 @@ export default {
       },
       selectedAssignature: {},
       selectedItem: {},
+      selectedGrade: {},
       colorOptions: [
         {
           label: "Red",
@@ -419,8 +433,12 @@ export default {
       "createNewGrade",
       "deleteAssignature",
       "deleteItem",
+      "deleteGrade",
     ]),
-
+    selectGrade(index) {
+      this.selectedGrade = this.selectedItem.grades[index];
+      this.selectedGrade.index = index;
+    },
     selectItem(index, action) {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;

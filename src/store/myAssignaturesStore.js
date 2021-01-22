@@ -38,6 +38,12 @@ const mutations = {
   setDeleteItem(state, payload) {
     state.userData.assignatures[payload.ass].items.splice(payload.itm, 1);
   },
+  setDeleteGrade(state, payload) {
+    state.userData.assignatures[payload.ass].items[payload.itm].grades.splice(
+      payload.grd,
+      1
+    );
+  },
 };
 
 const actions = {
@@ -143,8 +149,6 @@ const actions = {
     }
   },
   deleteItem({ commit }, payload) {
-    console.log("assignature", payload.ass.id);
-    console.log("item", payload.itm.id);
     if (confirm("Delete item?")) {
       firebase
         .database()
@@ -157,6 +161,23 @@ const actions = {
       commit("setDeleteItem", {
         ass: payload.ass.index,
         itm: payload.itm.index,
+      });
+    }
+  },
+  deleteGrade({ commit }, payload) {
+    if (confirm("Delete grade?")) {
+      firebase
+        .database()
+        .ref(
+          `${localStorage.getItem("mgAppUid")}/assignatures/${
+            payload.ass.id
+          }/items/${payload.itm.id}/grades/${payload.grd.id}`
+        )
+        .remove();
+      commit("setDeleteGrade", {
+        ass: payload.ass.index,
+        itm: payload.itm.index,
+        grd: payload.grd.index,
       });
     }
   },

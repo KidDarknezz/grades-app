@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="fixed-center full-width q-px-md">
-      <div>
+      <div class="text-center q-mb-lg">
         logo goes here
       </div>
       <q-card class="full-width">
@@ -37,6 +37,7 @@
             />
             <q-btn
               label="Login"
+              push
               class="full-width text-bold"
               color="primary"
               @click="loginUser(loginUserData)"
@@ -73,6 +74,7 @@
               v-model="registerUserData.pass"
             />
             <q-btn
+              push
               class="full-width text-bold"
               color="primary"
               @click="registerUser(registerUserData)"
@@ -95,8 +97,8 @@ export default {
     return {
       tab: "login",
       loginUserData: {
-        email: "amilland29@gmail.com",
-        pass: "123456",
+        email: "",
+        pass: "",
       },
       registerUserData: {
         email: "",
