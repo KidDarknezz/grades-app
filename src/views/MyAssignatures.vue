@@ -131,7 +131,8 @@
         <q-card-section>
           <div class="text-h6 text-center">
             Final Grade:
-            {{ calculateFinalGrade(selectedAssignature.items).final }} -
+            {{ calculateFinalGrade(selectedAssignature.items).final }}
+            -
             {{ calculateFinalGrade(selectedAssignature.items).letter }}
           </div>
         </q-card-section>
@@ -520,7 +521,7 @@ export default {
         }
       });
       return {
-        final: finalGrade,
+        final: finalGrade.toFixed(2),
         letter: this.returnGradeInLetter(finalGrade),
       };
     },
