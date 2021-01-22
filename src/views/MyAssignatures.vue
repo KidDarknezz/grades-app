@@ -295,6 +295,7 @@
           <q-input
             filled
             autofocus
+            type="number"
             label="Grade"
             v-model="newGrade.grade"
             class="q-mb-md"
