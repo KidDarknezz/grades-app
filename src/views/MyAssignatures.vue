@@ -187,6 +187,10 @@
               color="red"
               icon="delete"
               label="Delete assignature"
+              @click="
+                deleteAssignature(selectedAssignature);
+                assignatureDialog = false;
+              "
             />
             <q-fab-action
               label-class="bg-grey-3 text-grey-8"
@@ -403,6 +407,7 @@ export default {
       "createNewAssignature",
       "createNewItem",
       "createNewGrade",
+      "deleteAssignature",
     ]),
 
     selectItem(index) {
@@ -411,6 +416,7 @@ export default {
     },
     selectAssignature(index) {
       this.selectedAssignature = this.userData.assignatures[index];
+      this.selectedAssignature.index = index;
       this.assignatureDialog = true;
     },
     calculatePercentageValue(grades, perc) {

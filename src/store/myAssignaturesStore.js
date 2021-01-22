@@ -2,7 +2,7 @@ import firebase from "firebase";
 
 const state = {
   userData: {
-    assignatures: []
+    assignatures: [],
   },
 };
 
@@ -16,21 +16,24 @@ const mutations = {
   setNewItem(state, payload) {
     for (let i = 0; i < state.userData.assignatures.length; i++) {
       if (state.userData.assignatures[i].id == payload.assId) {
-        state.userData.assignatures[i].items.push(payload)
-        break
+        state.userData.assignatures[i].items.push(payload);
+        break;
       }
     }
   },
   setNewGrade(state, payload) {
     for (let i = 0; i < state.userData.assignatures.length; i++) {
       if (state.userData.assignatures[i].id == payload.assId) {
-        for(let j = 0; j < state.userData.assignatures[i].items.length; j++){
+        for (let j = 0; j < state.userData.assignatures[i].items.length; j++) {
           if (state.userData.assignatures[i].items[j].id == payload.itmId) {
-            state.userData.assignatures[i].items[j].grades.push(payload)
+            state.userData.assignatures[i].items[j].grades.push(payload);
           }
         }
       }
     }
+  },
+  setDeleteAssignature(state, payload) {
+    state.userData.assignatures.splice(payload, 1);
   },
 };
 
@@ -42,30 +45,29 @@ const actions = {
       .database()
       .ref(`${payload}`)
       .once("value", (snapshot) => {
-        
         for (let ass in snapshot.val().assignatures) {
           assignature = snapshot.val().assignatures[ass];
-          assignature.id = ass
-          let allItems = []
-          let item = {}
-          for(let itm in assignature.items) {
-            item = assignature.items[itm]
-            item.id = itm
-            let allGrades = []
-            let grade = {}
-            for(let grd in item.grades) {
-              grade = assignature.items[itm].grades[grd]
-              grade.id = grd
-              allGrades.push(grade)
+          assignature.id = ass;
+          let allItems = [];
+          let item = {};
+          for (let itm in assignature.items) {
+            item = assignature.items[itm];
+            item.id = itm;
+            let allGrades = [];
+            let grade = {};
+            for (let grd in item.grades) {
+              grade = assignature.items[itm].grades[grd];
+              grade.id = grd;
+              allGrades.push(grade);
             }
-            assignature.items[itm].grades = allGrades
-            allItems.push(item)
+            assignature.items[itm].grades = allGrades;
+            allItems.push(item);
           }
-          assignature.items = allItems
+          assignature.items = allItems;
           allAssignatures.push(assignature);
         }
-        let data = snapshot.val()
-        data.assignatures = allAssignatures
+        let data = snapshot.val();
+        data.assignatures = allAssignatures;
         commit("setUserData", data);
       });
   },
@@ -82,7 +84,7 @@ const actions = {
       .then((response) => {
         console.log(response);
         assignature.id = response.key;
-        assignature.items = []
+        assignature.items = [];
         commit("setNewAssignature", assignature);
       });
   },
@@ -93,32 +95,49 @@ const actions = {
     };
     firebase
       .database()
-      .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.assId}/items`)
+      .ref(
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.assId
+        }/items`
+      )
       .push(item)
       .then((response) => {
         console.log(response);
         item.id = response.key;
-        item.assId = payload.assId
-        item.grades= []
+        item.assId = payload.assId;
+        item.grades = [];
         commit("setNewItem", item);
       });
   },
   createNewGrade({ commit }, payload) {
-    console.log(payload)
+    console.log(payload);
     let grade = {
       grd: payload.grade.grade,
     };
     firebase
       .database()
-      .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.assId}/items/${payload.itmId}/grades`)
+      .ref(
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.assId
+        }/items/${payload.itmId}/grades`
+      )
       .push(grade)
       .then((response) => {
-        console.log(response)
-        grade.id = response.key
-        grade.assId = payload.assId
-        grade.itmId = payload.itmId
+        console.log(response);
+        grade.id = response.key;
+        grade.assId = payload.assId;
+        grade.itmId = payload.itmId;
         commit("setNewGrade", grade);
       });
+  },
+  deleteAssignature({ commit }, payload) {
+    if (confirm("Delete assignature?")) {
+      firebase
+        .database()
+        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
+        .remove();
+      commit("setDeleteAssignature", payload.index);
+    }
   },
 };
 
