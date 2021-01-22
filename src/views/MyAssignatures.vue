@@ -293,6 +293,8 @@
                 (val) =>
                   (val > 0 && val <= 100) ||
                   'Please insert a value between 1 and 100',
+                (val) =>
+                  validPercentage <= 100 || 'Total percentage is above 100',
               ]"
             />
           </q-card-section>
@@ -516,6 +518,14 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData"]),
+
+    validPercentage() {
+      let sum = 0;
+      this.selectedAssignature.items.forEach((item) => {
+        sum += parseInt(item.percentage);
+      });
+      return sum + parseInt(this.newItem.percentage);
+    },
   },
 };
 </script>
