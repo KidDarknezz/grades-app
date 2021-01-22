@@ -308,35 +308,43 @@
     <!-- NEW GRADE DIALOG -->
     <q-dialog v-model="newGradeDialog">
       <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Add grade</div>
-        </q-card-section>
+        <q-form
+          @submit="
+            createNewGrade({
+              grade: newGrade,
+              assId: selectedAssignature.id,
+              itmId: selectedItem.id,
+            });
+            newGradeDialog = false;
+            newGrade = { grade: '' };
+          "
+        >
+          <q-card-section>
+            <div class="text-h6">Add grade</div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            filled
-            autofocus
-            type="number"
-            label="Grade"
-            v-model="newGrade.grade"
-            class="q-mb-md"
-          />
-        </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Create"
-            v-close-popup
-            @click="
-              createNewGrade({
-                grade: newGrade,
-                assId: selectedAssignature.id,
-                itmId: selectedItem.id,
-              })
-            "
-          />
-        </q-card-actions>
+          <q-card-section class="q-pt-none">
+            <q-input
+              filled
+              autofocus
+              type="number"
+              label="Grade"
+              v-model="newGrade.grade"
+              class="q-mb-md"
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please insert a value',
+                (val) =>
+                  (val > 0 && val <= 100) ||
+                  'Please insert a value between 1 and 100',
+              ]"
+            />
+          </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn flat label="Create" type="submit" />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
     <!-- END NEW GRADE DIALOG -->
