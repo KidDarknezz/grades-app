@@ -156,6 +156,7 @@ const actions = {
   },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {
+      console.log(payload);
       firebase
         .database()
         .ref(

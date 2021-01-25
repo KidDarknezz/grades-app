@@ -154,20 +154,14 @@
                     <q-btn
                       dense
                       icon="delete"
-                      @click="
-                        selectItem(i, 'delete');
-                        deleteItem({
-                          itm: selectedItem,
-                          ass: selectedAssignature,
-                        });
-                      "
+                      @click="itemAction(i, 'delete')"
                     />
-                    <q-btn dense icon="edit" />
+                    <q-btn dense icon="edit" @click="itemAction(i, 'edit')" />
                     <q-btn
                       dense
                       icon="add"
                       class="on-right"
-                      @click="selectItem(i, 'new')"
+                      @click="itemAction(i, 'new-grade')"
                     />
                   </q-btn-group>
                 </q-item-section>
@@ -249,7 +243,10 @@
               color="green"
               icon="add"
               label="Add item"
-              @click="newItemDialog = true"
+              @click="
+                dialogText = 'Create';
+                newItemDialog = true;
+              "
             />
           </q-fab>
         </div>
@@ -258,17 +255,11 @@
     <!-- END ASSIGNATURE DIALOG -->
 
     <!-- NEW ITEM DIALOG -->
-    <q-dialog v-model="newItemDialog">
+    <q-dialog v-model="newItemDialog" persistent>
       <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            createNewItem({ item: newItem, assId: selectedAssignature.id });
-            newItemDialog = false;
-            newItem = { name: '', percentage: '' };
-          "
-        >
+        <q-form @submit="submitItemDialog()">
           <q-card-section>
-            <div class="text-h6">New item</div>
+            <div class="text-h6">{{ dialogText }} item</div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
@@ -300,8 +291,8 @@
             />
           </q-card-section>
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn flat label="Create" type="submit" />
+            <q-btn flat label="Cancel" @click="clearItemDialog()" />
+            <q-btn flat :label="dialogText" type="submit" />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -377,6 +368,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      dialogText: "",
       newAssignatureDialog: false,
       assignatureDialog: false,
       assignatureActions: false,
@@ -492,12 +484,48 @@ export default {
     selectItem(index, action) {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;
-      if (action == "new") this.newGradeDialog = true;
+      if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
       this.selectedAssignature = this.userData.assignatures[index];
       this.selectedAssignature.index = index;
       this.assignatureDialog = true;
+    },
+    itemAction(index, action) {
+      if (action == "new-grade") {
+        this.selectItem(index, action);
+      }
+      if (action == "edit") {
+        this.dialogText = "Edit";
+        this.selectItem(index, action);
+        this.newItemDialog = true;
+        this.newItem.name = this.selectedItem.name;
+        this.newItem.percentage = this.selectedItem.percentage;
+      }
+      if (action == "delete") {
+        this.selectItem(index, action);
+        this.deleteItem({
+          itm: this.selectedItem,
+          ass: this.selectedAssignature,
+        });
+      }
+    },
+    submitItemDialog() {
+      if (this.dialogText == "Create") {
+        this.createNewItem({
+          item: this.newItem,
+          assId: this.selectedAssignature.id,
+        });
+        this.clearItemDialog();
+      }
+      if (this.dialogText == "Edit") {
+        this.clearItemDialog();
+      }
+    },
+    clearItemDialog() {
+      this.newItemDialog = false;
+      this.newItem.name = "";
+      this.newItem.percentage = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
@@ -542,6 +570,7 @@ export default {
       this.selectedAssignature.items.forEach((item) => {
         sum += parseInt(item.percentage);
       });
+      if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
     },
   },
