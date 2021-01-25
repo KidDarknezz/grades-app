@@ -45,6 +45,13 @@ const mutations = {
       1
     );
   },
+  setNewItemValues(state, payload) {
+    state.userData.assignatures[payload.ass].items[payload.itm].name =
+      payload.new.name;
+    state.userData.assignatures[payload.ass].items[
+      payload.itm
+    ].percentage = parseInt(payload.new.percentage);
+  },
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
   },
@@ -187,6 +194,21 @@ const actions = {
         grd: payload.grd.index,
       });
     }
+  },
+  editItem({ commit }, payload) {
+    firebase
+      .database()
+      .ref(
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.ass.id
+        }/items/${payload.itm.id}`
+      )
+      .update(payload.newValues);
+    commit("setNewItemValues", {
+      ass: payload.ass.index,
+      itm: payload.itm.index,
+      new: payload.newValues,
+    });
   },
 };
 

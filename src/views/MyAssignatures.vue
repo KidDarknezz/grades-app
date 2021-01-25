@@ -257,7 +257,14 @@
     <!-- NEW ITEM DIALOG -->
     <q-dialog v-model="newItemDialog" persistent>
       <q-card style="min-width: 350px">
-        <q-form @submit="submitItemDialog()">
+        <q-form
+          @submit="
+            submitItemDialog({
+              name: newItem.name,
+              percentage: newItem.percentage,
+            })
+          "
+        >
           <q-card-section>
             <div class="text-h6">{{ dialogText }} item</div>
           </q-card-section>
@@ -476,6 +483,7 @@ export default {
       "deleteAssignature",
       "deleteItem",
       "deleteGrade",
+      "editItem",
     ]),
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
@@ -498,9 +506,9 @@ export default {
       if (action == "edit") {
         this.dialogText = "Edit";
         this.selectItem(index, action);
-        this.newItemDialog = true;
         this.newItem.name = this.selectedItem.name;
         this.newItem.percentage = this.selectedItem.percentage;
+        this.newItemDialog = true;
       }
       if (action == "delete") {
         this.selectItem(index, action);
@@ -510,17 +518,21 @@ export default {
         });
       }
     },
-    submitItemDialog() {
+    submitItemDialog(data) {
       if (this.dialogText == "Create") {
         this.createNewItem({
-          item: this.newItem,
+          item: data,
           assId: this.selectedAssignature.id,
         });
-        this.clearItemDialog();
       }
       if (this.dialogText == "Edit") {
-        this.clearItemDialog();
+        this.editItem({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          newValues: data,
+        });
       }
+      this.clearItemDialog();
     },
     clearItemDialog() {
       this.newItemDialog = false;
