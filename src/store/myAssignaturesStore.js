@@ -52,6 +52,9 @@ const mutations = {
       payload.itm
     ].percentage = parseInt(payload.new.percentage);
   },
+  setArchiveAssignature(state, payload) {
+    state.userData.assignatures[payload].status = "closed";
+  },
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
   },
@@ -161,9 +164,17 @@ const actions = {
       commit("setDeleteAssignature", payload.index);
     }
   },
+  archiveAssignature({ commit }, payload) {
+    if (confirm("Close assignature?")) {
+      firebase
+        .database()
+        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
+        .update({ status: "closed" });
+    }
+    commit("setArchiveAssignature", payload.index);
+  },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {
-      console.log(payload);
       firebase
         .database()
         .ref(

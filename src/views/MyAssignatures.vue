@@ -2,15 +2,13 @@
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
     <template v-if="userData.assignatures.length > 0">
-      <div
-        class="row"
-        v-for="(assignature, i) in userData.assignatures"
-        :key="i"
-      >
+      <div class="row" v-for="(assignature, i) in activeAssignatures" :key="i">
         <div class="col q-px-md q-py-sm">
           <q-card>
             <q-card-section :class="`bg-${assignature.color} text-white`">
-              <div class="text-h6">{{ assignature.name }}</div>
+              <div class="text-h6">
+                {{ assignature.name }} - {{ assignature.status }}
+              </div>
             </q-card-section>
 
             <q-card-section>
@@ -235,6 +233,7 @@
               color="info"
               icon="inventory_2"
               label="Close assignature"
+              @click="closeAssignature()"
             />
             <q-fab-action
               label-class="bg-grey-3 text-grey-8"
@@ -484,6 +483,7 @@ export default {
       "deleteItem",
       "deleteGrade",
       "editItem",
+      "archiveAssignature",
     ]),
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
@@ -533,6 +533,10 @@ export default {
         });
       }
       this.clearItemDialog();
+    },
+    closeAssignature() {
+      this.archiveAssignature(this.selectedAssignature);
+      this.assignatureDialog = false;
     },
     clearItemDialog() {
       this.newItemDialog = false;
@@ -584,6 +588,13 @@ export default {
       });
       if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
+    },
+    activeAssignatures() {
+      let activeAss = [];
+      this.userData.assignatures.forEach((assignature) => {
+        if (assignature.status == "open") activeAss.push(assignature);
+      });
+      return activeAss;
     },
   },
 };
