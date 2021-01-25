@@ -7,7 +7,7 @@
           <q-card>
             <q-card-section :class="`bg-${assignature.color} text-white`">
               <div class="text-h6">
-                {{ assignature.name }} - {{ assignature.status }}
+                {{ assignature.name }}
               </div>
             </q-card-section>
 
