@@ -497,6 +497,7 @@ export default {
       "deleteGrade",
       "editItem",
       "archiveAssignature",
+      "editAssignature",
     ]),
 
     selectGrade(index) {
@@ -549,7 +550,10 @@ export default {
         this.createNewAssignature(data);
       }
       if (this.dialogText == "Edit") {
-        console.log("edit");
+        this.editAssignature({
+          assignature: this.selectedAssignature,
+          newValues: data,
+        });
       }
       this.clearAssignatureDialog();
     },

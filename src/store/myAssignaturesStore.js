@@ -64,6 +64,10 @@ const mutations = {
       payload.itm
     ].percentage = parseInt(payload.new.percentage);
   },
+  setNewAssignatureValues(state, payload) {
+    state.openUserAssignatures[payload.ass].name = payload.new.name;
+    state.openUserAssignatures[payload.ass].color = payload.new.color;
+  },
   setArchiveAssignature(state, payload) {
     state.openUserAssignatures[payload].status = "closed";
     state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
@@ -246,6 +250,20 @@ const actions = {
     commit("setNewItemValues", {
       ass: payload.ass.index,
       itm: payload.itm.index,
+      new: payload.newValues,
+    });
+  },
+  editAssignature({ commit }, payload) {
+    firebase
+      .database()
+      .ref(
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.assignature.id
+        }`
+      )
+      .update(payload.newValues);
+    commit("setNewAssignatureValues", {
+      ass: payload.assignature.index,
       new: payload.newValues,
     });
   },
