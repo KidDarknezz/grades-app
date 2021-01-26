@@ -41,77 +41,6 @@
 
     <!-- END ASSIGNATURES LIST -->
 
-    <!-- FLOATING BTN -->
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="accent"
-        @click="newAssignatureDialog = true"
-      />
-    </q-page-sticky>
-    <!-- FLOATING BTN -->
-
-    <!-- CREATE ASSIGNATURE DIALOG -->
-    <q-dialog v-model="newAssignatureDialog">
-      <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            createNewAssignature(newAssignature);
-            newAssignatureDialog = false;
-            newAssignature = { name: '', color: '' };
-          "
-        >
-          <q-card-section>
-            <div class="text-h6">New assignature</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input
-              filled
-              autofocus
-              label="Name"
-              v-model="newAssignature.name"
-              class="q-mb-md"
-              :rules="[
-                (val) => (val !== null && val !== '') || 'Please insert a name',
-              ]"
-            />
-            <q-select
-              filled
-              :options="colorOptions"
-              label="Color"
-              class="q-mb-md"
-              v-model="newAssignature.color"
-              emit-value
-              map-options
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '') || 'Please select a color',
-              ]"
-            >
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                  <q-item-section avatar>
-                    <q-icon name="palette" :color="scope.opt.value" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label v-html="scope.opt.label" />
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </q-card-section>
-
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn flat label="Create" type="submit" />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
-    <!-- END CREATE ASSIGNATURE DIALOG -->
-
     <!-- ASSIGNATURE DIALOG -->
     <q-dialog
       v-model="assignatureDialog"
@@ -147,22 +76,6 @@
                     >Grade: {{ calculateAverage(item.grades) }}</q-item-label
                   >
                 </q-item-section>
-                <q-item-section avatar>
-                  <q-btn-group flat>
-                    <q-btn
-                      dense
-                      icon="delete"
-                      @click="itemAction(i, 'delete')"
-                    />
-                    <q-btn dense icon="edit" @click="itemAction(i, 'edit')" />
-                    <q-btn
-                      dense
-                      icon="add"
-                      class="on-right"
-                      @click="itemAction(i, 'new-grade')"
-                    />
-                  </q-btn-group>
-                </q-item-section>
               </q-item>
 
               <q-item v-for="(grade, j) in item.grades" :key="j">
@@ -172,23 +85,7 @@
                   }}</q-item-label>
                 </q-item-section>
                 <q-item-section avatar>
-                  <q-btn-group flat>
-                    <q-btn
-                      dense
-                      icon="close"
-                      class="text-red"
-                      @click="
-                        selectItem(i, 'delete');
-                        selectGrade(j);
-                        deleteGrade({
-                          ass: selectedAssignature,
-                          itm: selectedItem,
-                          grd: selectedGrade,
-                        });
-                      "
-                    />
-                    <q-btn dense icon="edit" :class="`text-warning`" />
-                  </q-btn-group>
+                  <q-btn-group flat> </q-btn-group>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -222,132 +119,16 @@
               label-class="bg-grey-3 text-grey-8"
               external-label
               label-position="left"
-              color="warning"
-              icon="edit"
-              label="Edit assignature"
-            />
-            <q-fab-action
-              label-class="bg-grey-3 text-grey-8"
-              external-label
-              label-position="left"
               color="info"
               icon="inventory_2"
-              label="Close assignature"
+              label="Re-open assignature"
               @click="closeAssignature()"
-            />
-            <q-fab-action
-              label-class="bg-grey-3 text-grey-8"
-              external-label
-              label-position="left"
-              color="green"
-              icon="add"
-              label="Add item"
-              @click="
-                dialogText = 'Create';
-                newItemDialog = true;
-              "
             />
           </q-fab>
         </div>
       </q-card>
     </q-dialog>
     <!-- END ASSIGNATURE DIALOG -->
-
-    <!-- NEW ITEM DIALOG -->
-    <q-dialog v-model="newItemDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            submitItemDialog({
-              name: newItem.name,
-              percentage: newItem.percentage,
-            })
-          "
-        >
-          <q-card-section>
-            <div class="text-h6">{{ dialogText }} item</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input
-              filled
-              autofocus
-              label="Name"
-              v-model="newItem.name"
-              class="q-mb-md"
-              :rules="[
-                (val) => (val !== null && val !== '') || 'Please insert a name',
-              ]"
-            />
-            <q-input
-              type="number"
-              filled
-              label="Percentage"
-              v-model="newItem.percentage"
-              class="q-mb-md"
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '') || 'Please insert a value',
-                (val) =>
-                  (val > 0 && val <= 100) ||
-                  'Please insert a value between 1 and 100',
-                (val) =>
-                  validPercentage <= 100 || 'Total percentage is above 100',
-              ]"
-            />
-          </q-card-section>
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" @click="clearItemDialog()" />
-            <q-btn flat :label="dialogText" type="submit" />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
-    <!-- END NEW ITEM DIALOG -->
-
-    <!-- NEW GRADE DIALOG -->
-    <q-dialog v-model="newGradeDialog">
-      <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            createNewGrade({
-              grade: newGrade,
-              assId: selectedAssignature.id,
-              itmId: selectedItem.id,
-            });
-            newGradeDialog = false;
-            newGrade = { grade: '' };
-          "
-        >
-          <q-card-section>
-            <div class="text-h6">Add grade</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input
-              filled
-              autofocus
-              type="number"
-              label="Grade"
-              v-model="newGrade.grade"
-              class="q-mb-md"
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '') || 'Please insert a value',
-                (val) =>
-                  (val > 0 && val <= 100) ||
-                  'Please insert a value between 1 and 100',
-              ]"
-            />
-          </q-card-section>
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn flat label="Create" type="submit" />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
-    <!-- END NEW GRADE DIALOG -->
 
     <!-- LOADING DIALOG -->
     <q-dialog
