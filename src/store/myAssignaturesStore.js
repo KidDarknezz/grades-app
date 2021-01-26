@@ -27,7 +27,7 @@ const mutations = {
     state.openUserAssignatures.push(payload);
   },
   setNewItem(state, payload) {
-    for (let i = 0; i < state.userData.assignatures.length; i++) {
+    for (let i = 0; i < state.openUserAssignatures.length; i++) {
       if (state.openUserAssignatures[i].id == payload.assId) {
         state.openUserAssignatures[i].items.push(payload);
         break;
