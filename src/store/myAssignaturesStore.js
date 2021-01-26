@@ -4,12 +4,24 @@ const state = {
   userData: {
     assignatures: [],
   },
+  openUserAssignatures: [],
+  closedUserAssignatures: [],
   loadingStatus: false,
 };
 
 const mutations = {
   setUserData(state, payload) {
     state.userData = payload;
+  },
+  setOpenAndClosedAssignatures(state, payload) {
+    let open = [];
+    let closed = [];
+    payload.assignatures.forEach((assignature) => {
+      if (assignature.status == "open") open.push(assignature);
+      if (assignature.status == "closed") closed.push(assignature);
+    });
+    state.openUserAssignatures = open;
+    state.closedUserAssignatures = closed;
   },
   setNewAssignature(state, payload) {
     state.userData.assignatures.push(payload);
@@ -93,6 +105,7 @@ const actions = {
         let data = snapshot.val();
         data.assignatures = allAssignatures;
         commit("setUserData", data);
+        commit("setOpenAndClosedAssignatures", data);
         commit("setLoadingStatus", false);
       });
   },

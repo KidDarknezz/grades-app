@@ -2,7 +2,11 @@
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
     <template v-if="userData.assignatures.length > 0">
-      <div class="row" v-for="(assignature, i) in closedAssignatures" :key="i">
+      <div
+        class="row"
+        v-for="(assignature, i) in closedUserAssignatures"
+        :key="i"
+      >
         <div class="col q-px-md q-py-sm">
           <q-card>
             <q-card-section class="bg-grey-4 text-white`">
@@ -233,7 +237,11 @@ export default {
     },
   },
   computed: {
-    ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
+    ...mapState("myAssignaturesStore", [
+      "userData",
+      "loadingStatus",
+      "closedUserAssignatures",
+    ]),
 
     validPercentage() {
       let sum = 0;
@@ -242,13 +250,6 @@ export default {
       });
       if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
-    },
-    closedAssignatures() {
-      let activeAss = [];
-      this.userData.assignatures.forEach((assignature) => {
-        if (assignature.status == "closed") activeAss.push(assignature);
-      });
-      return activeAss;
     },
   },
 };
