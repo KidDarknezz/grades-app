@@ -489,6 +489,7 @@ export default {
       "editItem",
       "archiveAssignature",
     ]),
+
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
@@ -499,7 +500,7 @@ export default {
       if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
-      this.selectedAssignature = this.activeAssignatures[index];
+      this.selectedAssignature = this.openUserAssignatures[index];
       this.selectedAssignature.index = index;
       this.assignatureDialog = true;
     },

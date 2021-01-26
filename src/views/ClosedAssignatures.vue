@@ -168,6 +168,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["deleteAssignature"]),
+
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
@@ -178,7 +179,7 @@ export default {
       if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
-      this.selectedAssignature = this.closedAssignatures[index];
+      this.selectedAssignature = this.closedUserAssignatures[index];
       this.selectedAssignature.index = index;
       this.assignatureDialog = true;
     },

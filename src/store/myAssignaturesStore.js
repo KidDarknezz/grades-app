@@ -24,48 +24,50 @@ const mutations = {
     state.closedUserAssignatures = closed;
   },
   setNewAssignature(state, payload) {
-    state.userData.assignatures.push(payload);
+    state.openUserAssignatures.push(payload);
   },
   setNewItem(state, payload) {
     for (let i = 0; i < state.userData.assignatures.length; i++) {
-      if (state.userData.assignatures[i].id == payload.assId) {
-        state.userData.assignatures[i].items.push(payload);
+      if (state.openUserAssignatures[i].id == payload.assId) {
+        state.openUserAssignatures[i].items.push(payload);
         break;
       }
     }
   },
   setNewGrade(state, payload) {
-    for (let i = 0; i < state.userData.assignatures.length; i++) {
-      if (state.userData.assignatures[i].id == payload.assId) {
-        for (let j = 0; j < state.userData.assignatures[i].items.length; j++) {
-          if (state.userData.assignatures[i].items[j].id == payload.itmId) {
-            state.userData.assignatures[i].items[j].grades.push(payload);
+    for (let i = 0; i < state.openUserAssignatures.length; i++) {
+      if (state.openUserAssignatures[i].id == payload.assId) {
+        for (let j = 0; j < state.openUserAssignatures[i].items.length; j++) {
+          if (state.openUserAssignatures[i].items[j].id == payload.itmId) {
+            state.openUserAssignatures[i].items[j].grades.push(payload);
           }
         }
       }
     }
   },
   setDeleteAssignature(state, payload) {
-    state.userData.assignatures.splice(payload, 1);
+    state.openUserAssignatures.splice(payload, 1);
   },
   setDeleteItem(state, payload) {
-    state.userData.assignatures[payload.ass].items.splice(payload.itm, 1);
+    state.openUserAssignatures[payload.ass].items.splice(payload.itm, 1);
   },
   setDeleteGrade(state, payload) {
-    state.userData.assignatures[payload.ass].items[payload.itm].grades.splice(
+    state.openUserAssignatures[payload.ass].items[payload.itm].grades.splice(
       payload.grd,
       1
     );
   },
   setNewItemValues(state, payload) {
-    state.userData.assignatures[payload.ass].items[payload.itm].name =
+    state.openUserAssignatures[payload.ass].items[payload.itm].name =
       payload.new.name;
-    state.userData.assignatures[payload.ass].items[
+    state.openUserAssignatures[payload.ass].items[
       payload.itm
     ].percentage = parseInt(payload.new.percentage);
   },
   setArchiveAssignature(state, payload) {
-    state.userData.assignatures[payload].status = "closed";
+    state.openUserAssignatures[payload].status = "closed";
+    state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
+    state.openUserAssignatures.splice(payload, 1);
   },
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
@@ -148,7 +150,6 @@ const actions = {
       });
   },
   createNewGrade({ commit }, payload) {
-    console.log(payload);
     let grade = {
       grd: payload.grade.grade,
     };
