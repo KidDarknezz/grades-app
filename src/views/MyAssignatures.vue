@@ -164,7 +164,7 @@
                       dense
                       icon="add"
                       class="on-right"
-                      @click="gradeAction(i, 'new-grade')"
+                      @click="gradeAction(i, {}, 'new-grade')"
                     />
                   </q-btn-group>
                 </q-item-section>
@@ -182,21 +182,13 @@
                       dense
                       icon="close"
                       class="text-red"
-                      @click="
-                        selectItem(i);
-                        selectGrade(j);
-                        deleteGrade({
-                          ass: selectedAssignature,
-                          itm: selectedItem,
-                          grd: selectedGrade,
-                        });
-                      "
+                      @click="gradeAction(i, j, 'delete')"
                     />
                     <q-btn
                       dense
                       icon="edit"
                       :class="`text-warning`"
-                      @click="gradeAction(1, 'edit')"
+                      @click="gradeAction(i, j, 'edit')"
                     />
                   </q-btn-group>
                 </q-item-section>
@@ -517,15 +509,24 @@ export default {
         });
       }
     },
-    gradeAction(index, action) {
-      this.selectItem(index);
+    gradeAction(i, j, action) {
+      this.selectItem(i);
       if (action == "new-grade") {
         this.dialogText = "New";
         this.newGradeDialog = true;
       }
       if (action == "edit") {
-        this.dialogText = "Edit";
-        this.newGradeDialog = true;
+        // this.dialogText = "Edit";
+        // this.newGradeDialog = true;
+        console.log(i, j);
+      }
+      if (action == "delete") {
+        this.selectGrade(j);
+        this.deleteGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: this.selectedGrade,
+        });
       }
     },
     assignatureAction(action) {
