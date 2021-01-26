@@ -2,7 +2,7 @@
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
     <template v-if="userData.assignatures.length > 0">
-      <div class="row" v-for="(assignature, i) in activeAssignatures" :key="i">
+      <div class="row" v-for="(assignature, i) in closedAssignatures" :key="i">
         <div class="col q-px-md q-py-sm">
           <q-card>
             <q-card-section class="bg-grey-4 text-white`">
@@ -155,117 +155,15 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      dialogText: "",
-      newAssignatureDialog: false,
       assignatureDialog: false,
       assignatureActions: false,
-      newAssignature: {
-        name: "",
-        color: "",
-      },
-      newItemDialog: false,
-      newItem: {
-        name: "",
-        percentage: "",
-      },
-      newGradeDialog: false,
-      newGrade: {
-        grade: "",
-      },
       selectedAssignature: {},
       selectedItem: {},
       selectedGrade: {},
-      colorOptions: [
-        {
-          label: "Red",
-          value: "red",
-        },
-        {
-          label: "Pink",
-          value: "pink",
-        },
-        {
-          label: "Purple",
-          value: "purple",
-        },
-        {
-          label: "Deep Purple",
-          value: "deep-purple",
-        },
-        {
-          label: "Indigo",
-          value: "indigo",
-        },
-        {
-          label: "Blue",
-          value: "blue",
-        },
-        {
-          label: "Light Blue",
-          value: "light-blue",
-        },
-        {
-          label: "Cyan",
-          value: "cyan",
-        },
-        {
-          label: "Teal",
-          value: "teal",
-        },
-        {
-          label: "Green",
-          value: "green",
-        },
-        {
-          label: "Light Green",
-          value: "light-green",
-        },
-        {
-          label: "Lime",
-          value: "lime",
-        },
-        {
-          label: "Yellow",
-          value: "yellow",
-        },
-        {
-          label: "Amber",
-          value: "amber",
-        },
-        {
-          label: "Orange",
-          value: "orange",
-        },
-        {
-          label: "Deep Orange",
-          value: "deep-orange",
-        },
-        {
-          label: "Brown",
-          value: "brown",
-        },
-        {
-          label: "Grey",
-          value: "grey",
-        },
-        {
-          label: "Blue Grey",
-          value: "blue-grey",
-        },
-      ],
     };
   },
   methods: {
-    ...mapActions("myAssignaturesStore", [
-      "createNewAssignature",
-      "createNewItem",
-      "createNewGrade",
-      "deleteAssignature",
-      "deleteItem",
-      "deleteGrade",
-      "editItem",
-      "archiveAssignature",
-    ]),
+    ...mapActions("myAssignaturesStore", ["deleteAssignature"]),
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
@@ -276,7 +174,7 @@ export default {
       if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
-      this.selectedAssignature = this.userData.assignatures[index];
+      this.selectedAssignature = this.closedAssignatures[index];
       this.selectedAssignature.index = index;
       this.assignatureDialog = true;
     },
@@ -298,31 +196,6 @@ export default {
           ass: this.selectedAssignature,
         });
       }
-    },
-    submitItemDialog(data) {
-      if (this.dialogText == "Create") {
-        this.createNewItem({
-          item: data,
-          assId: this.selectedAssignature.id,
-        });
-      }
-      if (this.dialogText == "Edit") {
-        this.editItem({
-          ass: this.selectedAssignature,
-          itm: this.selectedItem,
-          newValues: data,
-        });
-      }
-      this.clearItemDialog();
-    },
-    closeAssignature() {
-      this.archiveAssignature(this.selectedAssignature);
-      this.assignatureDialog = false;
-    },
-    clearItemDialog() {
-      this.newItemDialog = false;
-      this.newItem.name = "";
-      this.newItem.percentage = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
@@ -370,7 +243,7 @@ export default {
       if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
     },
-    activeAssignatures() {
+    closedAssignatures() {
       let activeAss = [];
       this.userData.assignatures.forEach((assignature) => {
         if (assignature.status == "closed") activeAss.push(assignature);

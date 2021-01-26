@@ -495,7 +495,7 @@ export default {
       if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
-      this.selectedAssignature = this.userData.assignatures[index];
+      this.selectedAssignature = this.activeAssignatures[index];
       this.selectedAssignature.index = index;
       this.assignatureDialog = true;
     },
