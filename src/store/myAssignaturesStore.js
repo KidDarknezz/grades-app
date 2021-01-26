@@ -69,6 +69,11 @@ const mutations = {
     state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
     state.openUserAssignatures.splice(payload, 1);
   },
+  setUnarchiveAssignature(state, payload) {
+    state.closedUserAssignatures[payload].status = "open";
+    state.openUserAssignatures.push(state.closedUserAssignatures[payload]);
+    state.closedUserAssignatures.splice(payload, 1);
+  },
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
   },
@@ -186,6 +191,15 @@ const actions = {
         .update({ status: "closed" });
     }
     commit("setArchiveAssignature", payload.index);
+  },
+  unarchiveAssignature({ commit }, payload) {
+    if (confirm("Re-open assignature?")) {
+      firebase
+        .database()
+        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
+        .update({ status: "open" });
+    }
+    commit("setUnarchiveAssignature", payload.index);
   },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {

@@ -126,7 +126,7 @@
               color="info"
               icon="inventory_2"
               label="Re-open assignature"
-              @click="closeAssignature()"
+              @click="reopenAssignature()"
             />
           </q-fab>
         </div>
@@ -167,8 +167,15 @@ export default {
     };
   },
   methods: {
-    ...mapActions("myAssignaturesStore", ["deleteAssignature"]),
+    ...mapActions("myAssignaturesStore", [
+      "deleteAssignature",
+      "unarchiveAssignature",
+    ]),
 
+    reopenAssignature() {
+      this.unarchiveAssignature(this.selectedAssignature);
+      this.assignatureDialog = false;
+    },
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
