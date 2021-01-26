@@ -43,7 +43,12 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple>
+          <q-item
+            clickable
+            v-ripple
+            :active="$route.fullPath.includes('profile')"
+            to="/profile"
+          >
             <q-item-section avatar>
               <q-icon name="person" />
             </q-item-section>

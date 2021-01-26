@@ -8,6 +8,7 @@ import MainApp from "@/layouts/MainApp";
 import AuthView from "@/views/AuthView";
 import MyAssignatures from "@/views/MyAssignatures";
 import ClosedAssignatures from "@/views/ClosedAssignatures";
+import Profile from "@/views/Profile";
 
 Vue.use(VueRouter);
 
@@ -39,6 +40,14 @@ const routes = [
         path: "/closed-assignatures",
         name: "ClosedAssignatures",
         component: ClosedAssignatures,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/profile",
+        name: "Profile",
+        component: Profile,
         meta: {
           requiresAuth: true,
         },
