@@ -29,12 +29,20 @@
               v-model="loginUserData.email"
             />
             <q-input
-              type="password"
+              :type="isPwd ? 'password' : 'text'"
               label="Password"
               filled
               class="q-mb-md"
               v-model="loginUserData.pass"
-            />
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
             <q-btn
               push
               class="full-width text-bold"
@@ -70,12 +78,20 @@
               v-model="registerUserData.email"
             />
             <q-input
-              type="password"
+              :type="isPwd ? 'password' : 'text'"
               label="Password"
               filled
               class="q-mb-md"
               v-model="registerUserData.pass"
-            />
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
             <q-btn
               push
               class="full-width text-bold"
@@ -111,6 +127,7 @@ export default {
         name: "",
         lastName: "",
       },
+      isPwd: true,
     };
   },
   methods: {
