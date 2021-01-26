@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-mt-md">
     <!-- ASSIGNATURES LISt -->
-    <template v-if="userData.assignatures.length > 0">
+    <template v-if="openUserAssignatures.length > 0">
       <div
         class="row"
         v-for="(assignature, i) in openUserAssignatures"
