@@ -171,7 +171,7 @@
                       dense
                       icon="add"
                       class="on-right"
-                      @click="itemAction(i, 'new-grade')"
+                      @click="gradeAction(i, 'new-grade')"
                     />
                   </q-btn-group>
                 </q-item-section>
@@ -199,7 +199,12 @@
                         });
                       "
                     />
-                    <q-btn dense icon="edit" :class="`text-warning`" />
+                    <q-btn
+                      dense
+                      icon="edit"
+                      :class="`text-warning`"
+                      @click="gradeAction(1, 'edit')"
+                    />
                   </q-btn-group>
                 </q-item-section>
               </q-item>
@@ -321,19 +326,9 @@
     <!-- NEW GRADE DIALOG -->
     <q-dialog v-model="newGradeDialog">
       <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            createNewGrade({
-              grade: newGrade,
-              assId: selectedAssignature.id,
-              itmId: selectedItem.id,
-            });
-            newGradeDialog = false;
-            newGrade = { grade: '' };
-          "
-        >
+        <q-form @submit="submitGradeDialog(newGrade.grade)">
           <q-card-section>
-            <div class="text-h6">Add grade</div>
+            <div class="text-h6">{{ dialogText }} grade</div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
@@ -354,8 +349,8 @@
             />
           </q-card-section>
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn flat label="Create" type="submit" />
+            <q-btn flat label="Cancel" @click="clearGradeDialog()" />
+            <q-btn flat :label="dialogText" type="submit" />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -504,10 +499,9 @@ export default {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
     },
-    selectItem(index, action) {
+    selectItem(index) {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;
-      if (action == "new-grade") this.newGradeDialog = true;
     },
     selectAssignature(index) {
       this.selectedAssignature = this.openUserAssignatures[index];
@@ -515,22 +509,30 @@ export default {
       this.assignatureDialog = true;
     },
     itemAction(index, action) {
-      if (action == "new-grade") {
-        this.selectItem(index, action);
-      }
       if (action == "edit") {
         this.dialogText = "Edit";
-        this.selectItem(index, action);
+        this.selectItem(index);
         this.newItem.name = this.selectedItem.name;
         this.newItem.percentage = this.selectedItem.percentage;
         this.newItemDialog = true;
       }
       if (action == "delete") {
-        this.selectItem(index, action);
+        this.selectItem(index);
         this.deleteItem({
           itm: this.selectedItem,
           ass: this.selectedAssignature,
         });
+      }
+    },
+    gradeAction(index, action) {
+      this.selectItem(index);
+      if (action == "new-grade") {
+        this.dialogText = "New";
+        this.newGradeDialog = true;
+      }
+      if (action == "edit") {
+        this.dialogText = "Edit";
+        this.newGradeDialog = true;
       }
     },
     assignatureAction(action) {
@@ -573,6 +575,16 @@ export default {
       }
       this.clearItemDialog();
     },
+    submitGradeDialog(data) {
+      if (this.dialogText == "New") {
+        this.createNewGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: data,
+        });
+      }
+      this.clearGradeDialog();
+    },
     closeAssignature() {
       this.archiveAssignature(this.selectedAssignature);
       this.assignatureDialog = false;
@@ -581,6 +593,10 @@ export default {
       this.newItemDialog = false;
       this.newItem.name = "";
       this.newItem.percentage = "";
+    },
+    clearGradeDialog() {
+      this.newGradeDialog = false;
+      this.newGrade.grade = "";
     },
     clearAssignatureDialog() {
       this.newAssignatureDialog = false;

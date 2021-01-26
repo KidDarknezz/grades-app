@@ -35,15 +35,10 @@ const mutations = {
     }
   },
   setNewGrade(state, payload) {
-    for (let i = 0; i < state.openUserAssignatures.length; i++) {
-      if (state.openUserAssignatures[i].id == payload.assId) {
-        for (let j = 0; j < state.openUserAssignatures[i].items.length; j++) {
-          if (state.openUserAssignatures[i].items[j].id == payload.itmId) {
-            state.openUserAssignatures[i].items[j].grades.push(payload);
-          }
-        }
-      }
-    }
+    console.log(payload);
+    state.openUserAssignatures[payload.assIndex].items[
+      payload.itmIndex
+    ].grades.push(payload.grade);
   },
   setDeleteAssignature(state, payload) {
     state.openUserAssignatures.splice(payload, 1);
@@ -159,23 +154,24 @@ const actions = {
       });
   },
   createNewGrade({ commit }, payload) {
-    let grade = {
-      grd: payload.grade.grade,
+    let g = {
+      grd: payload.grd,
     };
     firebase
       .database()
       .ref(
         `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.assId
-        }/items/${payload.itmId}/grades`
+          payload.ass.id
+        }/items/${payload.itm.id}/grades`
       )
-      .push(grade)
+      .push(g)
       .then((response) => {
-        console.log(response);
-        grade.id = response.key;
-        grade.assId = payload.assId;
-        grade.itmId = payload.itmId;
-        commit("setNewGrade", grade);
+        g.id = response.key;
+        commit("setNewGrade", {
+          assIndex: payload.ass.index,
+          itmIndex: payload.itm.index,
+          grade: g,
+        });
       });
   },
   deleteAssignature({ commit }, payload) {
