@@ -59,13 +59,6 @@
     <!-- CREATE ASSIGNATURE DIALOG -->
     <q-dialog v-model="newAssignatureDialog" persistent>
       <q-card style="min-width: 350px">
-        <!-- <q-form
-          @submit="
-            createNewAssignature(newAssignature);
-            newAssignatureDialog = false;
-            newAssignature = { name: '', color: '' };
-          "
-        > -->
         <q-form
           @submit="
             submitAssignatureDialog({
@@ -190,7 +183,7 @@
                       icon="close"
                       class="text-red"
                       @click="
-                        selectItem(i, 'delete');
+                        selectItem(i);
                         selectGrade(j);
                         deleteGrade({
                           ass: selectedAssignature,
