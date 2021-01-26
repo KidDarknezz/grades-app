@@ -478,6 +478,7 @@ export default {
       "editItem",
       "archiveAssignature",
       "editAssignature",
+      "editGrade",
     ]),
 
     selectGrade(index) {
@@ -516,9 +517,10 @@ export default {
         this.newGradeDialog = true;
       }
       if (action == "edit") {
-        // this.dialogText = "Edit";
-        // this.newGradeDialog = true;
-        console.log(i, j);
+        this.selectGrade(j);
+        this.dialogText = "Edit";
+        this.newGradeDialog = true;
+        this.newGrade.grade = this.selectedGrade.grd;
       }
       if (action == "delete") {
         this.selectGrade(j);
@@ -575,6 +577,14 @@ export default {
           ass: this.selectedAssignature,
           itm: this.selectedItem,
           grd: data,
+        });
+      }
+      if (this.dialogText == "Edit") {
+        this.editGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: this.selectedGrade,
+          newValues: data,
         });
       }
       this.clearGradeDialog();

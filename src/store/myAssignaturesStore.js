@@ -63,6 +63,11 @@ const mutations = {
     state.openUserAssignatures[payload.ass].name = payload.new.name;
     state.openUserAssignatures[payload.ass].color = payload.new.color;
   },
+  setNewGradeValues(state, payload) {
+    state.openUserAssignatures[payload.ass].items[payload.itm].grades[
+      payload.grd
+    ].grd = payload.new;
+  },
   setArchiveAssignature(state, payload) {
     state.openUserAssignatures[payload].status = "closed";
     state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
@@ -260,6 +265,22 @@ const actions = {
       .update(payload.newValues);
     commit("setNewAssignatureValues", {
       ass: payload.assignature.index,
+      new: payload.newValues,
+    });
+  },
+  editGrade({ commit }, payload) {
+    firebase
+      .database()
+      .ref(
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.ass.id
+        }/items/${payload.itm.id}/grades/${payload.grd.id}`
+      )
+      .update({ grd: payload.newValues });
+    commit("setNewGradeValues", {
+      ass: payload.ass.index,
+      itm: payload.itm.index,
+      grd: payload.grd.index,
       new: payload.newValues,
     });
   },
