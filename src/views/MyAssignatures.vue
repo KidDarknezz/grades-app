@@ -51,23 +51,31 @@
         fab
         icon="add"
         color="accent"
-        @click="newAssignatureDialog = true"
+        @click="assignatureAction('new-assignature')"
       />
     </q-page-sticky>
     <!-- FLOATING BTN -->
 
     <!-- CREATE ASSIGNATURE DIALOG -->
-    <q-dialog v-model="newAssignatureDialog">
+    <q-dialog v-model="newAssignatureDialog" persistent>
       <q-card style="min-width: 350px">
-        <q-form
+        <!-- <q-form
           @submit="
             createNewAssignature(newAssignature);
             newAssignatureDialog = false;
             newAssignature = { name: '', color: '' };
           "
+        > -->
+        <q-form
+          @submit="
+            submitAssignatureDialog({
+              name: newAssignature.name,
+              color: newAssignature.color,
+            })
+          "
         >
           <q-card-section>
-            <div class="text-h6">New assignature</div>
+            <div class="text-h6">{{ dialogText }} assignature</div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
@@ -108,8 +116,8 @@
           </q-card-section>
 
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn flat label="Create" type="submit" />
+            <q-btn flat label="Cancel" @click="clearAssignatureDialog()" />
+            <q-btn flat :label="dialogText" type="submit" />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -229,6 +237,7 @@
               color="warning"
               icon="edit"
               label="Edit assignature"
+              @click="assignatureAction('edit')"
             />
             <q-fab-action
               label-class="bg-grey-3 text-grey-8"
@@ -523,6 +532,27 @@ export default {
         });
       }
     },
+    assignatureAction(action) {
+      if (action == "edit") {
+        this.dialogText = "Edit";
+        this.newAssignatureDialog = true;
+        this.newAssignature.name = this.selectedAssignature.name;
+        this.newAssignature.color = this.selectedAssignature.color;
+      }
+      if (action == "new-assignature") {
+        this.dialogText = "Create";
+        this.newAssignatureDialog = true;
+      }
+    },
+    submitAssignatureDialog(data) {
+      if (this.dialogText == "Create") {
+        this.createNewAssignature(data);
+      }
+      if (this.dialogText == "Edit") {
+        console.log("edit");
+      }
+      this.clearAssignatureDialog();
+    },
     submitItemDialog(data) {
       if (this.dialogText == "Create") {
         this.createNewItem({
@@ -547,6 +577,11 @@ export default {
       this.newItemDialog = false;
       this.newItem.name = "";
       this.newItem.percentage = "";
+    },
+    clearAssignatureDialog() {
+      this.newAssignatureDialog = false;
+      this.newAssignature.name = "";
+      this.newAssignature.color = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
