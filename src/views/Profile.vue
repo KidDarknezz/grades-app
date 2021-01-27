@@ -28,18 +28,17 @@
           filled
           emit-value
           map-options
-        >
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section avatar>
-                <q-icon name="palette" :color="scope.opt.value" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label v-html="scope.opt.label" />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+        />
+        <q-select
+          label="Profile avatar"
+          class="full-width q-mb-md"
+          :value="userData.profileAvatar"
+          :options="avatarOptions"
+          disable
+          filled
+          emit-value
+          map-options
+        />
       </div>
       <div class="row" v-else>
         <q-input
@@ -83,6 +82,33 @@
             </q-item>
           </template>
         </q-select>
+        <q-select
+          label="Profile avatar"
+          class="full-width q-mb-md"
+          v-model="info.profileAvatar"
+          :options="avatarOptions"
+          :rules="[
+            (val) => (val !== null && val !== '') || 'Please select an option',
+          ]"
+          filled
+          emit-value
+          map-options
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+              <q-item-section avatar>
+                <q-avatar size="30px" class="q-mb-sm bg-white">
+                  <img
+                    :src="require(`@/assets/avatars/${scope.opt.value}.png`)"
+                  />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label v-html="scope.opt.label" />
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
       <div class="row">
         <q-space />
@@ -108,6 +134,7 @@ export default {
         name: "",
         lastName: "",
         profileColor: "",
+        profileAvatar: "",
       },
       colorOptions: [
         {
@@ -187,13 +214,100 @@ export default {
           value: "blue-grey",
         },
       ],
+      avatarOptions: [
+        {
+          label: "Artist - Male",
+          value: "001-artist",
+        },
+        {
+          label: "Artist - Female",
+          value: "002-artist",
+        },
+        {
+          label: "Astronaut - Male",
+          value: "003-astronaut",
+        },
+        {
+          label: "Astronaut - Female",
+          value: "004-astronaut",
+        },
+        {
+          label: "Carnival - Male",
+          value: "005-carnival-mask",
+        },
+        {
+          label: "Carnival - Female",
+          value: "006-carnival-mask",
+        },
+        {
+          label: "Doctor - Male",
+          value: "007-doctor",
+        },
+        {
+          label: "Doctor - Female",
+          value: "008-doctor",
+        },
+        {
+          label: "Judge - Male",
+          value: "009-judge",
+        },
+        {
+          label: "Judge - Female",
+          value: "010-judge",
+        },
+        {
+          label: "Operator - Male",
+          value: "011-operator",
+        },
+        {
+          label: "Moderator - Female",
+          value: "012-moderator",
+        },
+        {
+          label: "Pharmacist - Male",
+          value: "013-Pharmacist",
+        },
+        {
+          label: "Pharmacist - Female",
+          value: "014-Pharmacist",
+        },
+        {
+          label: "Captain - Male",
+          value: "015-captain",
+        },
+        {
+          label: "Pilot - Female",
+          value: "016-pilot",
+        },
+        {
+          label: "Postman - Male",
+          value: "018-postman",
+        },
+        {
+          label: "Post Office - Female",
+          value: "017-post-office",
+        },
+        {
+          label: "Seaman - Male",
+          value: "019-seaman",
+        },
+        {
+          label: "Navy - Female",
+          value: "020-navy",
+        },
+      ],
     };
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["editProfileInfo"]),
     editProfileActions() {
-      if (!this.isEditActive) this.isEditActive = true;
-      else {
+      if (!this.isEditActive) {
+        this.info.name = this.userData.name;
+        this.info.lastName = this.userData.lastName;
+        this.info.profileColor = this.userData.profileColor;
+        this.info.profileAvatar = this.userData.profileAvatar;
+        this.isEditActive = true;
+      } else {
         this.editProfileInfo(this.info);
         this.isEditActive = false;
       }

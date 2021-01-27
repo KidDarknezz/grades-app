@@ -85,6 +85,7 @@ const mutations = {
     state.userData.name = payload.name
     state.userData.lastName = payload.lastName
     state.userData.profileColor = payload.profileColor
+    state.userData.profileAvatar = payload.profileAvatar
   }
 };
 

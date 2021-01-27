@@ -76,7 +76,11 @@
         style="height: 150px"
       >
         <div class="absolute-bottom bg-transparent">
-          <q-avatar size="56px" class="q-mb-sm">
+          <q-avatar
+            size="60px"
+            class="q-mb-sm bg-white"
+            v-if="userData.profileAvatar"
+          >
             <img
               :src="require(`@/assets/avatars/${userData.profileAvatar}.png`)"
             />
