@@ -16,7 +16,10 @@ const actions = {
     commit("setLoadingStatus", true);
     firebase
       .auth()
-      .signInWithEmailAndPassword(payload.email, payload.pass)
+      .signInWithEmailAndPassword(
+        payload.email.replace(/\s/g, ""),
+        payload.pass
+      )
       .then(
         (resp) => {
           commit("setLoadingStatus", false);
