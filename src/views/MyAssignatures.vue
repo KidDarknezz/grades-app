@@ -350,9 +350,9 @@
       transition-show="fade"
       transition-hide="fade"
     >
-      <q-card :class="`bg-accent text-white`">
+      <q-card :class="`bg-white text-grey-7`">
         <div class="fixed-center full-width text-center">
-          <q-spinner color="white" size="3em" class="q-mb-lg" />
+          <q-spinner color="grey-4" size="3em" class="q-mb-lg" />
           <div class="text-h5">Loading...</div>
         </div>
       </q-card>

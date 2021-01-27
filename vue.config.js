@@ -9,8 +9,8 @@ module.exports = {
   pwa: {
     name: "My Grades",
     short_name: "My Grades",
-    themeColor: "#000",
-    msTileColor: "#fff",
+    themeColor: "#fff",
+    msTileColor: "#000",
     backgroundColor: "#ffffff",
     manifestOptions: {
       icons: [

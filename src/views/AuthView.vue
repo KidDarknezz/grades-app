@@ -2,9 +2,9 @@
   <q-page>
     <div class="fixed-center full-width q-px-md">
       <div class="text-center q-mb-lg">
-        logo goes here
+        <q-img :src="require('@/assets/grades-logo.png')" width="100px" />
       </div>
-      <q-card class="full-width">
+      <q-card class="full-width bg-grey-2">
         <q-tabs
           v-model="tab"
           class="text-grey"

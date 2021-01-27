@@ -1,8 +1,27 @@
 <template>
   <q-page class="q-mt-md q-px-md">
     <q-form @submit="editProfileActions()">
-      <div class="text-h6 text-center text-bold q-mb-lg">
+      <div class="text-h6 text-center text-bold">
         My Profile
+      </div>
+      <div class="text-caption text-center q-mb-lg text-grey-6">
+        {{ userData.email }}
+      </div>
+      <div class="row q-mb-lg">
+        <q-space />
+        <q-img
+          v-if="isEditActive"
+          :src="require(`@/assets/avatars/${info.profileAvatar}.png`)"
+          width="100px"
+          class="text-center"
+        />
+        <q-img
+          v-if="userData.profileAvatar && !isEditActive"
+          :src="require(`@/assets/avatars/${userData.profileAvatar}.png`)"
+          width="100px"
+          class="text-center"
+        />
+        <q-space />
       </div>
       <div class="row" v-if="!isEditActive">
         <q-input
