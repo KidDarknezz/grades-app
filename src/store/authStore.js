@@ -30,10 +30,11 @@ const actions = {
       );
   },
   registerUser({ commit }, payload) {
+    let sanitizedEmail = payload.email.replace(/\s/g, "");
     commit("setLoadingStatus", true);
     firebase
       .auth()
-      .createUserWithEmailAndPassword(payload.email, payload.pass)
+      .createUserWithEmailAndPassword(sanitizedEmail, payload.pass)
       .then(
         (resp) => {
           localStorage.setItem("mgAppUid", resp.user.uid);
@@ -43,9 +44,9 @@ const actions = {
             .set({
               name: payload.name,
               lastName: payload.lastName,
-              email: payload.email,
+              email: sanitizedEmail,
               profileColor: "primary",
-              profileAvatar: "003-astronaut"
+              profileAvatar: "003-astronaut",
             })
             .then(() => {
               commit("setLoadingStatus", false);
