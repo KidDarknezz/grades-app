@@ -10,7 +10,7 @@ module.exports = {
     name: "My Grades",
     short_name: "My Grades",
     themeColor: "#fff",
-    msTileColor: "#000",
+    msTileColor: "#fff",
     backgroundColor: "#ffffff",
     manifestOptions: {
       icons: [
