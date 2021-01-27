@@ -45,6 +45,7 @@ const actions = {
               lastName: payload.lastName,
               email: payload.email,
               profileColor: "primary",
+              profileAvatar: "003-astronaut"
             })
             .then(() => {
               commit("setLoadingStatus", false);

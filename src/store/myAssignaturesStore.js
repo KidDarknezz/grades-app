@@ -81,6 +81,11 @@ const mutations = {
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
   },
+  setNewProfileValues(state, payload) {
+    state.userData.name = payload.name
+    state.userData.lastName = payload.lastName
+    state.userData.profileColor = payload.profileColor
+  }
 };
 
 const actions = {
@@ -284,6 +289,15 @@ const actions = {
       new: payload.newValues,
     });
   },
+  editProfileInfo({commit}, payload) {
+    firebase
+      .database()
+      .ref(
+        `${localStorage.getItem("mgAppUid")}`
+      )
+      .update(payload);
+    commit("setNewProfileValues", payload)
+  }
 };
 
 const getters = {};
