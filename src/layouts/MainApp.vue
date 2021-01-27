@@ -1,11 +1,19 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated :class="`bg-${userData.profileColor} text-white`">
+    <q-header class="bg-grey-2 text-black">
       <q-toolbar>
         <q-toolbar-title>
-          <q-btn dense flat round icon="menu" @click="drawer = !drawer" />
-          {{ returnTitle }}
+          <!-- <q-btn dense flat round icon="menu" @click="drawer = !drawer" /> -->
+          <div class="text-center">AppName</div>
         </q-toolbar-title>
+        <q-btn
+          flat
+          round
+          dense
+          :color="userData.profileColor"
+          icon="add"
+          @click="createNewAssignature = !createNewAssignature"
+        />
       </q-toolbar>
     </q-header>
     <q-drawer v-model="drawer" side="left" behavior="mobile" elevated>
@@ -91,8 +99,8 @@
         </div>
       </q-img>
     </q-drawer>
-    <q-page-container>
-      <router-view />
+    <q-page-container class="bg-grey-2">
+      <router-view :new="createNewAssignature" />
     </q-page-container>
   </q-layout>
 </template>
@@ -104,6 +112,7 @@ export default {
   data() {
     return {
       drawer: false,
+      createNewAssignature: false,
     };
   },
   methods: {

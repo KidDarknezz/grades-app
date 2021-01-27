@@ -1,64 +1,68 @@
 <template>
-  <q-page class="q-mt-md">
-    <!-- ASSIGNATURES LISt -->
+  <q-page class="q-pa-md">
+    <div class="row q-mt-lg q-mb-lg" v-if="openUserAssignatures.length > 0">
+      <div class="text-subtitle2 text-grey-7">Open assignatures</div>
+    </div>
     <template v-if="openUserAssignatures.length > 0">
       <div
-        class="row"
+        class="row bg-white q-py-lg q-pl-lg full-width assignature-card shadow-2 q-mb-md"
+        @click="selectAssignature(i)"
         v-for="(assignature, i) in openUserAssignatures"
         :key="i"
       >
-        <div class="col q-px-md q-py-sm">
-          <q-card @click="selectAssignature(i)">
-            <q-card-section :class="`bg-${assignature.color} text-white`">
-              <div class="text-h6">
-                {{ assignature.name }}
-              </div>
-            </q-card-section>
-
-            <q-card-section>
-              <template v-if="assignature.items.length > 0">
-                <div
-                  class="text-subtitle2"
-                  v-for="(item, i) in assignature.items"
-                  :key="i"
-                >
-                  {{ item.name }} - {{ item.percentage }}%
-                </div>
-              </template>
-              <template v-else>
-                <div class="text-subtitle2">No items yet.</div>
-              </template>
-            </q-card-section>
-            <!-- <q-separator />
-            <q-card-actions align="right">
-              <q-btn flat @click="selectAssignature(i)">Grades</q-btn>
-            </q-card-actions> -->
-          </q-card>
+        <div class="col-xs-8">
+          <div :class="`text-h6 w700 text-${assignature.color}`">
+            {{ assignature.name }}
+          </div>
+        </div>
+        <q-space />
+        <div class="col-xs-2">
+          <q-btn
+            :color="assignature.color"
+            size="sm"
+            icon="fas fa-arrow-right"
+            class="full-width q-py-sm"
+            style="border-radius: 25px 0px 0px 25px;"
+            unelevated
+            @click="selectAssignature(i)"
+          />
+        </div>
+        <div class="col-xs-12">
+          <template v-if="assignature.items.length > 0">
+            <div
+              class="text-caption text-grey-6"
+              v-for="(item, i) in assignature.items"
+              :key="i"
+            >
+              {{ item.name }} - {{ item.percentage }}%
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-caption text-grey-6">No items yet.</div>
+          </template>
         </div>
       </div>
     </template>
     <template v-else>
-      <div class="text-h6 fixed-center full-width text-center text-grey-4">
-        No assignatures yet.
+      <div class="fixed-center full-width text-center">
+        <i class="fas fa-graduation-cap fa-6x text-grey-4 q-mb-md"></i>
+        <div class="text-h6 text-grey-5">
+          No assignatures yet.
+        </div>
       </div>
     </template>
+
+    <!-- ASSIGNATURES LIST -->
 
     <!-- END ASSIGNATURES LIST -->
 
     <!-- FLOATING BTN -->
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="accent"
-        @click="assignatureAction('new-assignature')"
-      />
-    </q-page-sticky>
+
     <!-- FLOATING BTN -->
 
     <!-- CREATE ASSIGNATURE DIALOG -->
     <q-dialog v-model="newAssignatureDialog" persistent>
-      <q-card style="min-width: 350px">
+      <q-card style="min-width: 350px" class="assignature-card">
         <q-form
           @submit="
             submitAssignatureDialog({
@@ -68,13 +72,16 @@
           "
         >
           <q-card-section>
-            <div class="text-h6">{{ dialogText }} assignature</div>
+            <div
+              :class="`text-h6 gapp-font w700 text-${userData.profileColor}`"
+            >
+              {{ dialogText }} assignature
+            </div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
             <q-input
               filled
-              autofocus
               label="Name"
               v-model="newAssignature.name"
               class="q-mb-md"
@@ -109,8 +116,18 @@
           </q-card-section>
 
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" @click="clearAssignatureDialog()" />
-            <q-btn flat :label="dialogText" type="submit" />
+            <q-btn
+              flat
+              label="Cancel"
+              @click="clearAssignatureDialog()"
+              color="grey-6"
+            />
+            <q-btn
+              flat
+              :label="dialogText"
+              type="submit"
+              :color="userData.profileColor"
+            />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -366,6 +383,7 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
+  props: ["new"],
   data() {
     return {
       dialogText: "",
@@ -657,6 +675,12 @@ export default {
       });
       if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
+    },
+  },
+  watch: {
+    new: function() {
+      this.dialogText = "Create";
+      this.newAssignatureDialog = true;
     },
   },
 };
