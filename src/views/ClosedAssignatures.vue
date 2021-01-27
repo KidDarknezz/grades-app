@@ -8,7 +8,7 @@
         :key="i"
       >
         <div class="col q-px-md q-py-sm">
-          <q-card>
+          <q-card @click="selectAssignature(i)">
             <q-card-section class="bg-grey-4 text-white`">
               <div class="text-h6">
                 {{ assignature.name }}
@@ -29,10 +29,10 @@
                 <div class="text-subtitle2">No items yet.</div>
               </template>
             </q-card-section>
-            <q-separator />
+            <!-- <q-separator />
             <q-card-actions align="right">
               <q-btn flat @click="selectAssignature(i)">Grades</q-btn>
-            </q-card-actions>
+            </q-card-actions> -->
           </q-card>
         </div>
       </div>
