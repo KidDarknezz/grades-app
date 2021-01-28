@@ -108,7 +108,7 @@
               <q-btn color="grey-7" round flat icon="more_vert">
                 <q-menu cover auto-close>
                   <q-list>
-                    <q-item clickable>
+                    <q-item clickable @click="itemAction(i, 'edit')">
                       <q-item-section
                         ><span
                           :class="
@@ -163,6 +163,7 @@
             dense
             label="Add grade"
             :color="selectedAssignature.color"
+            @click="gradeAction(i, {}, 'new-grade')"
             rounded
             no-caps
           />
@@ -237,6 +238,56 @@
       </q-card>
     </q-dialog>
     <!-- END NEW ITEM DIALOG -->
+
+    <!-- NEW GRADE DIALOG -->
+    <q-dialog v-model="newGradeDialog">
+      <q-card style="min-width: 350px" class="assignature-card">
+        <q-form @submit="submitGradeDialog(newGrade.grade)">
+          <q-card-section>
+            <div
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
+            >
+              {{ dialogText }} grade
+            </div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-input
+              filled
+              type="number"
+              label="Grade"
+              v-model="newGrade.grade"
+              :color="selectedAssignature.color"
+              class="q-mb-md"
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please insert a value',
+                (val) =>
+                  (val > 0 && val <= 100) ||
+                  'Please insert a value between 1 and 100',
+              ]"
+            />
+          </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn
+              flat
+              label="Cancel"
+              @click="clearGradeDialog()"
+              color="grey-6"
+            />
+            <q-btn
+              flat
+              :label="dialogText"
+              type="submit"
+              :color="selectedAssignature.color"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <!-- END NEW GRADE DIALOG -->
   </q-page>
 </template>
 
@@ -284,6 +335,10 @@ export default {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;
     },
+    selectGrade(index) {
+      this.selectedGrade = this.selectedItem.grades[index];
+      this.selectedGrade.index = index;
+    },
     itemAction(index, action) {
       if (action == "edit") {
         this.dialogText = "Edit";
@@ -299,6 +354,45 @@ export default {
           ass: this.selectedAssignature,
         });
       }
+    },
+    gradeAction(i, j, action) {
+      this.selectItem(i);
+      if (action == "new-grade") {
+        this.dialogText = "New";
+        this.newGradeDialog = true;
+      }
+      if (action == "edit") {
+        this.selectGrade(j);
+        this.dialogText = "Edit";
+        this.newGradeDialog = true;
+        this.newGrade.grade = this.selectedGrade.grd;
+      }
+      if (action == "delete") {
+        this.selectGrade(j);
+        this.deleteGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: this.selectedGrade,
+        });
+      }
+    },
+    submitGradeDialog(data) {
+      if (this.dialogText == "New") {
+        this.createNewGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: data,
+        });
+      }
+      if (this.dialogText == "Edit") {
+        this.editGrade({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          grd: this.selectedGrade,
+          newValues: data,
+        });
+      }
+      this.clearGradeDialog();
     },
     submitItemDialog(data) {
       if (this.dialogText == "Create") {
@@ -320,6 +414,10 @@ export default {
       this.newItemDialog = false;
       this.newItem.name = "";
       this.newItem.percentage = "";
+    },
+    clearGradeDialog() {
+      this.newGradeDialog = false;
+      this.newGrade.grade = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
