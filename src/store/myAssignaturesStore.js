@@ -127,7 +127,9 @@ const actions = {
         data.assignatures = allAssignatures;
         commit("setUserData", data);
         commit("setOpenAndClosedAssignatures", data);
-        commit("setLoadingStatus", false);
+        setTimeout(function() {
+          commit("setLoadingStatus", false);
+        }, 1000);
       });
   },
   selectAssignature({ commit }, payload) {

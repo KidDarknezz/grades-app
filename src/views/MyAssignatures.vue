@@ -129,23 +129,6 @@
       </q-card>
     </q-dialog>
     <!-- END CREATE ASSIGNATURE DIALOG -->
-
-    <!-- LOADING DIALOG -->
-    <q-dialog
-      v-model="loadingStatus"
-      persistent
-      maximized
-      transition-show="fade"
-      transition-hide="fade"
-    >
-      <q-card :class="`bg-white text-grey-7`">
-        <div class="fixed-center full-width text-center">
-          <q-spinner color="grey-4" size="3em" class="q-mb-lg" />
-          <div class="text-h5">Loading...</div>
-        </div>
-      </q-card>
-    </q-dialog>
-    <!-- END LOADING DIALOG -->
   </q-page>
 </template>
 

@@ -169,6 +169,24 @@
         </div>
       </div>
     </div>
+    <!-- LOADING DIALOG -->
+    <q-dialog
+      v-model="loadingStatus"
+      persistent
+      maximized
+      transition-show="fade"
+      transition-hide="fade"
+    >
+      <q-card class="bg-white">
+        <div class="fixed-center full-width text-center">
+          <div class="text-h5 w700 gapp-font q-mb-md">
+            <span class="text-pink">my</span>Grades
+          </div>
+          <q-spinner-dots color="pink" size="3em" />
+        </div>
+      </q-card>
+    </q-dialog>
+    <!-- END LOADING DIALOG -->
   </q-layout>
 </template>
 
@@ -187,7 +205,7 @@ export default {
     ...mapActions("authStore", ["logoutCurrentUser"]),
   },
   computed: {
-    ...mapState("myAssignaturesStore", ["userData"]),
+    ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
     returnTitle() {
       let title = this.$route.fullPath;
       title = title.replace(/\//g, "");
