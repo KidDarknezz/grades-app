@@ -5,7 +5,7 @@
     </div>
     <template v-if="openUserAssignatures.length > 0">
       <div
-        class="row bg-white q-py-lg q-pl-lg full-width assignature-card shadow-2 q-mb-md"
+        class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
         @click="selectAssignature(i)"
         v-for="(assignature, i) in openUserAssignatures"
         :key="i"
@@ -42,6 +42,7 @@
           </template>
         </div>
       </div>
+      <div class="q-py-lg" />
     </template>
     <template v-else>
       <div class="fixed-center full-width text-center">
@@ -79,10 +80,11 @@
             </div>
           </q-card-section>
 
-          <q-card-section class="q-pt-none">
+          <q-card-section>
             <q-input
               filled
               label="Name"
+              :color="userData.profileColor"
               v-model="newAssignature.name"
               class="q-mb-md"
               :rules="[
@@ -92,6 +94,7 @@
             <q-select
               filled
               :options="colorOptions"
+              :color="userData.profileColor"
               label="Color"
               class="q-mb-md"
               v-model="newAssignature.color"

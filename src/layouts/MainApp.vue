@@ -4,7 +4,9 @@
       <q-toolbar>
         <q-toolbar-title>
           <!-- <q-btn dense flat round icon="menu" @click="drawer = !drawer" /> -->
-          <div class="text-center">AppName</div>
+          <div class="text-h6 w700">
+            <span :class="`text-${userData.profileColor}`">my</span>Grades
+          </div>
         </q-toolbar-title>
         <q-btn
           flat
@@ -13,6 +15,7 @@
           :color="userData.profileColor"
           icon="add"
           @click="createNewAssignature = !createNewAssignature"
+          v-if="$route.fullPath.includes('my-assignatures')"
         />
       </q-toolbar>
     </q-header>
@@ -102,6 +105,59 @@
     <q-page-container class="bg-grey-2">
       <router-view :new="createNewAssignature" />
     </q-page-container>
+    <div class="row fixed-bottom bg-white q-py-xs">
+      <div class="col">
+        <div class="justify-center row">
+          <q-btn
+            flat
+            round
+            dense
+            icon="inventory_2"
+            size="lg"
+            :color="
+              $route.fullPath.includes('closed-assignatures')
+                ? userData.profileColor
+                : 'black'
+            "
+            to="/closed-assignatures"
+          />
+        </div>
+      </div>
+      <div class="col">
+        <div class="justify-center row">
+          <q-btn
+            flat
+            round
+            dense
+            icon="list_alt"
+            size="lg"
+            :color="
+              $route.fullPath.includes('my-assignatures')
+                ? userData.profileColor
+                : 'black'
+            "
+            to="/my-assignatures"
+          />
+        </div>
+      </div>
+      <div class="col">
+        <div class="justify-center row">
+          <q-btn
+            flat
+            round
+            dense
+            icon="person"
+            size="lg"
+            :color="
+              $route.fullPath.includes('profile')
+                ? userData.profileColor
+                : 'black'
+            "
+            to="/profile"
+          />
+        </div>
+      </div>
+    </div>
   </q-layout>
 </template>
 
