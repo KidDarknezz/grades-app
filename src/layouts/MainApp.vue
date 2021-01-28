@@ -117,14 +117,14 @@
             flat
             round
             dense
-            icon="inventory_2"
+            icon="list_alt"
             size="lg"
             :color="
-              $route.fullPath.includes('closed-assignatures')
+              $route.fullPath.includes('my-assignatures')
                 ? userData.profileColor
                 : 'black'
             "
-            to="/closed-assignatures"
+            to="/my-assignatures"
           />
         </div>
       </div>
@@ -134,14 +134,14 @@
             flat
             round
             dense
-            icon="list_alt"
+            icon="inventory_2"
             size="lg"
             :color="
-              $route.fullPath.includes('my-assignatures')
+              $route.fullPath.includes('closed-assignatures')
                 ? userData.profileColor
                 : 'black'
             "
-            to="/my-assignatures"
+            to="/closed-assignatures"
           />
         </div>
       </div>
