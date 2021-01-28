@@ -28,6 +28,72 @@
         Final Grade: {{ calculateFinalGrade(selectedAssignature.items).letter }}
       </div>
     </div>
+    <div class="row q-px-md q-pt-lg">
+      <q-space />
+      <q-btn
+        label="Add item"
+        flat
+        icon-right="add"
+        rounded
+        :color="selectedAssignature.color"
+        dense
+        no-caps
+      />
+      <!-- <div class="text-subtitle2 full-width text-right">
+        add item
+      </div> -->
+    </div>
+    <div class="q-pa-md">
+      <q-card
+        class="bg-white assignature-card q-mb-md"
+        flat
+        v-for="(item, i) in selectedAssignature.items"
+        :key="i"
+      >
+        <q-card-section>
+          <div class="row items-center no-wrap">
+            <div class="col">
+              <div class="text-subtitle2 w700">
+                {{ item.name }} - {{ item.percentage }}%
+              </div>
+              <div class="text-subtitle2 w600" v-if="item.grades.length > 0">
+                <span class="text-grey-7">Grade: </span>
+                <span :class="`text-${selectedAssignature.color}`">{{
+                  calculateAverage(item.grades)
+                }}</span>
+              </div>
+            </div>
+
+            <div class="col-auto">
+              <q-btn color="grey-7" round flat icon="more_vert">
+                <q-menu cover auto-close>
+                  <q-list>
+                    <q-item clickable>
+                      <q-item-section
+                        ><span
+                          :class="
+                            `gapp-font w600 text-${selectedAssignature.color}`
+                          "
+                          >Edit</span
+                        ></q-item-section
+                      >
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>
+                        <span class="gapp-font w600 text-grey-7">Delete</span>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-subtitle2 w700">67</div>
+        </q-card-section>
+      </q-card>
+    </div>
   </q-page>
 </template>
 
@@ -35,7 +101,26 @@
 import { mapState, mapActions } from "vuex";
 export default {
   data() {
-    return {};
+    return {
+      dialogText: "",
+      newAssignatureDialog: false,
+      assignatureActions: false,
+      newAssignature: {
+        name: "",
+        color: "",
+      },
+      newItemDialog: false,
+      newItem: {
+        name: "",
+        percentage: "",
+      },
+      newGradeDialog: false,
+      newGrade: {
+        grade: "",
+      },
+      selectedItem: {},
+      selectedGrade: {},
+    };
   },
   methods: {
     calculatePercentageValue(grades, perc) {

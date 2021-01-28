@@ -103,7 +103,9 @@
       </q-img>
     </q-drawer>
     <q-page-container class="bg-grey-2">
-      <router-view :new="createNewAssignature" />
+      <transition name="fade">
+        <router-view :new="createNewAssignature" />
+      </transition>
     </q-page-container>
     <div
       class="row fixed-bottom bg-grey-2 q-py-xs"
