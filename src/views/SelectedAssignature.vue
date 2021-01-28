@@ -28,7 +28,7 @@
         Final Grade: {{ calculateFinalGrade(selectedAssignature.items).letter }}
       </div>
     </div>
-    <div class="row q-px-md q-pt-lg">
+    <div class="row q-px-md q-pt-lg q-mb-md">
       <q-space />
       <q-btn
         label="Add item"
@@ -38,10 +38,11 @@
         :color="selectedAssignature.color"
         dense
         no-caps
+        @click="
+          dialogText = 'Create';
+          newItemDialog = true;
+        "
       />
-      <!-- <div class="text-subtitle2 full-width text-right">
-        add item
-      </div> -->
     </div>
     <div class="q-pa-md">
       <q-card
@@ -78,7 +79,7 @@
                         ></q-item-section
                       >
                     </q-item>
-                    <q-item clickable>
+                    <q-item clickable @click="itemAction(i, 'delete')">
                       <q-item-section>
                         <span class="gapp-font w600 text-grey-7">Delete</span>
                       </q-item-section>
@@ -94,6 +95,74 @@
         </q-card-section>
       </q-card>
     </div>
+    <!-- NEW ITEM DIALOG -->
+    <q-dialog v-model="newItemDialog" persistent>
+      <q-card style="min-width: 350px" class="assignature-card">
+        <q-form
+          @submit="
+            submitItemDialog({
+              name: newItem.name,
+              percentage: newItem.percentage,
+            })
+          "
+        >
+          <q-card-section>
+            <div
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
+            >
+              {{ dialogText }} item
+            </div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-input
+              filled
+              label="Name"
+              :color="selectedAssignature.color"
+              v-model="newItem.name"
+              class="q-mb-md gapp-font"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
+            />
+            <q-input
+              type="number"
+              filled
+              label="Percentage"
+              :color="selectedAssignature.color"
+              v-model="newItem.percentage"
+              class="q-mb-md gapp-font"
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please insert a value',
+                (val) =>
+                  (val > 0 && val <= 100) ||
+                  'Please insert a value between 1 and 100',
+                (val) =>
+                  validPercentage <= 100 || 'Total percentage is above 100',
+              ]"
+            />
+          </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn
+              flat
+              label="Cancel"
+              @click="clearItemDialog()"
+              color="grey-6"
+            />
+            <q-btn
+              flat
+              :label="dialogText"
+              type="submit"
+              :color="selectedAssignature.color"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <!-- END NEW ITEM DIALOG -->
   </q-page>
 </template>
 
@@ -123,6 +192,61 @@ export default {
     };
   },
   methods: {
+    ...mapActions("myAssignaturesStore", [
+      "selectAssignature",
+      "createNewAssignature",
+      "createNewItem",
+      "createNewGrade",
+      "deleteAssignature",
+      "deleteItem",
+      "deleteGrade",
+      "editItem",
+      "archiveAssignature",
+      "editAssignature",
+      "editGrade",
+    ]),
+
+    selectItem(index) {
+      this.selectedItem = this.selectedAssignature.items[index];
+      this.selectedItem.index = index;
+    },
+    itemAction(index, action) {
+      if (action == "edit") {
+        this.dialogText = "Edit";
+        this.selectItem(index);
+        this.newItem.name = this.selectedItem.name;
+        this.newItem.percentage = this.selectedItem.percentage;
+        this.newItemDialog = true;
+      }
+      if (action == "delete") {
+        this.selectItem(index);
+        this.deleteItem({
+          itm: this.selectedItem,
+          ass: this.selectedAssignature,
+        });
+      }
+    },
+    submitItemDialog(data) {
+      if (this.dialogText == "Create") {
+        this.createNewItem({
+          item: data,
+          assId: this.selectedAssignature.id,
+        });
+      }
+      if (this.dialogText == "Edit") {
+        this.editItem({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          newValues: data,
+        });
+      }
+      this.clearItemDialog();
+    },
+    clearItemDialog() {
+      this.newItemDialog = false;
+      this.newItem.name = "";
+      this.newItem.percentage = "";
+    },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
       return ((avg * perc) / 100).toFixed(2);
@@ -160,6 +284,15 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "selectedAssignature"]),
+
+    validPercentage() {
+      let sum = 0;
+      this.selectedAssignature.items.forEach((item) => {
+        sum += parseInt(item.percentage);
+      });
+      if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
+      return sum + parseInt(this.newItem.percentage);
+    },
   },
   mounted() {
     if (!this.selectedAssignature.id) this.$router.push("/");

@@ -7,7 +7,7 @@
       <div
         class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
         @click="
-          selectAssignature(openUserAssignatures[i]);
+          selectAssignature({ index: i, ass: openUserAssignatures[i] });
           $router.push('/selected-assignature');
         "
         v-for="(assignature, i) in openUserAssignatures"
@@ -88,7 +88,7 @@
               label="Name"
               :color="userData.profileColor"
               v-model="newAssignature.name"
-              class="q-mb-md"
+              class="q-mb-md gapp-font"
               :rules="[
                 (val) => (val !== null && val !== '') || 'Please insert a name',
               ]"
@@ -98,7 +98,7 @@
               :options="colorOptions"
               :color="userData.profileColor"
               label="Color"
-              class="q-mb-md"
+              class="q-mb-md gapp-font"
               v-model="newAssignature.color"
               emit-value
               map-options
@@ -278,58 +278,6 @@
       </q-card>
     </q-dialog>
     <!-- END ASSIGNATURE DIALOG -->
-
-    <!-- NEW ITEM DIALOG -->
-    <q-dialog v-model="newItemDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-form
-          @submit="
-            submitItemDialog({
-              name: newItem.name,
-              percentage: newItem.percentage,
-            })
-          "
-        >
-          <q-card-section>
-            <div class="text-h6">{{ dialogText }} item</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input
-              filled
-              autofocus
-              label="Name"
-              v-model="newItem.name"
-              class="q-mb-md"
-              :rules="[
-                (val) => (val !== null && val !== '') || 'Please insert a name',
-              ]"
-            />
-            <q-input
-              type="number"
-              filled
-              label="Percentage"
-              v-model="newItem.percentage"
-              class="q-mb-md"
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '') || 'Please insert a value',
-                (val) =>
-                  (val > 0 && val <= 100) ||
-                  'Please insert a value between 1 and 100',
-                (val) =>
-                  validPercentage <= 100 || 'Total percentage is above 100',
-              ]"
-            />
-          </q-card-section>
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" @click="clearItemDialog()" />
-            <q-btn flat :label="dialogText" type="submit" />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
-    <!-- END NEW ITEM DIALOG -->
 
     <!-- NEW GRADE DIALOG -->
     <q-dialog v-model="newGradeDialog">
@@ -513,11 +461,6 @@ export default {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;
     },
-    // selectAssignature(index) {
-    //   this.selectedAssignature = this.openUserAssignatures[index];
-    //   this.selectedAssignature.index = index;
-    //   this.assignatureDialog = true;
-    // },
     itemAction(index, action) {
       if (action == "edit") {
         this.dialogText = "Edit";

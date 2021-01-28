@@ -25,7 +25,7 @@ const mutations = {
     state.closedUserAssignatures = closed;
   },
   setSelectedAssignature(state, payload) {
-    state.selectedAssignature = payload
+    state.selectedAssignature = payload;
   },
   setNewAssignature(state, payload) {
     state.openUserAssignatures.push(payload);
@@ -86,11 +86,11 @@ const mutations = {
     state.loadingStatus = payload;
   },
   setNewProfileValues(state, payload) {
-    state.userData.name = payload.name
-    state.userData.lastName = payload.lastName
-    state.userData.profileColor = payload.profileColor
-    state.userData.profileAvatar = payload.profileAvatar
-  }
+    state.userData.name = payload.name;
+    state.userData.lastName = payload.lastName;
+    state.userData.profileColor = payload.profileColor;
+    state.userData.profileAvatar = payload.profileAvatar;
+  },
 };
 
 const actions = {
@@ -131,7 +131,9 @@ const actions = {
       });
   },
   selectAssignature({ commit }, payload) {
-    commit("setSelectedAssignature", payload)
+    let ass = payload.ass;
+    ass.index = payload.index;
+    commit("setSelectedAssignature", ass);
   },
   createNewAssignature({ commit }, payload) {
     let assignature = {
@@ -297,15 +299,13 @@ const actions = {
       new: payload.newValues,
     });
   },
-  editProfileInfo({commit}, payload) {
+  editProfileInfo({ commit }, payload) {
     firebase
       .database()
-      .ref(
-        `${localStorage.getItem("mgAppUid")}`
-      )
+      .ref(`${localStorage.getItem("mgAppUid")}`)
       .update(payload);
-    commit("setNewProfileValues", payload)
-  }
+    commit("setNewProfileValues", payload);
+  },
 };
 
 const getters = {};
