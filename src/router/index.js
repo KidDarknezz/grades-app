@@ -7,7 +7,7 @@ import MainApp from "@/layouts/MainApp";
 
 import AuthView from "@/views/AuthView";
 import MyAssignatures from "@/views/MyAssignatures";
-import SelectedAssignature from '@/views/SelectedAssignature'
+import SelectedAssignature from "@/views/SelectedAssignature";
 import ClosedAssignatures from "@/views/ClosedAssignatures";
 import Profile from "@/views/Profile";
 
@@ -62,6 +62,10 @@ const routes = [
         },
       },
     ],
+  },
+  {
+    path: "/*",
+    component: 404,
   },
 ];
 
