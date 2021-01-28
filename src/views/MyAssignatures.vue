@@ -6,7 +6,10 @@
     <template v-if="openUserAssignatures.length > 0">
       <div
         class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
-        @click="selectAssignature(i)"
+        @click="
+          selectAssignature(openUserAssignatures[i]);
+          $router.push('/selected-assignature');
+        "
         v-for="(assignature, i) in openUserAssignatures"
         :key="i"
       >
@@ -24,7 +27,6 @@
             class="full-width q-py-sm"
             style="border-radius: 25px 0px 0px 25px;"
             unelevated
-            @click="selectAssignature(i)"
           />
         </div>
         <div class="col-xs-12">
@@ -406,7 +408,6 @@ export default {
       newGrade: {
         grade: "",
       },
-      selectedAssignature: {},
       selectedItem: {},
       selectedGrade: {},
       colorOptions: [
@@ -491,6 +492,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", [
+      "selectAssignature",
       "createNewAssignature",
       "createNewItem",
       "createNewGrade",
@@ -511,11 +513,11 @@ export default {
       this.selectedItem = this.selectedAssignature.items[index];
       this.selectedItem.index = index;
     },
-    selectAssignature(index) {
-      this.selectedAssignature = this.openUserAssignatures[index];
-      this.selectedAssignature.index = index;
-      this.assignatureDialog = true;
-    },
+    // selectAssignature(index) {
+    //   this.selectedAssignature = this.openUserAssignatures[index];
+    //   this.selectedAssignature.index = index;
+    //   this.assignatureDialog = true;
+    // },
     itemAction(index, action) {
       if (action == "edit") {
         this.dialogText = "Edit";
@@ -668,6 +670,7 @@ export default {
     ...mapState("myAssignaturesStore", [
       "userData",
       "loadingStatus",
+      "selectedAssignature",
       "openUserAssignatures",
     ]),
 

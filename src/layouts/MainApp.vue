@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header class="bg-grey-2 text-black">
-      <q-toolbar>
+      <q-toolbar v-if="!$route.fullPath.includes('selected-assignature')">
         <q-toolbar-title>
           <!-- <q-btn dense flat round icon="menu" @click="drawer = !drawer" /> -->
           <div class="text-h6 w700">
@@ -105,7 +105,10 @@
     <q-page-container class="bg-grey-2">
       <router-view :new="createNewAssignature" />
     </q-page-container>
-    <div class="row fixed-bottom bg-white q-py-xs">
+    <div
+      class="row fixed-bottom bg-grey-2 q-py-xs"
+      v-if="!$route.fullPath.includes('selected-assignature')"
+    >
       <div class="col">
         <div class="justify-center row">
           <q-btn

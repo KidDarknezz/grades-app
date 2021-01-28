@@ -6,6 +6,7 @@ const state = {
   },
   openUserAssignatures: [],
   closedUserAssignatures: [],
+  selectedAssignature: {},
   loadingStatus: false,
 };
 
@@ -22,6 +23,9 @@ const mutations = {
     });
     state.openUserAssignatures = open;
     state.closedUserAssignatures = closed;
+  },
+  setSelectedAssignature(state, payload) {
+    state.selectedAssignature = payload
   },
   setNewAssignature(state, payload) {
     state.openUserAssignatures.push(payload);
@@ -125,6 +129,9 @@ const actions = {
         commit("setOpenAndClosedAssignatures", data);
         commit("setLoadingStatus", false);
       });
+  },
+  selectAssignature({ commit }, payload) {
+    commit("setSelectedAssignature", payload)
   },
   createNewAssignature({ commit }, payload) {
     let assignature = {
