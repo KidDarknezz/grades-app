@@ -14,6 +14,45 @@
         color="white"
         to="/my-assignatures"
       />
+      <q-space />
+      <q-btn color="white" round flat icon="more_vert">
+        <q-menu auto-close anchor="bottom middle" self="top end">
+          <q-list style="min-width: 175px">
+            <q-item clickable>
+              <q-item-section
+                ><span
+                  :class="`gapp-font w600 text-${selectedAssignature.color}`"
+                  >Edit assignature</span
+                ></q-item-section
+              >
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                archiveAssignature(selectedAssignature);
+                $router.push('/my-assignatures');
+              "
+            >
+              <q-item-section>
+                <span class="gapp-font w600 text-grey-6"
+                  >Close assignature</span
+                >
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                deleteAssignature(selectedAssignature);
+                $router.push('/my-assignatures');
+              "
+            >
+              <q-item-section>
+                <span class="gapp-font w600">Delete assignature</span>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
       <div
         :class="
           `text-subtite2 full-width text-center w700 text-${selectedAssignature.color}-10 q-mb-md`
