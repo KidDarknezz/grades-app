@@ -129,9 +129,44 @@
             </div>
           </div>
         </q-card-section>
-        <q-card-section>
-          <div class="text-subtitle2 w700">67</div>
+        <q-card-section class="q-pt-none" v-if="item.grades.length > 0">
+          <!-- <div class="text-subtitle2 w700">67</div> -->
+          <q-list separator>
+            <q-item v-for="(grade, j) in item.grades" :key="j">
+              <q-item-section>
+                <q-item-label class="text-black">{{ grade.grd }}</q-item-label>
+              </q-item-section>
+              <q-item-section avatar>
+                <q-btn-group flat>
+                  <q-btn
+                    dense
+                    icon="close"
+                    class="text-red"
+                    size="sm"
+                    @click="gradeAction(i, j, 'delete')"
+                  />
+                  <q-btn
+                    dense
+                    icon="edit"
+                    class="text-warning"
+                    size="sm"
+                    @click="gradeAction(i, j, 'edit')"
+                  />
+                </q-btn-group>
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-card-section>
+        <q-card-actions>
+          <q-btn
+            flat
+            dense
+            label="Add grade"
+            :color="selectedAssignature.color"
+            rounded
+            no-caps
+          />
+        </q-card-actions>
       </q-card>
     </div>
     <!-- NEW ITEM DIALOG -->
