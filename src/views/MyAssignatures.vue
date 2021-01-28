@@ -13,12 +13,11 @@
         v-for="(assignature, i) in openUserAssignatures"
         :key="i"
       >
-        <div class="col-xs-8">
+        <div class="col-xs-10">
           <div :class="`text-h6 w700 text-${assignature.color}`">
             {{ assignature.name }}
           </div>
         </div>
-        <q-space />
         <div class="col-xs-2">
           <q-btn
             :color="assignature.color"

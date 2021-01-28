@@ -55,7 +55,7 @@
       </q-btn>
       <div
         :class="
-          `text-subtite2 full-width text-center w700 text-${selectedAssignature.color}-10 q-mb-md`
+          `text-h6 full-width text-center w700 text-${selectedAssignature.color}-11 q-mb-md`
         "
       >
         {{ selectedAssignature.name }}
@@ -137,7 +137,7 @@
                 <q-item-label class="text-black">{{ grade.grd }}</q-item-label>
               </q-item-section>
               <q-item-section avatar>
-                <q-btn-group flat>
+                <q-btn-group flat rounded>
                   <q-btn
                     dense
                     icon="close"
