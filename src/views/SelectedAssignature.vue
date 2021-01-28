@@ -12,13 +12,13 @@
         class="q-mb-sm"
         size="md"
         color="white"
-        to="/my-assignatures"
+        @click="$router.go(-1)"
       />
       <q-space />
       <q-btn color="white" round flat icon="more_vert">
         <q-menu auto-close anchor="bottom middle" self="top end">
           <q-list style="min-width: 175px">
-            <q-item clickable>
+            <q-item clickable v-if="selectedAssignature.status == 'open'">
               <q-item-section
                 ><span
                   :class="`gapp-font w600 text-${selectedAssignature.color}`"
@@ -27,10 +27,11 @@
               >
             </q-item>
             <q-item
+              v-if="selectedAssignature.status == 'open'"
               clickable
               @click="
                 archiveAssignature(selectedAssignature);
-                $router.push('/my-assignatures');
+                $router.push('/closed-assignatures');
               "
             >
               <q-item-section>
@@ -38,6 +39,21 @@
                   >Close assignature</span
                 >
               </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-if="selectedAssignature.status == 'closed'"
+              @click="
+                unarchiveAssignature(selectedAssignature);
+                $router.push('/my-assignatures');
+              "
+            >
+              <q-item-section
+                ><span
+                  :class="`gapp-font w600 text-${selectedAssignature.color}`"
+                  >Re-open assignature</span
+                ></q-item-section
+              >
             </q-item>
             <q-item
               clickable
@@ -70,6 +86,7 @@
     <div class="row q-px-md q-pt-lg q-mb-md">
       <q-space />
       <q-btn
+        v-if="selectedAssignature.status == 'open'"
         label="Add item"
         flat
         icon-right="add"
@@ -104,7 +121,7 @@
               </div>
             </div>
 
-            <div class="col-auto">
+            <div class="col-auto" v-if="selectedAssignature.status == 'open'">
               <q-btn color="grey-7" round flat icon="more_vert">
                 <q-menu cover auto-close>
                   <q-list>
@@ -130,13 +147,15 @@
           </div>
         </q-card-section>
         <q-card-section class="q-pt-none" v-if="item.grades.length > 0">
-          <!-- <div class="text-subtitle2 w700">67</div> -->
           <q-list separator>
             <q-item v-for="(grade, j) in item.grades" :key="j">
               <q-item-section>
                 <q-item-label class="text-black">{{ grade.grd }}</q-item-label>
               </q-item-section>
-              <q-item-section avatar>
+              <q-item-section
+                avatar
+                v-if="selectedAssignature.status == 'open'"
+              >
                 <q-btn-group flat rounded>
                   <q-btn
                     dense
@@ -157,7 +176,7 @@
             </q-item>
           </q-list>
         </q-card-section>
-        <q-card-actions>
+        <q-card-actions v-if="selectedAssignature.status == 'open'">
           <q-btn
             flat
             dense
@@ -329,6 +348,7 @@ export default {
       "archiveAssignature",
       "editAssignature",
       "editGrade",
+      "unarchiveAssignature",
     ]),
 
     selectItem(index) {

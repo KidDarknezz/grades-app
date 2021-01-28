@@ -1,138 +1,134 @@
 <template>
-  <q-page class="q-mt-md">
-    <!-- ASSIGNATURES LISt -->
+  <q-page class="q-pa-md">
+    <div class="row q-mt-lg q-mb-lg" v-if="closedUserAssignatures.length > 0">
+      <div class="text-subtitle2 text-grey-7">Closed assignatures</div>
+    </div>
     <template v-if="closedUserAssignatures.length > 0">
       <div
-        class="row"
+        class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
+        @click="
+          selectAssignature({ index: i, ass: closedUserAssignatures[i] });
+          $router.push('/selected-assignature');
+        "
         v-for="(assignature, i) in closedUserAssignatures"
         :key="i"
       >
-        <div class="col q-px-md q-py-sm">
-          <q-card @click="selectAssignature(i)">
-            <q-card-section class="bg-grey-4 text-white`">
-              <div class="text-h6">
-                {{ assignature.name }}
-              </div>
-            </q-card-section>
-
-            <q-card-section>
-              <template v-if="assignature.items.length > 0">
-                <div
-                  class="text-subtitle2"
-                  v-for="(item, i) in assignature.items"
-                  :key="i"
-                >
-                  {{ item.name }} - {{ item.percentage }}%
-                </div>
-              </template>
-              <template v-else>
-                <div class="text-subtitle2">No items yet.</div>
-              </template>
-            </q-card-section>
-            <!-- <q-separator />
-            <q-card-actions align="right">
-              <q-btn flat @click="selectAssignature(i)">Grades</q-btn>
-            </q-card-actions> -->
-          </q-card>
+        <div class="col-xs-10">
+          <div class="text-h6 w700 text-grey-8">
+            {{ assignature.name }}
+          </div>
+        </div>
+        <div class="col-xs-2">
+          <q-btn
+            color="grey-7"
+            size="sm"
+            icon="fas fa-arrow-right"
+            class="full-width q-py-sm"
+            style="border-radius: 25px 0px 0px 25px;"
+            unelevated
+          />
+        </div>
+        <div class="col-xs-12">
+          <template v-if="assignature.items.length > 0">
+            <div
+              class="text-caption text-grey-6"
+              v-for="(item, i) in assignature.items"
+              :key="i"
+            >
+              {{ item.name }} - {{ item.percentage }}%
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-caption text-grey-6">No items yet.</div>
+          </template>
         </div>
       </div>
+      <div class="q-py-lg" />
     </template>
     <template v-else>
-      <div class="text-h6 fixed-center full-width text-center text-grey-4">
-        No assignatures yet.
+      <div class="fixed-center full-width text-center">
+        <i class="fas fa-graduation-cap fa-6x text-grey-4 q-mb-md"></i>
+        <div class="text-h6 text-grey-5">
+          No assignatures yet.
+        </div>
       </div>
     </template>
 
-    <!-- END ASSIGNATURES LIST -->
+    <!-- CREATE ASSIGNATURE DIALOG -->
+    <q-dialog v-model="newAssignatureDialog" persistent>
+      <q-card style="min-width: 350px" class="assignature-card">
+        <q-form
+          @submit="
+            submitAssignatureDialog({
+              name: newAssignature.name,
+              color: newAssignature.color,
+            })
+          "
+        >
+          <q-card-section>
+            <div
+              :class="`text-h6 gapp-font w700 text-${userData.profileColor}`"
+            >
+              {{ dialogText }} assignature
+            </div>
+          </q-card-section>
 
-    <!-- ASSIGNATURE DIALOG -->
-    <q-dialog
-      v-model="assignatureDialog"
-      persistent
-      maximized
-      transition-show="slide-up"
-      transition-hide="slide-down"
-    >
-      <q-card :class="`bg-${selectedAssignature.color} text-white`">
-        <q-bar>
-          <div class="text-h6">{{ selectedAssignature.name }}</div>
-          <q-space />
-          <q-btn dense flat icon="close" @click="assignatureDialog = false" />
-        </q-bar>
-        <q-card-section>
-          <div class="text-h6 text-center">
-            Final Grade:
-            {{ calculateFinalGrade(selectedAssignature.items).final }}
-            -
-            {{ calculateFinalGrade(selectedAssignature.items).letter }}
-          </div>
-        </q-card-section>
-
-        <q-card-section v-for="(item, i) in selectedAssignature.items" :key="i">
-          <div class="bg-white rounded-borders">
-            <q-list bordered separator>
-              <q-item :class="`bg-${selectedAssignature.color}-4`">
-                <q-item-section>
-                  <q-item-label
-                    >{{ item.name }} - {{ item.percentage }}%</q-item-label
-                  >
-                  <q-item-label caption v-if="item.grades.length > 0"
-                    >Grade: {{ calculateAverage(item.grades) }}</q-item-label
-                  >
-                </q-item-section>
-              </q-item>
-
-              <q-item v-for="(grade, j) in item.grades" :key="j">
-                <q-item-section>
-                  <q-item-label class="text-black">{{
-                    grade.grd
-                  }}</q-item-label>
-                </q-item-section>
-                <q-item-section avatar>
-                  <q-btn-group flat> </q-btn-group>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </div>
-        </q-card-section>
-        <div class="fixed-bottom-right q-pa-lg">
-          <q-fab
-            v-model="assignatureActions"
-            label="Actions"
-            label-position="left"
-            label-class="bg-grey-3 text-purple"
-            external-label
-            color="purple"
-            icon="keyboard_arrow_up"
-            direction="up"
-            vertical-actions-align="right"
-          >
-            <q-fab-action
-              label-class="bg-grey-3 text-grey-8"
-              external-label
-              label-position="left"
-              color="red"
-              icon="delete"
-              label="Delete assignature"
-              @click="
-                deleteAssignature(selectedAssignature);
-                assignatureDialog = false;
-              "
+          <q-card-section>
+            <q-input
+              filled
+              label="Name"
+              :color="userData.profileColor"
+              v-model="newAssignature.name"
+              class="q-mb-md gapp-font"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
             />
-            <q-fab-action
-              label-class="bg-grey-3 text-grey-8"
-              external-label
-              label-position="left"
-              color="info"
-              icon="inventory_2"
-              label="Re-open assignature"
-              @click="reopenAssignature()"
+            <q-select
+              filled
+              :options="colorOptions"
+              :color="userData.profileColor"
+              label="Color"
+              class="q-mb-md gapp-font"
+              v-model="newAssignature.color"
+              emit-value
+              map-options
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please select a color',
+              ]"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                  <q-item-section avatar>
+                    <q-icon name="palette" :color="scope.opt.value" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label v-html="scope.opt.label" />
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </q-card-section>
+
+          <q-card-actions align="right" class="text-primary">
+            <q-btn
+              flat
+              label="Cancel"
+              @click="clearAssignatureDialog()"
+              color="grey-6"
             />
-          </q-fab>
-        </div>
+            <q-btn
+              flat
+              :label="dialogText"
+              type="submit"
+              :color="userData.profileColor"
+            />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
-    <!-- END ASSIGNATURE DIALOG -->
+    <!-- END CREATE ASSIGNATURE DIALOG -->
 
     <!-- LOADING DIALOG -->
     <q-dialog
@@ -142,9 +138,9 @@
       transition-show="fade"
       transition-hide="fade"
     >
-      <q-card :class="`bg-accent text-white`">
+      <q-card :class="`bg-white text-grey-7`">
         <div class="fixed-center full-width text-center">
-          <q-spinner color="white" size="3em" class="q-mb-lg" />
+          <q-spinner color="grey-4" size="3em" class="q-mb-lg" />
           <div class="text-h5">Loading...</div>
         </div>
       </q-card>
@@ -157,57 +153,139 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
+  props: ["new"],
   data() {
     return {
-      assignatureDialog: false,
+      dialogText: "",
+      newAssignatureDialog: false,
       assignatureActions: false,
-      selectedAssignature: {},
-      selectedItem: {},
-      selectedGrade: {},
+      newAssignature: {
+        name: "",
+        color: "",
+      },
+      colorOptions: [
+        {
+          label: "Red",
+          value: "red",
+        },
+        {
+          label: "Pink",
+          value: "pink",
+        },
+        {
+          label: "Purple",
+          value: "purple",
+        },
+        {
+          label: "Deep Purple",
+          value: "deep-purple",
+        },
+        {
+          label: "Indigo",
+          value: "indigo",
+        },
+        {
+          label: "Blue",
+          value: "blue",
+        },
+        {
+          label: "Light Blue",
+          value: "light-blue",
+        },
+        {
+          label: "Cyan",
+          value: "cyan",
+        },
+        {
+          label: "Teal",
+          value: "teal",
+        },
+        {
+          label: "Green",
+          value: "green",
+        },
+        {
+          label: "Light Green",
+          value: "light-green",
+        },
+        {
+          label: "Lime",
+          value: "lime",
+        },
+        {
+          label: "Yellow",
+          value: "yellow",
+        },
+        {
+          label: "Amber",
+          value: "amber",
+        },
+        {
+          label: "Orange",
+          value: "orange",
+        },
+        {
+          label: "Deep Orange",
+          value: "deep-orange",
+        },
+        {
+          label: "Brown",
+          value: "brown",
+        },
+        {
+          label: "Grey",
+          value: "grey",
+        },
+        {
+          label: "Blue Grey",
+          value: "blue-grey",
+        },
+      ],
     };
   },
   methods: {
     ...mapActions("myAssignaturesStore", [
+      "selectAssignature",
+      "createNewAssignature",
       "deleteAssignature",
-      "unarchiveAssignature",
+      "archiveAssignature",
+      "editAssignature",
     ]),
 
-    reopenAssignature() {
-      this.unarchiveAssignature(this.selectedAssignature);
-      this.assignatureDialog = false;
-    },
-    selectGrade(index) {
-      this.selectedGrade = this.selectedItem.grades[index];
-      this.selectedGrade.index = index;
-    },
-    selectItem(index, action) {
-      this.selectedItem = this.selectedAssignature.items[index];
-      this.selectedItem.index = index;
-      if (action == "new-grade") this.newGradeDialog = true;
-    },
-    selectAssignature(index) {
-      this.selectedAssignature = this.closedUserAssignatures[index];
-      this.selectedAssignature.index = index;
-      this.assignatureDialog = true;
-    },
-    itemAction(index, action) {
-      if (action == "new-grade") {
-        this.selectItem(index, action);
-      }
+    assignatureAction(action) {
       if (action == "edit") {
         this.dialogText = "Edit";
-        this.selectItem(index, action);
-        this.newItem.name = this.selectedItem.name;
-        this.newItem.percentage = this.selectedItem.percentage;
-        this.newItemDialog = true;
+        this.newAssignatureDialog = true;
+        this.newAssignature.name = this.selectedAssignature.name;
+        this.newAssignature.color = this.selectedAssignature.color;
       }
-      if (action == "delete") {
-        this.selectItem(index, action);
-        this.deleteItem({
-          itm: this.selectedItem,
-          ass: this.selectedAssignature,
+      if (action == "new-assignature") {
+        this.dialogText = "Create";
+        this.newAssignatureDialog = true;
+      }
+    },
+    submitAssignatureDialog(data) {
+      if (this.dialogText == "Create") {
+        this.createNewAssignature(data);
+      }
+      if (this.dialogText == "Edit") {
+        this.editAssignature({
+          assignature: this.selectedAssignature,
+          newValues: data,
         });
       }
+      this.clearAssignatureDialog();
+    },
+
+    closeAssignature() {
+      this.archiveAssignature(this.selectedAssignature);
+      this.assignatureDialog = false;
+    },
+
+    clearAssignatureDialog() {
+      this.newAssignatureDialog = false;
+      this.newAssignature.name = "";
+      this.newAssignature.color = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
@@ -248,6 +326,7 @@ export default {
     ...mapState("myAssignaturesStore", [
       "userData",
       "loadingStatus",
+      "selectedAssignature",
       "closedUserAssignatures",
     ]),
 
@@ -258,6 +337,12 @@ export default {
       });
       if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
       return sum + parseInt(this.newItem.percentage);
+    },
+  },
+  watch: {
+    new: function() {
+      this.dialogText = "Create";
+      this.newAssignatureDialog = true;
     },
   },
 };
