@@ -151,7 +151,6 @@
             flat
             round
             dense
-            icon="person"
             size="lg"
             :color="
               $route.fullPath.includes('profile')
@@ -159,7 +158,13 @@
                 : 'black'
             "
             to="/profile"
-          />
+          >
+            <q-avatar size="40px">
+              <q-img
+                :src="require(`@/assets/avatars/${userData.profileAvatar}.png`)"
+              />
+            </q-avatar>
+          </q-btn>
         </div>
       </div>
     </div>
