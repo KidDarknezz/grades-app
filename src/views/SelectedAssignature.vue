@@ -100,7 +100,7 @@
         "
       />
     </div>
-    <div class="q-pa-md">
+    <div class="q-pa-md" v-if="selectedAssignature.items.length > 0">
       <q-card
         class="bg-white assignature-card q-mb-md"
         flat
@@ -189,6 +189,14 @@
         </q-card-actions>
       </q-card>
     </div>
+    <template v-else>
+      <div class="text-right q-mt-xl q-px-md text-grey-5">
+        <q-icon name="arrow_upward" size="xl" />
+      </div>
+      <div class="text-right q-mt-sm q-px-md text-grey-5">
+        Start adding items
+      </div>
+    </template>
     <!-- NEW ITEM DIALOG -->
     <q-dialog v-model="newItemDialog" persistent>
       <q-card style="min-width: 350px" class="assignature-card">
