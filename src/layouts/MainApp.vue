@@ -161,6 +161,7 @@
           >
             <q-avatar size="40px">
               <q-img
+                v-if="userData.profileAvatar"
                 :src="require(`@/assets/avatars/${userData.profileAvatar}.png`)"
               />
             </q-avatar>

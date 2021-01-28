@@ -23,6 +23,19 @@
         />
         <q-space />
       </div>
+      <div class="row q-px-md q-mb-md">
+        <q-space />
+        <q-btn
+          icon-right="login"
+          label="Logout"
+          flat
+          dense
+          color="red-5"
+          size="sm"
+          rounded
+          @click="logoutCurrentUser()"
+        />
+      </div>
       <div class="row" v-if="!isEditActive">
         <div class="col-xs-6 q-px-md">
           <q-input
@@ -342,6 +355,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["editProfileInfo"]),
+    ...mapActions("authStore", ["logoutCurrentUser"]),
     editProfileActions() {
       if (!this.isEditActive) {
         this.info.name = this.userData.name;
