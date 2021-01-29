@@ -63,10 +63,6 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/*",
-    component: 404,
-  },
 ];
 
 const router = new VueRouter({
