@@ -1,5 +1,30 @@
 <template>
   <q-page class="q-mt-md">
+    <q-banner
+      inline-actions
+      class="text-white bg-secondary q-mb-md"
+      v-if="installBanner"
+    >
+      <span class="text-subtitle2">You install this app.</span>
+      <template v-slot:action>
+        <q-btn
+          rounded
+          flat
+          color="white"
+          label="Install"
+          size="sm"
+          icon-right="get_app"
+        />
+        <q-btn
+          round
+          flat
+          color="white"
+          icon="close"
+          size="sm"
+          @click="installBanner = false"
+        />
+      </template>
+    </q-banner>
     <q-form @submit="editProfileActions()">
       <div class="text-h6 text-center text-bold">
         My Profile
@@ -188,6 +213,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      installBanner: true,
       isEditActive: false,
       info: {
         name: "",

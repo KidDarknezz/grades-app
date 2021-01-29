@@ -8,15 +8,27 @@
             <span :class="`text-${userData.profileColor}`">my</span>Grades
           </div>
         </q-toolbar-title>
-        <q-btn
-          flat
-          round
-          dense
-          :color="userData.profileColor"
-          icon="add"
-          @click="createNewAssignature = !createNewAssignature"
-          v-if="$route.fullPath.includes('my-assignatures')"
-        />
+        <template v-if="$route.fullPath.includes('my-assignatures')">
+          <q-btn
+            rounded
+            flat
+            label="Install App"
+            size="xs"
+            unelevated
+            color="secondary"
+            icon-right="get_app"
+            no-caps
+            to="/profile"
+          />
+          <q-btn
+            flat
+            round
+            dense
+            :color="userData.profileColor"
+            icon="add"
+            @click="createNewAssignature = !createNewAssignature"
+          />
+        </template>
       </q-toolbar>
     </q-header>
     <q-drawer v-model="drawer" side="left" behavior="mobile" elevated>
@@ -242,6 +254,16 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener("DOMContentLoaded", () => {
+      let displayMode = "browser tab";
+      if (navigator.standalone) {
+        displayMode = "standalone-ios";
+      }
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        displayMode = "standalone";
+      }
+      console.log("DISPLAY_MODE_LAUNCH:", displayMode);
+    });
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
   },
 };
