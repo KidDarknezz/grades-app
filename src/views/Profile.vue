@@ -164,7 +164,10 @@
           </q-select>
         </div>
       </div>
-      <div class="row q-px-md">
+      <div class="row q-px-md q-mb-md">
+        <div class="text-caption text-grey-4 column flex-center">
+          v. 1.2.0
+        </div>
         <q-space />
         <q-btn
           class="w700"
