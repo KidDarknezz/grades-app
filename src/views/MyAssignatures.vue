@@ -260,11 +260,6 @@ export default {
       this.clearAssignatureDialog();
     },
 
-    closeAssignature() {
-      this.archiveAssignature(this.selectedAssignature);
-      this.assignatureDialog = false;
-    },
-
     clearAssignatureDialog() {
       this.newAssignatureDialog = false;
       this.newAssignature.name = "";

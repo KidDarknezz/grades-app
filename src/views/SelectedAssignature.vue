@@ -18,7 +18,11 @@
       <q-btn color="white" round flat icon="more_vert">
         <q-menu auto-close anchor="bottom middle" self="top end">
           <q-list style="min-width: 175px">
-            <q-item clickable v-if="selectedAssignature.status == 'open'">
+            <q-item
+              clickable
+              v-if="selectedAssignature.status == 'open'"
+              @click="assignatureAction('edit')"
+            >
               <q-item-section
                 ><span
                   :class="`gapp-font w600 text-${selectedAssignature.color}`"
@@ -197,6 +201,85 @@
         Start adding items
       </div>
     </template>
+
+    <!-- CREATE ASSIGNATURE DIALOG -->
+    <q-dialog v-model="newAssignatureDialog" persistent>
+      <q-card style="min-width: 350px" class="assignature-card">
+        <q-form
+          @submit="
+            submitAssignatureDialog({
+              name: newAssignature.name,
+              color: newAssignature.color,
+            })
+          "
+        >
+          <q-card-section>
+            <div
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
+            >
+              {{ dialogText }} assignature
+            </div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-input
+              filled
+              label="Name"
+              :color="selectedAssignature.color"
+              v-model="newAssignature.name"
+              class="q-mb-md gapp-font"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
+            />
+            <q-select
+              filled
+              :options="colorOptions"
+              :color="selectedAssignature.color"
+              label="Color"
+              class="q-mb-md gapp-font"
+              v-model="newAssignature.color"
+              emit-value
+              map-options
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please select a color',
+              ]"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                  <q-item-section avatar>
+                    <q-icon name="palette" :color="scope.opt.value" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label v-html="scope.opt.label" />
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </q-card-section>
+
+          <q-card-actions align="right" class="text-primary">
+            <q-btn
+              flat
+              label="Cancel"
+              @click="clearAssignatureDialog()"
+              color="grey-6"
+            />
+            <q-btn
+              flat
+              :label="dialogText"
+              type="submit"
+              :color="selectedAssignature.color"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <!-- END CREATE ASSIGNATURE DIALOG -->
+
     <!-- NEW ITEM DIALOG -->
     <q-dialog v-model="newItemDialog" persistent>
       <q-card style="min-width: 350px" class="assignature-card">
@@ -341,6 +424,84 @@ export default {
       },
       selectedItem: {},
       selectedGrade: {},
+      colorOptions: [
+        {
+          label: "Red",
+          value: "red",
+        },
+        {
+          label: "Pink",
+          value: "pink",
+        },
+        {
+          label: "Purple",
+          value: "purple",
+        },
+        {
+          label: "Deep Purple",
+          value: "deep-purple",
+        },
+        {
+          label: "Indigo",
+          value: "indigo",
+        },
+        {
+          label: "Blue",
+          value: "blue",
+        },
+        {
+          label: "Light Blue",
+          value: "light-blue",
+        },
+        {
+          label: "Cyan",
+          value: "cyan",
+        },
+        {
+          label: "Teal",
+          value: "teal",
+        },
+        {
+          label: "Green",
+          value: "green",
+        },
+        {
+          label: "Light Green",
+          value: "light-green",
+        },
+        {
+          label: "Lime",
+          value: "lime",
+        },
+        {
+          label: "Yellow",
+          value: "yellow",
+        },
+        {
+          label: "Amber",
+          value: "amber",
+        },
+        {
+          label: "Orange",
+          value: "orange",
+        },
+        {
+          label: "Deep Orange",
+          value: "deep-orange",
+        },
+        {
+          label: "Brown",
+          value: "brown",
+        },
+        {
+          label: "Grey",
+          value: "grey",
+        },
+        {
+          label: "Blue Grey",
+          value: "blue-grey",
+        },
+      ],
     };
   },
   methods: {
@@ -366,6 +527,18 @@ export default {
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
       this.selectedGrade.index = index;
+    },
+    assignatureAction(action) {
+      if (action == "edit") {
+        this.dialogText = "Edit";
+        this.newAssignatureDialog = true;
+        this.newAssignature.name = this.selectedAssignature.name;
+        this.newAssignature.color = this.selectedAssignature.color;
+      }
+      if (action == "new-assignature") {
+        this.dialogText = "Create";
+        this.newAssignatureDialog = true;
+      }
     },
     itemAction(index, action) {
       if (action == "edit") {
@@ -404,6 +577,18 @@ export default {
         });
       }
     },
+    submitAssignatureDialog(data) {
+      if (this.dialogText == "Create") {
+        this.createNewAssignature(data);
+      }
+      if (this.dialogText == "Edit") {
+        this.editAssignature({
+          assignature: this.selectedAssignature,
+          newValues: data,
+        });
+      }
+      this.clearAssignatureDialog();
+    },
     submitGradeDialog(data) {
       if (this.dialogText == "New") {
         this.createNewGrade({
@@ -437,6 +622,11 @@ export default {
         });
       }
       this.clearItemDialog();
+    },
+    clearAssignatureDialog() {
+      this.newAssignatureDialog = false;
+      this.newAssignature.name = "";
+      this.newAssignature.color = "";
     },
     clearItemDialog() {
       this.newItemDialog = false;
