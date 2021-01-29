@@ -59,7 +59,7 @@
               clickable
               @click="
                 deleteAssignature(selectedAssignature);
-                $router.push('/my-assignatures');
+                $router.go(-1);
               "
             >
               <q-item-section>

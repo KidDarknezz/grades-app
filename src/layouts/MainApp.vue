@@ -180,9 +180,9 @@
       <q-card class="bg-white">
         <div class="fixed-center full-width text-center">
           <div class="text-h5 w700 gapp-font q-mb-md">
-            <span class="text-pink">my</span>Grades
+            <span :class="`text-${colors[randomColorIndex]}`">my</span>Grades
           </div>
-          <q-spinner-dots color="pink" size="3em" />
+          <q-spinner-dots :color="colors[randomColorIndex]" size="3em" />
         </div>
       </q-card>
     </q-dialog>
@@ -198,11 +198,37 @@ export default {
     return {
       drawer: false,
       createNewAssignature: false,
+      randomColorIndex: this.returnRandomNumber(),
+      colors: [
+        "red",
+        "pink",
+        "purple",
+        "deep-purple",
+        "indigo",
+        "blue",
+        "light-blue",
+        "cyan",
+        "teal",
+        "green",
+        "light-green",
+        "lime",
+        "yellow",
+        "amber",
+        "orange",
+        "deep-orange",
+        "brown",
+        "grey",
+        "blue-grey",
+      ],
     };
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
     ...mapActions("authStore", ["logoutCurrentUser"]),
+
+    returnRandomNumber() {
+      return Math.floor(Math.random() * Math.floor(19));
+    },
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),

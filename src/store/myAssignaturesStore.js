@@ -45,7 +45,10 @@ const mutations = {
     ].grades.push(payload.grade);
   },
   setDeleteAssignature(state, payload) {
-    state.openUserAssignatures.splice(payload, 1);
+    if (payload.status == 'open')
+      state.openUserAssignatures.splice(payload.index, 1);
+    if (payload.status == 'closed')
+      state.closedUserAssignatures.splice(payload.index, 1);
   },
   setDeleteItem(state, payload) {
     state.openUserAssignatures[payload.ass].items.splice(payload.itm, 1);
@@ -202,7 +205,7 @@ const actions = {
         .database()
         .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
         .remove();
-      commit("setDeleteAssignature", payload.index);
+      commit("setDeleteAssignature", payload);
     }
   },
   archiveAssignature({ commit }, payload) {

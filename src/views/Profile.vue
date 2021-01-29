@@ -172,6 +172,7 @@
           :color="userData.profileColor"
           push
           type="submit"
+          unelevated
         />
       </div>
     </q-form>

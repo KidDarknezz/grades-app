@@ -4,7 +4,7 @@
       <div class="text-center q-mb-lg text-h6 w700">
         <span :class="`text-${colors[randomColorIndex]}`">my</span>Grades
       </div>
-      <q-card class="full-width bg-grey-2 assignature-card">
+      <q-card class="full-width bg-grey-2 assignature-card" flat>
         <q-tabs
           v-model="tab"
           class="text-grey"
@@ -19,7 +19,7 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="tab" animated>
+        <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="login">
             <q-input
               type="text"
