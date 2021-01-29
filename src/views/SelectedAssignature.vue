@@ -408,7 +408,6 @@ export default {
     return {
       dialogText: "",
       newAssignatureDialog: false,
-      assignatureActions: false,
       newAssignature: {
         name: "",
         color: "",
@@ -506,8 +505,6 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", [
-      "selectAssignature",
-      "createNewAssignature",
       "createNewItem",
       "createNewGrade",
       "deleteAssignature",
@@ -589,6 +586,22 @@ export default {
       }
       this.clearAssignatureDialog();
     },
+    submitItemDialog(data) {
+      if (this.dialogText == "Create") {
+        this.createNewItem({
+          item: data,
+          assId: this.selectedAssignature.id,
+        });
+      }
+      if (this.dialogText == "Edit") {
+        this.editItem({
+          ass: this.selectedAssignature,
+          itm: this.selectedItem,
+          newValues: data,
+        });
+      }
+      this.clearItemDialog();
+    },
     submitGradeDialog(data) {
       if (this.dialogText == "New") {
         this.createNewGrade({
@@ -606,22 +619,6 @@ export default {
         });
       }
       this.clearGradeDialog();
-    },
-    submitItemDialog(data) {
-      if (this.dialogText == "Create") {
-        this.createNewItem({
-          item: data,
-          assId: this.selectedAssignature.id,
-        });
-      }
-      if (this.dialogText == "Edit") {
-        this.editItem({
-          ass: this.selectedAssignature,
-          itm: this.selectedItem,
-          newValues: data,
-        });
-      }
-      this.clearItemDialog();
     },
     clearAssignatureDialog() {
       this.newAssignatureDialog = false;

@@ -141,7 +141,6 @@ export default {
     return {
       dialogText: "",
       newAssignatureDialog: false,
-      assignatureActions: false,
       newAssignature: {
         name: "",
         color: "",
@@ -230,9 +229,6 @@ export default {
     ...mapActions("myAssignaturesStore", [
       "selectAssignature",
       "createNewAssignature",
-      "deleteAssignature",
-      "archiveAssignature",
-      "editAssignature",
     ]),
 
     assignatureAction(action) {
@@ -265,40 +261,6 @@ export default {
       this.newAssignature.name = "";
       this.newAssignature.color = "";
     },
-    calculatePercentageValue(grades, perc) {
-      let avg = this.calculateAverage(grades);
-      return ((avg * perc) / 100).toFixed(2);
-    },
-    calculateAverage(grades) {
-      let sum = 0;
-      grades.forEach((grade) => {
-        sum += parseFloat(grade.grd);
-      });
-      return (sum / grades.length).toFixed(2);
-    },
-    calculateFinalGrade(items) {
-      if (items == undefined) return 0;
-      let finalGrade = 0;
-      items.forEach((itm) => {
-        if (itm.grades.length > 0) {
-          finalGrade += parseFloat(
-            this.calculatePercentageValue(itm.grades, itm.percentage)
-          );
-        }
-      });
-      return {
-        final: finalGrade.toFixed(2),
-        letter: this.returnGradeInLetter(finalGrade),
-      };
-    },
-    returnGradeInLetter(grade) {
-      if (grade > 90) return "A";
-      if (grade >= 81 && grade < 91) return "B";
-      if (grade >= 71 && grade < 81) return "C";
-      if (grade >= 61 && grade < 71) return "D";
-      if (grade > 0 && grade < 61) return "F";
-      else return "F";
-    },
   },
   computed: {
     ...mapState("myAssignaturesStore", [
@@ -307,15 +269,6 @@ export default {
       "selectedAssignature",
       "openUserAssignatures",
     ]),
-
-    validPercentage() {
-      let sum = 0;
-      this.selectedAssignature.items.forEach((item) => {
-        sum += parseInt(item.percentage);
-      });
-      if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
-      return sum + parseInt(this.newItem.percentage);
-    },
   },
   watch: {
     new: function() {
