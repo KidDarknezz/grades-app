@@ -7,6 +7,7 @@ import MainApp from "@/layouts/MainApp";
 
 import AuthView from "@/views/AuthView";
 import MyAssignatures from "@/views/MyAssignatures";
+import SelectedAssignature from "@/views/SelectedAssignature";
 import ClosedAssignatures from "@/views/ClosedAssignatures";
 import Profile from "@/views/Profile";
 
@@ -37,6 +38,14 @@ const routes = [
         },
       },
       {
+        path: "/selected-assignature",
+        name: "SelectedAssignature",
+        component: SelectedAssignature,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: "/closed-assignatures",
         name: "ClosedAssignatures",
         component: ClosedAssignatures,
@@ -53,6 +62,10 @@ const routes = [
         },
       },
     ],
+  },
+  {
+    path: "/*",
+    component: 404,
   },
 ];
 

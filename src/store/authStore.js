@@ -63,9 +63,11 @@ const actions = {
       );
   },
   logoutCurrentUser({}, payload) {
-    firebase.auth().signOut();
-    localStorage.removeItem("mgAppUid");
-    router.push("/");
+    if (confirm("Confirm logout")) {
+      firebase.auth().signOut();
+      localStorage.removeItem("mgAppUid");
+      router.push("/");
+    }
   },
 };
 

@@ -6,6 +6,7 @@ const state = {
   },
   openUserAssignatures: [],
   closedUserAssignatures: [],
+  selectedAssignature: {},
   loadingStatus: false,
 };
 
@@ -22,6 +23,9 @@ const mutations = {
     });
     state.openUserAssignatures = open;
     state.closedUserAssignatures = closed;
+  },
+  setSelectedAssignature(state, payload) {
+    state.selectedAssignature = payload;
   },
   setNewAssignature(state, payload) {
     state.openUserAssignatures.push(payload);
@@ -41,7 +45,10 @@ const mutations = {
     ].grades.push(payload.grade);
   },
   setDeleteAssignature(state, payload) {
-    state.openUserAssignatures.splice(payload, 1);
+    if (payload.status == 'open')
+      state.openUserAssignatures.splice(payload.index, 1);
+    if (payload.status == 'closed')
+      state.closedUserAssignatures.splice(payload.index, 1);
   },
   setDeleteItem(state, payload) {
     state.openUserAssignatures[payload.ass].items.splice(payload.itm, 1);
@@ -82,11 +89,11 @@ const mutations = {
     state.loadingStatus = payload;
   },
   setNewProfileValues(state, payload) {
-    state.userData.name = payload.name
-    state.userData.lastName = payload.lastName
-    state.userData.profileColor = payload.profileColor
-    state.userData.profileAvatar = payload.profileAvatar
-  }
+    state.userData.name = payload.name;
+    state.userData.lastName = payload.lastName;
+    state.userData.profileColor = payload.profileColor;
+    state.userData.profileAvatar = payload.profileAvatar;
+  },
 };
 
 const actions = {
@@ -123,8 +130,15 @@ const actions = {
         data.assignatures = allAssignatures;
         commit("setUserData", data);
         commit("setOpenAndClosedAssignatures", data);
-        commit("setLoadingStatus", false);
+        setTimeout(function() {
+          commit("setLoadingStatus", false);
+        }, 1000);
       });
+  },
+  selectAssignature({ commit }, payload) {
+    let ass = payload.ass;
+    ass.index = payload.index;
+    commit("setSelectedAssignature", ass);
   },
   createNewAssignature({ commit }, payload) {
     let assignature = {
@@ -191,7 +205,7 @@ const actions = {
         .database()
         .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
         .remove();
-      commit("setDeleteAssignature", payload.index);
+      commit("setDeleteAssignature", payload);
     }
   },
   archiveAssignature({ commit }, payload) {
@@ -290,15 +304,13 @@ const actions = {
       new: payload.newValues,
     });
   },
-  editProfileInfo({commit}, payload) {
+  editProfileInfo({ commit }, payload) {
     firebase
       .database()
-      .ref(
-        `${localStorage.getItem("mgAppUid")}`
-      )
+      .ref(`${localStorage.getItem("mgAppUid")}`)
       .update(payload);
-    commit("setNewProfileValues", payload)
-  }
+    commit("setNewProfileValues", payload);
+  },
 };
 
 const getters = {};

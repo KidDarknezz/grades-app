@@ -1,15 +1,15 @@
 <template>
   <q-page>
     <div class="fixed-center full-width q-px-md">
-      <div class="text-center q-mb-lg">
-        <q-img :src="require('@/assets/grades-logo.png')" width="100px" />
+      <div class="text-center q-mb-lg text-h6 w700">
+        <span :class="`text-${colors[randomColorIndex]}`">my</span>Grades
       </div>
-      <q-card class="full-width bg-grey-2">
+      <q-card class="full-width bg-grey-2 assignature-card" flat>
         <q-tabs
           v-model="tab"
           class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
+          :active-color="colors[randomColorIndex]"
+          :indicator-color="colors[randomColorIndex]"
           align="justify"
           narrow-indicator
         >
@@ -19,13 +19,14 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="tab" animated>
+        <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="login">
             <q-input
               type="text"
               label="Email"
               filled
               class="q-mb-md"
+              :color="colors[randomColorIndex]"
               v-model="loginUserData.email"
             />
             <q-input
@@ -33,6 +34,7 @@
               label="Password"
               filled
               class="q-mb-md"
+              :color="colors[randomColorIndex]"
               v-model="loginUserData.pass"
             >
               <template v-slot:append>
@@ -46,7 +48,7 @@
             <q-btn
               push
               class="full-width text-bold"
-              color="primary"
+              :color="colors[randomColorIndex]"
               @click="loginUser(loginUserData)"
               :disable="loadingStatus"
             >
@@ -59,6 +61,7 @@
             <q-input
               type="text"
               label="Name"
+              :color="colors[randomColorIndex]"
               filled
               class="q-mb-md"
               v-model="registerUserData.name"
@@ -66,6 +69,7 @@
             <q-input
               type="text"
               label="Last name"
+              :color="colors[randomColorIndex]"
               filled
               class="q-mb-md"
               v-model="registerUserData.lastName"
@@ -73,6 +77,7 @@
             <q-input
               type="text"
               label="Email"
+              :color="colors[randomColorIndex]"
               filled
               class="q-mb-md"
               v-model="registerUserData.email"
@@ -80,6 +85,7 @@
             <q-input
               :type="isPwd ? 'password' : 'text'"
               label="Password"
+              :color="colors[randomColorIndex]"
               filled
               class="q-mb-md"
               v-model="registerUserData.pass"
@@ -95,7 +101,7 @@
             <q-btn
               push
               class="full-width text-bold"
-              color="primary"
+              :color="colors[randomColorIndex]"
               @click="registerUser(registerUserData)"
               :disable="loadingStatus"
             >
@@ -127,11 +133,37 @@ export default {
         name: "",
         lastName: "",
       },
+      randomColorIndex: this.returnRandomNumber(),
       isPwd: true,
+      colors: [
+        "red",
+        "pink",
+        "purple",
+        "deep-purple",
+        "indigo",
+        "blue",
+        "light-blue",
+        "cyan",
+        "teal",
+        "green",
+        "light-green",
+        "lime",
+        "yellow",
+        "amber",
+        "orange",
+        "deep-orange",
+        "brown",
+        "grey",
+        "blue-grey",
+      ],
     };
   },
   methods: {
     ...mapActions("authStore", ["loginUser", "registerUser"]),
+
+    returnRandomNumber() {
+      return Math.floor(Math.random() * Math.floor(19));
+    },
   },
   computed: {
     ...mapState("authStore", ["loadingStatus"]),

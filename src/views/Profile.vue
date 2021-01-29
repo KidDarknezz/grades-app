@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-mt-md q-px-md">
+  <q-page class="q-mt-md">
     <q-form @submit="editProfileActions()">
       <div class="text-h6 text-center text-bold">
         My Profile
@@ -23,119 +23,156 @@
         />
         <q-space />
       </div>
-      <div class="row" v-if="!isEditActive">
-        <q-input
-          label="Name"
-          filled
-          class="full-width q-mb-md"
-          disable
-          :value="userData.name"
-        />
-        <q-input
-          label="Last name"
-          filled
-          class="full-width q-mb-md"
-          disable
-          :value="userData.lastName"
-        />
-        <q-select
-          label="Profile color"
-          class="full-width q-mb-md"
-          :value="userData.profileColor"
-          :options="colorOptions"
-          disable
-          filled
-          emit-value
-          map-options
-        />
-        <q-select
-          label="Profile avatar"
-          class="full-width q-mb-md"
-          :value="userData.profileAvatar"
-          :options="avatarOptions"
-          disable
-          filled
-          emit-value
-          map-options
-        />
-      </div>
-      <div class="row" v-else>
-        <q-input
-          filled
-          v-model="info.name"
-          label="Name"
-          class="full-width q-mb-md"
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please insert a name',
-          ]"
-        />
-        <q-input
-          filled
-          v-model="info.lastName"
-          label="Last name"
-          class="full-width q-mb-md"
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please insert a name',
-          ]"
-        />
-        <q-select
-          label="Profile color"
-          class="full-width q-mb-md"
-          v-model="info.profileColor"
-          :options="colorOptions"
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please select an option',
-          ]"
-          filled
-          emit-value
-          map-options
-        >
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section avatar>
-                <q-icon name="palette" :color="scope.opt.value" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label v-html="scope.opt.label" />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-select
-          label="Profile avatar"
-          class="full-width q-mb-md"
-          v-model="info.profileAvatar"
-          :options="avatarOptions"
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please select an option',
-          ]"
-          filled
-          emit-value
-          map-options
-        >
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section avatar>
-                <q-avatar size="30px" class="q-mb-sm bg-white">
-                  <img
-                    :src="require(`@/assets/avatars/${scope.opt.value}.png`)"
-                  />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label v-html="scope.opt.label" />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="row">
+      <div class="row q-px-md q-mb-md">
         <q-space />
         <q-btn
+          icon-right="login"
+          label="Logout"
+          flat
+          dense
+          color="red-5"
+          size="sm"
+          rounded
+          @click="logoutCurrentUser()"
+        />
+      </div>
+      <div class="row" v-if="!isEditActive">
+        <div class="col-xs-6 q-px-md">
+          <q-input
+            label="Name"
+            filled
+            class="full-width q-mb-md"
+            disable
+            :value="userData.name"
+          />
+        </div>
+        <div class="col-xs-6 q-px-md">
+          <q-input
+            label="Last name"
+            filled
+            class="full-width q-mb-md"
+            disable
+            :value="userData.lastName"
+          />
+        </div>
+        <div class="col-xs-12 q-px-md">
+          <q-select
+            label="Profile color"
+            class="full-width q-mb-md"
+            :value="userData.profileColor"
+            :options="colorOptions"
+            disable
+            filled
+            emit-value
+            map-options
+          />
+        </div>
+        <div class="col-xs-12 q-px-md">
+          <q-select
+            label="Profile avatar"
+            class="full-width q-mb-md"
+            :value="userData.profileAvatar"
+            :options="avatarOptions"
+            disable
+            filled
+            emit-value
+            map-options
+          />
+        </div>
+      </div>
+      <div class="row" v-else>
+        <div class="col-xs-6 q-px-md">
+          <q-input
+            filled
+            v-model="info.name"
+            label="Name"
+            class="full-width q-mb-md"
+            :color="userData.profileColor"
+            :rules="[
+              (val) => (val !== null && val !== '') || 'Please insert a name',
+            ]"
+          />
+        </div>
+        <div class="col-xs-6 q-px-md">
+          <q-input
+            filled
+            v-model="info.lastName"
+            label="Last name"
+            :color="userData.profileColor"
+            class="full-width q-mb-md"
+            :rules="[
+              (val) => (val !== null && val !== '') || 'Please insert a name',
+            ]"
+          />
+        </div>
+        <div class="col-xs-12 q-px-md">
+          <q-select
+            label="Profile color"
+            class="full-width q-mb-md"
+            :color="userData.profileColor"
+            v-model="info.profileColor"
+            :options="colorOptions"
+            :rules="[
+              (val) =>
+                (val !== null && val !== '') || 'Please select an option',
+            ]"
+            filled
+            emit-value
+            map-options
+          >
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                <q-item-section avatar>
+                  <q-icon name="palette" :color="scope.opt.value" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-html="scope.opt.label" />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-xs-12 q-px-md">
+          <q-select
+            label="Profile avatar"
+            class="full-width q-mb-md"
+            :color="userData.profileColor"
+            v-model="info.profileAvatar"
+            :options="avatarOptions"
+            :rules="[
+              (val) =>
+                (val !== null && val !== '') || 'Please select an option',
+            ]"
+            filled
+            emit-value
+            map-options
+          >
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                <q-item-section avatar>
+                  <q-avatar size="30px" class="q-mb-sm bg-white">
+                    <img
+                      :src="require(`@/assets/avatars/${scope.opt.value}.png`)"
+                    />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-html="scope.opt.label" />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+      </div>
+      <div class="row q-px-md">
+        <q-space />
+        <q-btn
+          class="w700"
           :label="!isEditActive ? 'Edit' : 'Save'"
           :color="userData.profileColor"
           push
           type="submit"
+          unelevated
         />
       </div>
     </q-form>
@@ -319,6 +356,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["editProfileInfo"]),
+    ...mapActions("authStore", ["logoutCurrentUser"]),
     editProfileActions() {
       if (!this.isEditActive) {
         this.info.name = this.userData.name;
