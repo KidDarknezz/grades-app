@@ -166,7 +166,7 @@
       </div>
       <div class="row q-px-md q-mb-md">
         <div class="text-caption text-grey-4 column flex-center">
-          v. 1.2.0
+          v. 1.2.1
         </div>
         <q-space />
         <q-btn
