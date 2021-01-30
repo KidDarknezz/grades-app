@@ -1,32 +1,7 @@
 <template>
-  <q-page class="q-mt-md">
-    <q-banner
-      inline-actions
-      class="text-white bg-secondary q-mb-md"
-      v-if="installBanner"
-    >
-      <span class="text-subtitle2">You install this app.</span>
-      <template v-slot:action>
-        <q-btn
-          rounded
-          flat
-          color="white"
-          label="Install"
-          size="sm"
-          icon-right="get_app"
-        />
-        <q-btn
-          round
-          flat
-          color="white"
-          icon="close"
-          size="sm"
-          @click="installBanner = false"
-        />
-      </template>
-    </q-banner>
+  <q-page>
     <q-form @submit="editProfileActions()">
-      <div class="text-h6 text-center text-bold">
+      <div class="text-h6 text-center text-bold q-mt-md">
         My Profile
       </div>
       <div class="text-caption text-center q-mb-lg text-grey-6">
@@ -48,13 +23,12 @@
         />
         <q-space />
       </div>
-      <div class="row q-px-md q-mb-md">
+      <div class="row q-px-md q-mb-sm">
         <q-space />
         <q-btn
           icon-right="login"
           label="Logout"
           flat
-          dense
           color="red-5"
           size="sm"
           rounded
@@ -137,10 +111,6 @@
             :color="userData.profileColor"
             v-model="info.profileColor"
             :options="colorOptions"
-            :rules="[
-              (val) =>
-                (val !== null && val !== '') || 'Please select an option',
-            ]"
             filled
             emit-value
             map-options
@@ -164,10 +134,6 @@
             :color="userData.profileColor"
             v-model="info.profileAvatar"
             :options="avatarOptions"
-            :rules="[
-              (val) =>
-                (val !== null && val !== '') || 'Please select an option',
-            ]"
             filled
             emit-value
             map-options
@@ -213,8 +179,8 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      installBanner: true,
       isEditActive: false,
+      installPrompt: this.returnIfShowInstallPrompt,
       info: {
         name: "",
         lastName: "",
@@ -397,6 +363,17 @@ export default {
         this.editProfileInfo(this.info);
         this.isEditActive = false;
       }
+    },
+    returnIfShowInstallPrompt() {
+      if (localStorage.getItem("mgAppInstallPrompt") == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    hideInstallPrompt() {
+      this.isEditActive = false;
+      localStorage.setItem("mgAppInstallPrompt", false);
     },
   },
   computed: {

@@ -24,6 +24,7 @@ const actions = {
         (resp) => {
           commit("setLoadingStatus", false);
           localStorage.setItem("mgAppUid", resp.user.uid);
+          localStorage.setItem("mgAppInstallPrompt", true);
           router.push("/my-assignatures");
         },
         (err) => {
@@ -67,6 +68,7 @@ const actions = {
       firebase.auth().signOut();
       localStorage.removeItem("mgAppUid");
       router.push("/");
+      localStorage.setItem("mgAppInstallPrompt", false);
     }
   },
 };

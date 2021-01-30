@@ -8,27 +8,26 @@
             <span :class="`text-${userData.profileColor}`">my</span>Grades
           </div>
         </q-toolbar-title>
-        <template v-if="$route.fullPath.includes('my-assignatures')">
-          <q-btn
-            rounded
-            flat
-            label="Install App"
-            size="xs"
-            unelevated
-            color="secondary"
-            icon-right="get_app"
-            no-caps
-            to="/profile"
-          />
-          <q-btn
-            flat
-            round
-            dense
-            :color="userData.profileColor"
-            icon="add"
-            @click="createNewAssignature = !createNewAssignature"
-          />
-        </template>
+        <q-btn
+          rounded
+          flat
+          label="Install"
+          unelevated
+          color="secondary"
+          icon-right="get_app"
+          no-caps
+          to="/profile"
+          v-if="$route.fullPath.includes('profile') && mode == 'browser tab'"
+        />
+        <q-btn
+          flat
+          round
+          dense
+          :color="userData.profileColor"
+          icon="add"
+          @click="createNewAssignature = !createNewAssignature"
+          v-if="$route.fullPath.includes('my-assignatures')"
+        />
       </q-toolbar>
     </q-header>
     <q-drawer v-model="drawer" side="left" behavior="mobile" elevated>
@@ -115,6 +114,36 @@
       </q-img>
     </q-drawer>
     <q-page-container class="bg-grey-2">
+      <q-banner
+        inline-actions
+        class="text-white bg-secondary q-mb-md"
+        v-if="
+          !$route.fullPath.includes('profile') &&
+            installBanner &&
+            mode == 'browser tab'
+        "
+      >
+        <span class="text-subtitle2">You can install this app.</span>
+        <template v-slot:action>
+          <q-btn
+            rounded
+            flat
+            color="white"
+            label="Install"
+            size="sm"
+            icon-right="get_app"
+            to="/profile"
+          />
+          <q-btn
+            round
+            flat
+            color="white"
+            icon="close"
+            size="sm"
+            @click="hideInstallBanner()"
+          />
+        </template>
+      </q-banner>
       <transition name="fade">
         <router-view :new="createNewAssignature" />
       </transition>
@@ -208,6 +237,8 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      installBanner: this.returnIfShowInstallPrompt(),
+      mode: "",
       drawer: false,
       createNewAssignature: false,
       randomColorIndex: this.returnRandomNumber(),
@@ -241,29 +272,35 @@ export default {
     returnRandomNumber() {
       return Math.floor(Math.random() * Math.floor(19));
     },
+    returnIfShowInstallPrompt() {
+      if (localStorage.getItem("mgAppInstallPrompt") == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    hideInstallBanner() {
+      this.installBanner = false;
+      localStorage.setItem("mgAppInstallPrompt", false);
+    },
+    returnDisplayMode() {
+      window.addEventListener("DOMContentLoaded", () => {
+        let displayMode = "browser tab";
+        if (navigator.standalone) {
+          displayMode = "standalone-ios";
+        }
+        if (window.matchMedia("(display-mode: standalone)").matches) {
+          displayMode = "standalone";
+        }
+        this.mode = displayMode;
+      });
+    },
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
-    returnTitle() {
-      let title = this.$route.fullPath;
-      title = title.replace(/\//g, "");
-      title = title.replace(/-/g, " ");
-      let first = title[0].toUpperCase();
-      title = title.substring(1);
-      return `${first}${title}`;
-    },
   },
   mounted() {
-    window.addEventListener("DOMContentLoaded", () => {
-      let displayMode = "browser tab";
-      if (navigator.standalone) {
-        displayMode = "standalone-ios";
-      }
-      if (window.matchMedia("(display-mode: standalone)").matches) {
-        displayMode = "standalone";
-      }
-      console.log("DISPLAY_MODE_LAUNCH:", displayMode);
-    });
+    this.returnDisplayMode();
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
   },
 };
