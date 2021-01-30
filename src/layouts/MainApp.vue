@@ -17,7 +17,7 @@
           icon-right="get_app"
           no-caps
           to="/profile"
-          v-if="$route.fullPath.includes('profile') && mode == 'browser tab'"
+          v-if="$route.fullPath.includes('profile') && browserMode"
           @click="deferredPrompt.prompt()"
         />
         <q-btn
@@ -119,9 +119,7 @@
         inline-actions
         class="text-white bg-secondary q-mb-md"
         v-if="
-          !$route.fullPath.includes('profile') &&
-            installBanner &&
-            mode == 'browser tab'
+          !$route.fullPath.includes('profile') && installBanner && browserMode
         "
       >
         <span class="text-subtitle2">You can install this app.</span>
@@ -239,7 +237,7 @@ export default {
   data() {
     return {
       installBanner: this.returnIfShowInstallPrompt(),
-      mode: "",
+      browserMode: false,
       deferredPrompt: "",
       drawer: false,
       createNewAssignature: false,
@@ -294,7 +292,9 @@ export default {
         if (window.matchMedia("(display-mode: standalone)").matches) {
           displayMode = "standalone";
         }
-        this.mode = displayMode;
+        if (displayMode == "browser tab") {
+          this.browserMode = true;
+        }
       });
     },
   },
@@ -302,31 +302,12 @@ export default {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
   },
   mounted() {
-    this.returnDisplayMode();
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
     window.addEventListener("beforeinstallprompt", (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       this.deferredPrompt = e;
-      // Update UI to notify the user they can add to home screen
-
-      // addBtn.addEventListener('click', (e) => {
-      //   // hide our user interface that shows our A2HS button
-      //   addBtn.style.display = 'none';
-      //   // Show the prompt
-      //   deferredPrompt.prompt();
-      //   // Wait for the user to respond to the prompt
-      //   deferredPrompt.userChoice.then((choiceResult) => {
-      //       if (choiceResult.outcome === 'accepted') {
-      //         console.log('User accepted the A2HS prompt');
-      //       } else {
-      //         console.log('User dismissed the A2HS prompt');
-      //       }
-      //       deferredPrompt = null;
-      //     });
-      // });
     });
+    this.returnDisplayMode();
   },
 };
 </script>
