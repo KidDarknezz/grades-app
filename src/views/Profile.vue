@@ -378,7 +378,6 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
-    ...mapState("authStore", ["browserMode"]),
   },
   mounted() {
     this.getDisplayMode();

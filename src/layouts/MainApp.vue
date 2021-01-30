@@ -5,7 +5,9 @@
         <q-toolbar-title>
           <!-- <q-btn dense flat round icon="menu" @click="drawer = !drawer" /> -->
           <div class="text-h6 w700">
-            <span :class="`text-${userData.profileColor}`">my</span>Grades
+            <span :class="`text-${userData.profileColor}`">my</span>Gradess -{{
+              browserMode
+            }}-
           </div>
         </q-toolbar-title>
         <q-btn
@@ -236,7 +238,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
-    ...mapActions("authStore", ["logoutCurrentUser", "browserMode"]),
+    ...mapActions("authStore", ["logoutCurrentUser"]),
 
     returnRandomNumber() {
       return Math.floor(Math.random() * Math.floor(19));
@@ -244,6 +246,7 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
+    ...mapState("authStore", ["browserMode"]),
   },
   mounted() {
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
