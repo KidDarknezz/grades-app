@@ -157,7 +157,7 @@
       </div>
       <div class="row q-px-md q-mb-md">
         <div class="text-caption text-grey-4 column flex-center">
-          v. 1.2.2
+          v. 1.2.3
         </div>
         <q-space />
         <q-btn
