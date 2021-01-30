@@ -3,7 +3,8 @@ import router from "../router";
 
 const state = {
   loadingStatus: false,
-  browserMode: false
+  browserMode: false,
+  newContant: false
 };
 
 const mutations = {
@@ -29,6 +30,9 @@ const actions = {
       } else {
         commit("setBrowserMode", false)
       }
+  },
+  showUpdateBanner({commit}, payload) {
+    console.log('test abc')
   },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
