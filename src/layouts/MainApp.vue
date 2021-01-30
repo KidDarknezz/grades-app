@@ -5,9 +5,7 @@
         <q-toolbar-title>
           <!-- <q-btn dense flat round icon="menu" @click="drawer = !drawer" /> -->
           <div class="text-h6 w700">
-            <span :class="`text-${userData.profileColor}`">my</span>Gradees -{{
-              browserMode
-            }}-
+            <span :class="`text-${userData.profileColor}`">my</span>Grades
           </div>
         </q-toolbar-title>
         <q-btn

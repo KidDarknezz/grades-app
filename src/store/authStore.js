@@ -24,7 +24,6 @@ const actions = {
       if (window.matchMedia("(display-mode: standalone)").matches) {
         displayMode = "standalone";
       }
-      console.log('Display Mode:', displayMode)
       if (displayMode == "browser tab") {
         commit("setBrowserMode", true)
       } else {
