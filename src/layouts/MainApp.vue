@@ -9,6 +9,16 @@
           </div>
         </q-toolbar-title>
         <q-btn
+          icon-right="get_app"
+          label="Install"
+          flat
+          color="secondary"
+          rounded
+          size="sm"
+          @click="prompt.prompt()"
+          v-if="$route.fullPath.includes('profile') && browserMode"
+        />
+        <q-btn
           flat
           round
           dense
@@ -194,8 +204,10 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
+  props: ["prompt"],
   data() {
     return {
+      deferredPrompt: "",
       drawer: false,
       createNewAssignature: false,
       randomColorIndex: this.returnRandomNumber(),
@@ -232,14 +244,7 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
-    returnTitle() {
-      let title = this.$route.fullPath;
-      title = title.replace(/\//g, "");
-      title = title.replace(/-/g, " ");
-      let first = title[0].toUpperCase();
-      title = title.substring(1);
-      return `${first}${title}`;
-    },
+    ...mapState("authStore", ["browserMode"]),
   },
   mounted() {
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));

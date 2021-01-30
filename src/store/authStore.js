@@ -3,15 +3,33 @@ import router from "../router";
 
 const state = {
   loadingStatus: false,
+  browserMode: false
 };
 
 const mutations = {
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
   },
+  setBrowserMode(state, payload) {
+    state.browserMode = payload
+  }
 };
 
 const actions = {
+  getDisplayMode({commit}, payload) {
+    let displayMode = "browser tab";
+      if (navigator.standalone) {
+        displayMode = "standalone-ios";
+      }
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        displayMode = "standalone";
+      }
+      if (displayMode == "browser tab") {
+        commit("setBrowserMode", true)
+      } else {
+        commit("setBrowserMode", false)
+      }
+  },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
     firebase
@@ -24,6 +42,7 @@ const actions = {
         (resp) => {
           commit("setLoadingStatus", false);
           localStorage.setItem("mgAppUid", resp.user.uid);
+          localStorage.setItem("mgAppInstallPrompt", true);
           router.push("/my-assignatures");
         },
         (err) => {

@@ -1,7 +1,7 @@
 <template>
-  <q-page class="q-mt-md">
+  <q-page>
     <q-form @submit="editProfileActions()">
-      <div class="text-h6 text-center text-bold">
+      <div class="text-h6 text-center text-bold q-mt-md">
         My Profile
       </div>
       <div class="text-caption text-center q-mb-lg text-grey-6">
@@ -29,7 +29,6 @@
           icon-right="login"
           label="Logout"
           flat
-          dense
           color="red-5"
           size="sm"
           rounded
@@ -112,10 +111,6 @@
             :color="userData.profileColor"
             v-model="info.profileColor"
             :options="colorOptions"
-            :rules="[
-              (val) =>
-                (val !== null && val !== '') || 'Please select an option',
-            ]"
             filled
             emit-value
             map-options
@@ -139,10 +134,6 @@
             :color="userData.profileColor"
             v-model="info.profileAvatar"
             :options="avatarOptions"
-            :rules="[
-              (val) =>
-                (val !== null && val !== '') || 'Please select an option',
-            ]"
             filled
             emit-value
             map-options
@@ -166,7 +157,7 @@
       </div>
       <div class="row q-px-md q-mb-md">
         <div class="text-caption text-grey-4 column flex-center">
-          v. 1.2.2
+          v. 1.2.3
         </div>
         <q-space />
         <q-btn
@@ -189,6 +180,7 @@ export default {
   data() {
     return {
       isEditActive: false,
+      installPrompt: this.returnIfShowInstallPrompt,
       info: {
         name: "",
         lastName: "",
@@ -359,7 +351,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["editProfileInfo"]),
-    ...mapActions("authStore", ["logoutCurrentUser"]),
+    ...mapActions("authStore", ["logoutCurrentUser", "getDisplayMode"]),
     editProfileActions() {
       if (!this.isEditActive) {
         this.info.name = this.userData.name;
@@ -372,9 +364,23 @@ export default {
         this.isEditActive = false;
       }
     },
+    returnIfShowInstallPrompt() {
+      if (localStorage.getItem("mgAppInstallPrompt") == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    hideInstallPrompt() {
+      this.isEditActive = false;
+      localStorage.setItem("mgAppInstallPrompt", false);
+    },
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
+  },
+  mounted() {
+    this.getDisplayMode();
   },
 };
 </script>
