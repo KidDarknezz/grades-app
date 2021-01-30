@@ -115,34 +115,6 @@
       </q-img>
     </q-drawer>
     <q-page-container class="bg-grey-2">
-      <q-banner
-        inline-actions
-        class="text-white bg-secondary q-mb-md"
-        v-if="
-          !$route.fullPath.includes('profile') && installBanner && browserMode
-        "
-      >
-        <span class="text-subtitle2">You can install this app.</span>
-        <template v-slot:action>
-          <q-btn
-            rounded
-            flat
-            color="white"
-            label="Install"
-            size="sm"
-            icon-right="get_app"
-            to="/profile"
-          />
-          <q-btn
-            round
-            flat
-            color="white"
-            icon="close"
-            size="sm"
-            @click="hideInstallBanner()"
-          />
-        </template>
-      </q-banner>
       <transition name="fade">
         <router-view :new="createNewAssignature" />
       </transition>
@@ -236,8 +208,6 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      installBanner: this.returnIfShowInstallPrompt(),
-      browserMode: false,
       deferredPrompt: "",
       drawer: false,
       createNewAssignature: false,
@@ -272,34 +242,10 @@ export default {
     returnRandomNumber() {
       return Math.floor(Math.random() * Math.floor(19));
     },
-    returnIfShowInstallPrompt() {
-      if (localStorage.getItem("mgAppInstallPrompt") == "true") {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    hideInstallBanner() {
-      this.installBanner = false;
-      localStorage.setItem("mgAppInstallPrompt", false);
-    },
-    returnDisplayMode() {
-      window.addEventListener("DOMContentLoaded", () => {
-        let displayMode = "browser tab";
-        if (navigator.standalone) {
-          displayMode = "standalone-ios";
-        }
-        if (window.matchMedia("(display-mode: standalone)").matches) {
-          displayMode = "standalone";
-        }
-        if (displayMode == "browser tab") {
-          this.browserMode = true;
-        }
-      });
-    },
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
+    ...mapState("authStore", ["browserMode"]),
   },
   mounted() {
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
@@ -307,7 +253,6 @@ export default {
       e.preventDefault();
       this.deferredPrompt = e;
     });
-    this.returnDisplayMode();
   },
 };
 </script>

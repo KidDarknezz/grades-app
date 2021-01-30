@@ -1,5 +1,33 @@
 <template>
   <q-page class="q-pa-md">
+    <q-banner
+      inline-actions
+      class="text-white bg-secondary q-mb-md"
+      v-if="
+        !$route.fullPath.includes('profile') && installBanner && browserMode
+      "
+    >
+      <span class="text-subtitle2">You can install this app.</span>
+      <template v-slot:action>
+        <q-btn
+          rounded
+          flat
+          color="white"
+          label="Install"
+          size="sm"
+          icon-right="get_app"
+          to="/profile"
+        />
+        <q-btn
+          round
+          flat
+          color="white"
+          icon="close"
+          size="sm"
+          @click="hideInstallBanner()"
+        />
+      </template>
+    </q-banner>
     <div class="row q-mt-lg q-mb-lg" v-if="openUserAssignatures.length > 0">
       <div class="text-subtitle2 text-grey-7">Open assignatures</div>
     </div>
@@ -139,6 +167,7 @@ export default {
   props: ["new"],
   data() {
     return {
+      installBanner: this.returnIfShowInstallPrompt(),
       dialogText: "",
       newAssignatureDialog: false,
       newAssignature: {
@@ -230,7 +259,18 @@ export default {
       "selectAssignature",
       "createNewAssignature",
     ]),
-
+    ...mapActions("authStore", ["getDisplayMode"]),
+    returnIfShowInstallPrompt() {
+      if (localStorage.getItem("mgAppInstallPrompt") == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    hideInstallBanner() {
+      this.installBanner = false;
+      localStorage.setItem("mgAppInstallPrompt", false);
+    },
     assignatureAction(action) {
       if (action == "edit") {
         this.dialogText = "Edit";
@@ -269,6 +309,10 @@ export default {
       "selectedAssignature",
       "openUserAssignatures",
     ]),
+    ...mapState("authStore", ["browserMode"]),
+  },
+  mounted() {
+    this.getDisplayMode();
   },
   watch: {
     new: function() {
