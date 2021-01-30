@@ -7,7 +7,7 @@
         !$route.fullPath.includes('profile') && installBanner && browserMode
       "
     >
-      <span class="text-subtitle2">You can install this app.</span>
+      <span class="text-subtitle2">Install this app.</span>
       <template v-slot:action>
         <q-btn
           rounded

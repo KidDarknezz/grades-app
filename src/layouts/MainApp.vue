@@ -9,18 +9,6 @@
           </div>
         </q-toolbar-title>
         <q-btn
-          rounded
-          flat
-          label="Install"
-          unelevated
-          color="secondary"
-          icon-right="get_app"
-          no-caps
-          to="/profile"
-          v-if="$route.fullPath.includes('profile') && browserMode"
-          @click="deferredPrompt.prompt()"
-        />
-        <q-btn
           flat
           round
           dense
@@ -245,14 +233,9 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
-    ...mapState("authStore", ["browserMode"]),
   },
   mounted() {
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      this.deferredPrompt = e;
-    });
   },
 };
 </script>

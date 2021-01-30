@@ -23,8 +23,18 @@
         />
         <q-space />
       </div>
-      <div class="row q-px-md q-mb-sm">
+      <div class="row q-px-md q-mb-md">
         <q-space />
+        <q-btn
+          icon-right="get_app"
+          label="Install"
+          flat
+          color="secondary"
+          rounded
+          size="sm"
+          @click="deferredPrompt.prompt()"
+          v-if="browserMode"
+        />
         <q-btn
           icon-right="login"
           label="Logout"
@@ -179,6 +189,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      deferredPrompt: "",
       isEditActive: false,
       installPrompt: this.returnIfShowInstallPrompt,
       info: {
@@ -378,6 +389,13 @@ export default {
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
+    ...mapState("authStore", ["browserMode"]),
+  },
+  mounted() {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+    });
   },
 };
 </script>

@@ -88,7 +88,6 @@ const actions = {
       firebase.auth().signOut();
       localStorage.removeItem("mgAppUid");
       router.push("/");
-      localStorage.setItem("mgAppInstallPrompt", false);
     }
   },
 };
