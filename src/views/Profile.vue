@@ -351,7 +351,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["editProfileInfo"]),
-    ...mapActions("authStore", ["logoutCurrentUser"]),
+    ...mapActions("authStore", ["logoutCurrentUser", "getDisplayMode"]),
     editProfileActions() {
       if (!this.isEditActive) {
         this.info.name = this.userData.name;
@@ -379,6 +379,9 @@ export default {
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
     ...mapState("authStore", ["browserMode"]),
+  },
+  mounted() {
+    this.getDisplayMode();
   },
 };
 </script>

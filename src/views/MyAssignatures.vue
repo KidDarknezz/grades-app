@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page>
     <q-banner
       inline-actions
       class="text-white bg-secondary q-mb-md"
@@ -28,59 +28,61 @@
         />
       </template>
     </q-banner>
-    <div class="row q-mt-lg q-mb-lg" v-if="openUserAssignatures.length > 0">
-      <div class="text-subtitle2 text-grey-7">Open assignatures</div>
-    </div>
-    <template v-if="openUserAssignatures.length > 0">
-      <div
-        class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
-        @click="
-          selectAssignature({ index: i, ass: openUserAssignatures[i] });
-          $router.push('/selected-assignature');
-        "
-        v-for="(assignature, i) in openUserAssignatures"
-        :key="i"
-      >
-        <div class="col-xs-10">
-          <div :class="`text-h6 w700 text-${assignature.color}`">
-            {{ assignature.name }}
+    <div class="q-pa-md">
+      <div class="row q-mt-lg q-mb-lg" v-if="openUserAssignatures.length > 0">
+        <div class="text-subtitle2 text-grey-7">Open assignatures</div>
+      </div>
+      <template v-if="openUserAssignatures.length > 0">
+        <div
+          class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
+          @click="
+            selectAssignature({ index: i, ass: openUserAssignatures[i] });
+            $router.push('/selected-assignature');
+          "
+          v-for="(assignature, i) in openUserAssignatures"
+          :key="i"
+        >
+          <div class="col-xs-10">
+            <div :class="`text-h6 w700 text-${assignature.color}`">
+              {{ assignature.name }}
+            </div>
+          </div>
+          <div class="col-xs-2">
+            <q-btn
+              :color="assignature.color"
+              size="sm"
+              icon="fas fa-arrow-right"
+              class="full-width q-py-sm"
+              style="border-radius: 25px 0px 0px 25px;"
+              unelevated
+            />
+          </div>
+          <div class="col-xs-12">
+            <template v-if="assignature.items.length > 0">
+              <div
+                class="text-caption text-grey-6"
+                v-for="(item, i) in assignature.items"
+                :key="i"
+              >
+                {{ item.name }} - {{ item.percentage }}%
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-caption text-grey-6">No items yet.</div>
+            </template>
           </div>
         </div>
-        <div class="col-xs-2">
-          <q-btn
-            :color="assignature.color"
-            size="sm"
-            icon="fas fa-arrow-right"
-            class="full-width q-py-sm"
-            style="border-radius: 25px 0px 0px 25px;"
-            unelevated
-          />
+        <div class="q-py-lg" />
+      </template>
+      <template v-else>
+        <div class="fixed-center full-width text-center">
+          <i class="fas fa-graduation-cap fa-6x text-grey-4 q-mb-md"></i>
+          <div class="text-h6 text-grey-5">
+            No assignatures yet.
+          </div>
         </div>
-        <div class="col-xs-12">
-          <template v-if="assignature.items.length > 0">
-            <div
-              class="text-caption text-grey-6"
-              v-for="(item, i) in assignature.items"
-              :key="i"
-            >
-              {{ item.name }} - {{ item.percentage }}%
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-caption text-grey-6">No items yet.</div>
-          </template>
-        </div>
-      </div>
-      <div class="q-py-lg" />
-    </template>
-    <template v-else>
-      <div class="fixed-center full-width text-center">
-        <i class="fas fa-graduation-cap fa-6x text-grey-4 q-mb-md"></i>
-        <div class="text-h6 text-grey-5">
-          No assignatures yet.
-        </div>
-      </div>
-    </template>
+      </template>
+    </div>
 
     <!-- CREATE ASSIGNATURE DIALOG -->
     <q-dialog v-model="newAssignatureDialog" persistent>

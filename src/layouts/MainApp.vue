@@ -16,7 +16,7 @@
           rounded
           size="sm"
           @click="prompt.prompt()"
-          v-if="$route.fullPath.includes('profile')"
+          v-if="$route.fullPath.includes('profile') && browserMode"
         />
         <q-btn
           flat
@@ -236,7 +236,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", ["getUserInfoAndAssignatures"]),
-    ...mapActions("authStore", ["logoutCurrentUser"]),
+    ...mapActions("authStore", ["logoutCurrentUser", "browserMode"]),
 
     returnRandomNumber() {
       return Math.floor(Math.random() * Math.floor(19));
