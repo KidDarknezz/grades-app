@@ -124,8 +124,8 @@ export default {
     return {
       tab: "login",
       loginUserData: {
-        email: "",
-        pass: "",
+        email: "amilland29@gmail.com",
+        pass: "123456",
       },
       registerUserData: {
         email: "",

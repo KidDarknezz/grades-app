@@ -9,6 +9,16 @@
           </div>
         </q-toolbar-title>
         <q-btn
+          icon-right="get_app"
+          label="Install"
+          flat
+          color="secondary"
+          rounded
+          size="sm"
+          @click="prompt.prompt()"
+          v-if="$route.fullPath.includes('profile')"
+        />
+        <q-btn
           flat
           round
           dense
@@ -194,6 +204,7 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
+  props: ["prompt"],
   data() {
     return {
       deferredPrompt: "",
