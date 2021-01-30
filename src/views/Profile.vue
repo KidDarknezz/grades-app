@@ -169,6 +169,17 @@
           unelevated
         />
       </div>
+      <div class="row q-px-md">
+        <q-space />
+        <q-btn
+          class="w700"
+          label="Force update"
+          color="info"
+          push
+          unelevated
+          @click="hardReload()"
+        />
+      </div>
     </q-form>
   </q-page>
 </template>
@@ -374,6 +385,10 @@ export default {
     hideInstallPrompt() {
       this.isEditActive = false;
       localStorage.setItem("mgAppInstallPrompt", false);
+    },
+    hardReload() {
+      this.$router.push("/");
+      location.reload(true);
     },
   },
   computed: {
