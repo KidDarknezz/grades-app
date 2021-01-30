@@ -17,20 +17,19 @@ const mutations = {
 
 const actions = {
   getDisplayMode({commit}, payload) {
-    window.addEventListener("DOMContentLoaded", () => {
-      let displayMode = "browser tab";
+    let displayMode = "browser tab";
       if (navigator.standalone) {
         displayMode = "standalone-ios";
       }
       if (window.matchMedia("(display-mode: standalone)").matches) {
         displayMode = "standalone";
       }
+      console.log('Display Mode:', displayMode)
       if (displayMode == "browser tab") {
         commit("setBrowserMode", true)
       } else {
         commit("setBrowserMode", false)
       }
-    });
   },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
