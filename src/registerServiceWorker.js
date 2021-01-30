@@ -11,9 +11,9 @@ if (process.env.NODE_ENV === 'production') {
       console.log(
         'App is being served from cache by a service worker.\n' +
         'For more details, visit https://goo.gl/AFskqB\n' +
-        'test store in service worker'
+        'test store in service worker 2'
       )
-      showUpdateBanner()
+      this.showUpdateBanner()
     },
     registered () {
       console.log('Service worker has been registered.')
