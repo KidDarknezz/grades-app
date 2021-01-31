@@ -33,9 +33,7 @@
       class="text-white bg-info"
       v-if="updateBanner && newContent"
     >
-      <span class="text-subtitle2"
-        >Update available. Relaunch app to apply.</span
-      >
+      <span class="text-subtitle2">Update available. Relaunch to apply.</span>
       <template v-slot:action>
         <q-btn
           flat
