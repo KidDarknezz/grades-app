@@ -11,7 +11,8 @@ if (process.env.NODE_ENV === 'production') {
         'For more details, visit https://goo.gl/AFskqB\n' +
         'test store in service worker 3'
       )
-      authStore.actions.showUpdateBanner()
+      // authStore.actions.showUpdateBanner()
+      console.log(authStore)
     },
     registered () {
       console.log('Service worker has been registered.')
