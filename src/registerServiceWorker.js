@@ -1,19 +1,17 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
-import { mapActions } from "vuex";
+import { authStore } from "./store/authStore";
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
-    ...mapActions("authStore", ["showUpdateBanner"]),
-
     ready () {
       console.log(
         'App is being served from cache by a service worker.\n' +
         'For more details, visit https://goo.gl/AFskqB\n' +
-        'test store in service worker 2'
+        'test store in service worker 3'
       )
-      this.showUpdateBanner()
+      authStore.actions.showUpdateBanner()
     },
     registered () {
       console.log('Service worker has been registered.')
