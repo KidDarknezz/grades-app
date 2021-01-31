@@ -2,7 +2,7 @@
   <q-page>
     <q-banner
       inline-actions
-      class="text-white bg-secondary q-mb-md"
+      class="text-white bg-secondary"
       v-if="
         !$route.fullPath.includes('profile') && installBanner && browserMode
       "
@@ -25,6 +25,31 @@
           icon="close"
           size="sm"
           @click="hideInstallBanner()"
+        />
+      </template>
+    </q-banner>
+    <q-banner
+      inline-actions
+      class="text-white bg-info"
+      v-if="updateBanner && newContent"
+    >
+      <span class="text-subtitle2">Update available.</span>
+      <template v-slot:action>
+        <q-btn
+          flat
+          color="white"
+          icon="download"
+          size="sm"
+          round
+          @click="hardReload()"
+        />
+        <q-btn
+          flat
+          color="white"
+          icon="close"
+          size="sm"
+          round
+          @click="updateBanner = false"
         />
       </template>
     </q-banner>
@@ -170,6 +195,7 @@ export default {
   data() {
     return {
       installBanner: this.returnIfShowInstallPrompt(),
+      updateBanner: true,
       dialogText: "",
       newAssignatureDialog: false,
       newAssignature: {
@@ -303,6 +329,10 @@ export default {
       this.newAssignature.name = "";
       this.newAssignature.color = "";
     },
+    hardReload() {
+      this.$router.push("/");
+      location.reload(true);
+    },
   },
   computed: {
     ...mapState("myAssignaturesStore", [
@@ -311,15 +341,15 @@ export default {
       "selectedAssignature",
       "openUserAssignatures",
     ]),
-    ...mapState("authStore", ["browserMode"]),
+    ...mapState("authStore", ["browserMode", "newContent"]),
   },
   mounted() {
     this.getDisplayMode();
+    this.updateBanner = this.newContent;
   },
   watch: {
     new: function() {
       this.dialogText = "Create";
-      this.newAssignatureDialog = true;
     },
   },
 };

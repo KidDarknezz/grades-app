@@ -2,8 +2,7 @@
   <q-page>
     <div class="fixed-center full-width q-px-md">
       <div class="text-center q-mb-lg text-h6 w700">
-        <span :class="`text-${colors[randomColorIndex]}`">my</span>Grades - u:
-        {{ newContent }}
+        <span :class="`text-${colors[randomColorIndex]}`">my</span>Grades
       </div>
       <q-card class="full-width bg-grey-2 assignature-card" flat>
         <q-tabs
@@ -166,7 +165,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("authStore", ["loadingStatus", "newContent"]),
+    ...mapState("authStore", ["loadingStatus"]),
   },
   mounted() {
     if (localStorage.getItem("mgAppUid")) {

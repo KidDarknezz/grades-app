@@ -386,10 +386,6 @@ export default {
       this.isEditActive = false;
       localStorage.setItem("mgAppInstallPrompt", false);
     },
-    hardReload() {
-      this.$router.push("/");
-      location.reload(true);
-    },
   },
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
