@@ -146,7 +146,7 @@ const actions = {
       color: payload.color,
       status: "open",
     };
-    firebase
+    firebase  
       .database()
       .ref(`${localStorage.getItem("mgAppUid")}/assignatures`)
       .push(assignature)

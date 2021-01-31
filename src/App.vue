@@ -30,6 +30,8 @@ export default {
       e.preventDefault();
       this.deferredPrompt = e;
     });
+    let promptVar = localStorage.getItem("mgAppInstallPrompt");
+    if (!promptVar) localStorage.setItem("mgAppInstallPrompt", true);
   },
 };
 </script>
