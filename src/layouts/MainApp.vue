@@ -4,7 +4,7 @@
       <q-toolbar v-if="!$route.fullPath.includes('selected-assignature')">
         <q-toolbar-title>
           <div class="text-h6 w700">
-            <span :class="`text-${userData.profileColor}`">my</span>Grades-
+            <span :class="`text-${userData.profileColor}`">my</span>Gradees
           </div>
         </q-toolbar-title>
         <q-btn
