@@ -169,7 +169,7 @@
           unelevated
         />
       </div>
-      <div class="row q-px-md">
+      <!-- <div class="row q-px-md">
         <q-space />
         <q-btn
           class="w700"
@@ -179,7 +179,7 @@
           unelevated
           @click="hardReload()"
         />
-      </div>
+      </div> -->
     </q-form>
   </q-page>
 </template>
