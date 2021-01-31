@@ -6,10 +6,24 @@
 
 <script>
 export default {
+  created() {
+    document.addEventListener("swUpdated", this.updateAvailable, {
+      once: true,
+    });
+  },
   data() {
     return {
       deferredPrompt: "",
+      registration: null,
+      updateExists: false,
     };
+  },
+  methods: {
+    updateAvailable(event) {
+      console.log("the event", event);
+      this.registration = event.detail;
+      this.updateExists = true;
+    },
   },
   mounted() {
     window.addEventListener("beforeinstallprompt", (e) => {
