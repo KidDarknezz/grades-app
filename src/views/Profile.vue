@@ -157,7 +157,7 @@
       </div>
       <div class="row q-px-md q-mb-md">
         <div class="text-caption text-grey-4 column flex-center">
-          v. 1.2.3
+          v. 1.2.4
         </div>
         <q-space />
         <q-btn
@@ -169,17 +169,6 @@
           unelevated
         />
       </div>
-      <!-- <div class="row q-px-md">
-        <q-space />
-        <q-btn
-          class="w700"
-          label="Force update"
-          color="info"
-          push
-          unelevated
-          @click="hardReload()"
-        />
-      </div> -->
     </q-form>
   </q-page>
 </template>

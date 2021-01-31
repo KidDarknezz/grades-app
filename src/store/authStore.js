@@ -4,7 +4,7 @@ import router from "../router";
 const state = {
   loadingStatus: false,
   browserMode: false,
-  newContent: false
+  newContent: true
 };
 
 const mutations = {

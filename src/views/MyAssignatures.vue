@@ -33,16 +33,10 @@
       class="text-white bg-info"
       v-if="updateBanner && newContent"
     >
-      <span class="text-subtitle2">Update available.</span>
+      <span class="text-subtitle2"
+        >Update available. Relaunch app to apply.</span
+      >
       <template v-slot:action>
-        <q-btn
-          flat
-          color="white"
-          icon="download"
-          size="sm"
-          round
-          @click="hardReload()"
-        />
         <q-btn
           flat
           color="white"
@@ -328,10 +322,6 @@ export default {
       this.newAssignatureDialog = false;
       this.newAssignature.name = "";
       this.newAssignature.color = "";
-    },
-    hardReload() {
-      this.$router.push("/");
-      location.reload();
     },
   },
   computed: {
