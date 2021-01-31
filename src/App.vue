@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   created() {
     document.addEventListener("swUpdated", this.updateAvailable, {
@@ -14,15 +16,13 @@ export default {
   data() {
     return {
       deferredPrompt: "",
-      registration: null,
-      updateExists: false,
     };
   },
   methods: {
+    ...mapActions("authStore", ["triggerUpdateBanner"]),
+
     updateAvailable(event) {
-      console.log("the event", event);
-      this.registration = event.detail;
-      this.updateExists = true;
+      this.triggerUpdateBanner(true);
     },
   },
   mounted() {

@@ -4,7 +4,7 @@ import router from "../router";
 const state = {
   loadingStatus: false,
   browserMode: false,
-  newContant: false
+  newContent: false
 };
 
 const mutations = {
@@ -13,11 +13,14 @@ const mutations = {
   },
   setBrowserMode(state, payload) {
     state.browserMode = payload
+  },
+  setUpdateBanner(state, payload) {
+    state.newContent = payload
   }
 };
 
 const actions = {
-  getDisplayMode({commit}, payload) {
+  getDisplayMode({ commit }, payload) {
     let displayMode = "browser tab";
       if (navigator.standalone) {
         displayMode = "standalone-ios";
@@ -30,6 +33,9 @@ const actions = {
       } else {
         commit("setBrowserMode", false)
       }
+  },
+  triggerUpdateBanner({ commit }, payload) {
+    commit("setUpdateBanner", payload)
   },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
