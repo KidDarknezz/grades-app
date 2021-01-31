@@ -223,8 +223,9 @@ const actions = {
         .database()
         .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
         .update({ status: "open" });
+      commit("setUnarchiveAssignature", payload.index);
     }
-    commit("setUnarchiveAssignature", payload.index);
+    
   },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {
