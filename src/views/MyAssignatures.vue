@@ -338,6 +338,7 @@ export default {
   watch: {
     new: function() {
       this.dialogText = "Create";
+      this.newAssignatureDialog = true;
     },
   },
 };
