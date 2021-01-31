@@ -331,7 +331,7 @@ export default {
     },
     hardReload() {
       this.$router.push("/");
-      location.reload(true);
+      location.reload();
     },
   },
   computed: {
