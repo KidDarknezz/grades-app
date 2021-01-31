@@ -31,9 +31,6 @@ const actions = {
         commit("setBrowserMode", false)
       }
   },
-  showUpdateBanner({commit}, payload) {
-    console.log('test abc')
-  },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
     firebase
