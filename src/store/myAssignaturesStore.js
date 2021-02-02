@@ -45,9 +45,9 @@ const mutations = {
     ].grades.push(payload.grade);
   },
   setDeleteAssignature(state, payload) {
-    if (payload.status == 'open')
+    if (payload.status == "open")
       state.openUserAssignatures.splice(payload.index, 1);
-    if (payload.status == 'closed')
+    if (payload.status == "closed")
       state.closedUserAssignatures.splice(payload.index, 1);
   },
   setDeleteItem(state, payload) {
@@ -74,6 +74,9 @@ const mutations = {
     state.openUserAssignatures[payload.ass].items[payload.itm].grades[
       payload.grd
     ].grd = payload.new;
+    state.openUserAssignatures[payload.ass].items[payload.itm].grades[
+      payload.grd
+    ].name = payload.name;
   },
   setArchiveAssignature(state, payload) {
     state.openUserAssignatures[payload].status = "closed";
@@ -146,7 +149,7 @@ const actions = {
       color: payload.color,
       status: "open",
     };
-    firebase  
+    firebase
       .database()
       .ref(`${localStorage.getItem("mgAppUid")}/assignatures`)
       .push(assignature)
@@ -181,6 +184,7 @@ const actions = {
   createNewGrade({ commit }, payload) {
     let g = {
       grd: payload.grd,
+      name: payload.name,
     };
     firebase
       .database()
@@ -225,7 +229,6 @@ const actions = {
         .update({ status: "open" });
       commit("setUnarchiveAssignature", payload.index);
     }
-    
   },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {
@@ -297,12 +300,13 @@ const actions = {
           payload.ass.id
         }/items/${payload.itm.id}/grades/${payload.grd.id}`
       )
-      .update({ grd: payload.newValues });
+      .update({ grd: payload.newValuesGrade, name: payload.newValuesName });
     commit("setNewGradeValues", {
       ass: payload.ass.index,
       itm: payload.itm.index,
       grd: payload.grd.index,
-      new: payload.newValues,
+      new: payload.newValuesGrade,
+      name: payload.newValuesName,
     });
   },
   editProfileInfo({ commit }, payload) {
