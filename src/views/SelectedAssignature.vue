@@ -649,6 +649,7 @@ export default {
     clearGradeDialog() {
       this.newGradeDialog = false;
       this.newGrade.grade = "";
+      this.newGrade.name = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
