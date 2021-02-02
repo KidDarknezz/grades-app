@@ -77,6 +77,23 @@
             flat
             round
             dense
+            icon="today"
+            size="lg"
+            :color="
+              $route.fullPath.includes('calendar')
+                ? userData.profileColor
+                : 'black'
+            "
+            to="/calendar"
+          />
+        </div>
+      </div>
+      <div class="col">
+        <div class="justify-center row">
+          <q-btn
+            flat
+            round
+            dense
             size="lg"
             :color="
               $route.fullPath.includes('profile')
