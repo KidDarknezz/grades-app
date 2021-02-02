@@ -154,7 +154,12 @@
           <q-list separator>
             <q-item v-for="(grade, j) in item.grades" :key="j">
               <q-item-section>
-                <q-item-label class="text-black">{{ grade.grd }}</q-item-label>
+                <q-item-label class="text-black"
+                  ><div class="q-mb-sm" v-if="grade.name">{{ grade.name }}</div>
+                  <div :class="`text-bold text-${selectedAssignature.color}`">
+                    {{ grade.grd }}
+                  </div></q-item-label
+                >
               </q-item-section>
               <q-item-section
                 avatar
@@ -352,7 +357,7 @@
     <!-- NEW GRADE DIALOG -->
     <q-dialog v-model="newGradeDialog">
       <q-card style="min-width: 350px" class="assignature-card">
-        <q-form @submit="submitGradeDialog(newGrade.grade)">
+        <q-form @submit="submitGradeDialog(newGrade)">
           <q-card-section>
             <div
               :class="
@@ -364,6 +369,13 @@
           </q-card-section>
 
           <q-card-section>
+            <q-input
+              filled
+              label="Name (optional)"
+              v-model="newGrade.name"
+              :color="selectedAssignature.color"
+              class="q-mb-md"
+            />
             <q-input
               filled
               type="number"
@@ -419,6 +431,7 @@ export default {
       },
       newGradeDialog: false,
       newGrade: {
+        name: "",
         grade: "",
       },
       selectedItem: {},
@@ -564,6 +577,7 @@ export default {
         this.dialogText = "Edit";
         this.newGradeDialog = true;
         this.newGrade.grade = this.selectedGrade.grd;
+        this.newGrade.name = this.selectedGrade.name;
       }
       if (action == "delete") {
         this.selectGrade(j);
@@ -607,7 +621,8 @@ export default {
         this.createNewGrade({
           ass: this.selectedAssignature,
           itm: this.selectedItem,
-          grd: data,
+          grd: data.grade,
+          name: data.name,
         });
       }
       if (this.dialogText == "Edit") {
@@ -615,7 +630,8 @@ export default {
           ass: this.selectedAssignature,
           itm: this.selectedItem,
           grd: this.selectedGrade,
-          newValues: data,
+          newValuesGrade: data.grade,
+          newValuesName: data.name,
         });
       }
       this.clearGradeDialog();
@@ -633,6 +649,7 @@ export default {
     clearGradeDialog() {
       this.newGradeDialog = false;
       this.newGrade.grade = "";
+      this.newGrade.name = "";
     },
     calculatePercentageValue(grades, perc) {
       let avg = this.calculateAverage(grades);
