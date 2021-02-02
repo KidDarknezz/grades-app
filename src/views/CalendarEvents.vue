@@ -6,8 +6,10 @@
     <div class="col">
       <q-card flat class="assignature-card q-mb-md">
         <q-card-section>
-          February 14, 2020 -
-          <em class="text-caption">12 days until</em>
+          <q-item>
+            <q-item-section>February 14, 2020</q-item-section>
+            <q-item-section avatar><em>12 days until</em></q-item-section>
+          </q-item>
         </q-card-section>
         <q-card-section>
           <q-list separator>
