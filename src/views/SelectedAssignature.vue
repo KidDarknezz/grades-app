@@ -155,7 +155,7 @@
             <q-item v-for="(grade, j) in item.grades" :key="j">
               <q-item-section>
                 <q-item-label class="text-black"
-                  ><div class="q-mb-sm">{{ grade.name }}</div>
+                  ><div class="q-mb-sm" v-if="grade.name">{{ grade.name }}</div>
                   <div :class="`text-bold text-${selectedAssignature.color}`">
                     {{ grade.grd }}
                   </div></q-item-label
