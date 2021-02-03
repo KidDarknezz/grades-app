@@ -24,7 +24,10 @@
           :color="userData.profileColor"
           icon="add"
           @click="createNewAssignature = !createNewAssignature"
-          v-if="$route.fullPath.includes('my-assignatures')"
+          v-if="
+            $route.fullPath.includes('my-assignatures') ||
+              $route.fullPath.includes('calendar')
+          "
         />
       </q-toolbar>
     </q-header>

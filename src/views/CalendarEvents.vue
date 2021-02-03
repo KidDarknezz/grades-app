@@ -37,5 +37,115 @@
         </q-card-section>
       </q-card>
     </div>
+
+    <q-dialog v-model="newEventDialog" persistent>
+      <q-card style="min-width: 350px" class="assignature-card">
+        <q-card-section>
+          <div :class="`text-h6 gapp-font w700 text-${userData.profileColor}`">
+            New event
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            label="Event name"
+            filled
+            :color="userData.profileColor"
+            class="q-mb-md"
+            v-model="newEvent.name"
+          />
+          <q-select
+            filled
+            label="Assignature"
+            class="q-mb-md"
+            :options="assignaturesList"
+            :color="userData.profileColor"
+            v-model="newEvent.assignature"
+            map-options
+            emit-value
+          />
+          <q-input
+            filled
+            v-model="date"
+            mask="date"
+            :color="userData.profileColor"
+            class="q-mb-md"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="date" :color="userData.profileColor">
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Set"
+                        :color="userData.profileColor"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
+
+<script>
+import { mapState, mapActions } from "vuex";
+
+export default {
+  props: ["new"],
+  data() {
+    return {
+      newEventDialog: false,
+      date: this.returnTodayDate(),
+      assignaturesList: [],
+      newEvent: {
+        name: "",
+        assignature: "",
+      },
+    };
+  },
+  computed: {
+    ...mapState("myAssignaturesStore", [
+      "userData",
+      "loadingStatus",
+      "selectedAssignature",
+      "openUserAssignatures",
+    ]),
+    ...mapState("authStore", ["browserMode", "newContent"]),
+  },
+  methods: {
+    returnAssignaturesArray() {
+      let options = [];
+      this.openUserAssignatures.forEach((assignature) => {
+        options.push({ label: assignature.name, value: assignature.id });
+      });
+      this.assignaturesList = options;
+    },
+    returnTodayDate() {
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+
+      today = yyyy + "/" + mm + "/" + dd;
+      return today;
+    },
+  },
+  watch: {
+    new: function() {
+      // this.newE = "Create";
+      this.returnAssignaturesArray();
+      this.newEventDialog = true;
+    },
+  },
+};
+</script>
