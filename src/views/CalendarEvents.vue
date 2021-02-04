@@ -65,7 +65,7 @@
           />
           <q-input
             filled
-            v-model="date"
+            v-model="newEvent.date"
             mask="date"
             :color="userData.profileColor"
             class="q-mb-md"
@@ -77,7 +77,10 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="date" :color="userData.profileColor">
+                  <q-date
+                    v-model="newEvent.date"
+                    :color="userData.profileColor"
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup
@@ -91,7 +94,41 @@
               </q-icon>
             </template>
           </q-input>
+          <q-input
+            filled
+            v-model="newEvent.time"
+            :color="userData.profileColor"
+          >
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-time
+                    v-model="newEvent.time"
+                    :color="userData.profileColor"
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Set"
+                        :color="userData.profileColor"
+                        flat
+                      />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" color="grey-6" v-close-popup />
+          <q-btn
+            flat
+            label="Create"
+            type="submit"
+            :color="userData.profileColor"
+          />
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </q-page>
@@ -105,11 +142,12 @@ export default {
   data() {
     return {
       newEventDialog: false,
-      date: this.returnTodayDate(),
       assignaturesList: [],
       newEvent: {
         name: "",
         assignature: "",
+        date: this.returnTodayDate(),
+        time: "",
       },
     };
   },
