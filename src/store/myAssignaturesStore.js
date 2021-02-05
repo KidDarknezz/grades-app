@@ -172,6 +172,7 @@ const actions = {
   },
   createNewItem({}, payload) {
     payload.grades = [];
+    payload.percentage = parseInt(payload.percentage);
     let assignatureRef = firebase
       .firestore()
       .collection("assignatures")
@@ -228,18 +229,26 @@ const actions = {
   },
   deleteItem({ commit }, payload) {
     if (confirm("Delete item?")) {
-      firebase
-        .database()
-        .ref(
-          `${localStorage.getItem("mgAppUid")}/assignatures/${
-            payload.ass.id
-          }/items/${payload.itm.id}`
-        )
-        .remove();
-      commit("setDeleteItem", {
-        ass: payload.ass.index,
-        itm: payload.itm.index,
+      console.log(payload);
+      let assignatureRef = firebase
+        .firestore()
+        .collection("assignatures")
+        .doc(state.selectedAssignature.id);
+      assignatureRef.update({
+        items: firebase.firestore.FieldValue.arrayRemove(payload),
       });
+      // firebase
+      //   .database()
+      //   .ref(
+      //     `${localStorage.getItem("mgAppUid")}/assignatures/${
+      //       payload.ass.id
+      //     }/items/${payload.itm.id}`
+      //   )
+      //   .remove();
+      // commit("setDeleteItem", {
+      //   ass: payload.ass.index,
+      //   itm: payload.itm.index,
+      // });
     }
   },
   deleteGrade({ commit }, payload) {

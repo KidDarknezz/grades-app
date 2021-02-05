@@ -538,7 +538,6 @@ export default {
 
     selectItem(index) {
       this.selectedItem = this.selectedAssignature.items[index];
-      this.selectedItem.index = index;
     },
     selectGrade(index) {
       this.selectedGrade = this.selectedItem.grades[index];
@@ -566,10 +565,7 @@ export default {
       }
       if (action == "delete") {
         this.selectItem(index);
-        this.deleteItem({
-          itm: this.selectedItem,
-          ass: this.selectedAssignature,
-        });
+        this.deleteItem(this.selectedItem);
       }
     },
     gradeAction(i, j, action) {
