@@ -104,7 +104,13 @@
         "
       />
     </div>
-    <div class="q-pa-md" v-if="selectedAssignature.items.length > 0">
+    <div
+      class="q-pa-md"
+      v-if="
+        Object.keys(selectedAssignature).length > 0 &&
+          selectedAssignature.items.length > 0
+      "
+    >
       <q-card
         class="bg-white assignature-card q-mb-md"
         flat
