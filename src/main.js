@@ -1,5 +1,5 @@
 import Vue from "vue";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";

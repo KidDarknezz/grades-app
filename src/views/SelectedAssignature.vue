@@ -157,7 +157,7 @@
                 <q-item-label class="text-black"
                   ><div class="q-mb-sm" v-if="grade.name">{{ grade.name }}</div>
                   <div :class="`text-bold text-${selectedAssignature.color}`">
-                    {{ grade.grd }}
+                    {{ grade.grade }}
                   </div></q-item-label
                 >
               </q-item-section>
@@ -658,7 +658,7 @@ export default {
     calculateAverage(grades) {
       let sum = 0;
       grades.forEach((grade) => {
-        sum += parseFloat(grade.grd);
+        sum += parseFloat(grade.grade);
       });
       return (sum / grades.length).toFixed(2);
     },

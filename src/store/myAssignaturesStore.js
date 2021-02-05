@@ -1,9 +1,13 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/database";
+import "firebase/firestore";
 
 const state = {
   userData: {
     assignatures: [],
   },
+  userInfo: {},
+  userAssignatures: [],
   openUserAssignatures: [],
   closedUserAssignatures: [],
   selectedAssignature: {},
@@ -11,6 +15,12 @@ const state = {
 };
 
 const mutations = {
+  setUserInfo(state, payload) {
+    state.userInfo = payload;
+  },
+  setUserAssignatures(state, payload) {
+    state.userAssignatures = payload;
+  },
   setUserData(state, payload) {
     state.userData = payload;
   },
@@ -102,6 +112,33 @@ const mutations = {
 const actions = {
   getUserInfoAndAssignatures({ commit }, payload) {
     commit("setLoadingStatus", true);
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(payload)
+      .get()
+      .then((snapshot) => {
+        commit("setUserInfo", snapshot.data());
+        firebase
+          .firestore()
+          .collection("assignatures")
+          .where("owner", "==", payload)
+          .onSnapshot((snapshot) => {
+            let changes = snapshot.docChanges();
+            let allAss = [];
+            let ass = {};
+            changes.forEach((change) => {
+              if (change.type == "added" || change.type == "modified") {
+                ass = change.doc.data();
+                ass.id = change.doc.id;
+                allAss.push(ass);
+              } else if (change.type == "removed") {
+              }
+            });
+            commit("setUserAssignatures", allAss);
+          });
+      });
+
     let allAssignatures = [];
     let assignature = {};
     firebase

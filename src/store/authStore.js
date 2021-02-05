@@ -1,10 +1,13 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/database";
+import "firebase/auth";
+
 import router from "../router";
 
 const state = {
   loadingStatus: false,
   browserMode: false,
-  newContent: false
+  newContent: false,
 };
 
 const mutations = {
@@ -12,30 +15,30 @@ const mutations = {
     state.loadingStatus = payload;
   },
   setBrowserMode(state, payload) {
-    state.browserMode = payload
+    state.browserMode = payload;
   },
   setUpdateBanner(state, payload) {
-    state.newContent = payload
-  }
+    state.newContent = payload;
+  },
 };
 
 const actions = {
   getDisplayMode({ commit }, payload) {
     let displayMode = "browser tab";
-      if (navigator.standalone) {
-        displayMode = "standalone-ios";
-      }
-      if (window.matchMedia("(display-mode: standalone)").matches) {
-        displayMode = "standalone";
-      }
-      if (displayMode == "browser tab") {
-        commit("setBrowserMode", true)
-      } else {
-        commit("setBrowserMode", false)
-      }
+    if (navigator.standalone) {
+      displayMode = "standalone-ios";
+    }
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      displayMode = "standalone";
+    }
+    if (displayMode == "browser tab") {
+      commit("setBrowserMode", true);
+    } else {
+      commit("setBrowserMode", false);
+    }
   },
   triggerUpdateBanner({ commit }, payload) {
-    commit("setUpdateBanner", payload)
+    commit("setUpdateBanner", payload);
   },
   loginUser({ commit }, payload) {
     commit("setLoadingStatus", true);
