@@ -160,7 +160,9 @@ const actions = {
       .collection("assignatures")
       .doc(payload)
       .onSnapshot((snapshot) => {
-        commit("setSelectedAssignature", snapshot.data());
+        let selected = snapshot.data();
+        selected.id = payload;
+        commit("setSelectedAssignature", selected);
       });
   },
   createNewAssignature({}, payload) {
@@ -302,19 +304,12 @@ const actions = {
       new: payload.newValues,
     });
   },
-  editAssignature({ commit }, payload) {
+  editAssignature({}, payload) {
     firebase
-      .database()
-      .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.assignature.id
-        }`
-      )
-      .update(payload.newValues);
-    commit("setNewAssignatureValues", {
-      ass: payload.assignature.index,
-      new: payload.newValues,
-    });
+      .firestore()
+      .collection("assignatures")
+      .doc(state.selectedAssignature.id)
+      .update(payload);
   },
   editGrade({ commit }, payload) {
     firebase

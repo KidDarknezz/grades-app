@@ -600,10 +600,7 @@ export default {
         this.createNewAssignature(data);
       }
       if (this.dialogText == "Edit") {
-        this.editAssignature({
-          assignature: this.selectedAssignature,
-          newValues: data,
-        });
+        this.editAssignature(data);
       }
       this.clearAssignatureDialog();
     },
