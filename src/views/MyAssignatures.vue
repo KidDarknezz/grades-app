@@ -46,15 +46,15 @@
       </template>
     </q-banner>
     <div class="q-pa-md">
-      <div class="row q-mt-lg q-mb-lg" v-if="userAssignatures.length > 0">
+      <div class="row q-mt-lg q-mb-lg" v-if="returnOpenAssignatures.length > 0">
         <div class="text-subtitle2 text-grey-7">
           Open assignatures
         </div>
       </div>
-      <template v-if="userAssignatures.length > 0">
+      <template v-if="returnOpenAssignatures.length > 0">
         <div
           class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
-          v-for="(assignature, i) in userAssignatures"
+          v-for="(assignature, i) in returnOpenAssignatures"
           :key="i"
           @click="$router.push(`/selected-assignature/${assignature.id}`)"
         >
@@ -330,6 +330,14 @@ export default {
       "openUserAssignatures",
     ]),
     ...mapState("authStore", ["browserMode", "newContent"]),
+
+    returnOpenAssignatures() {
+      let open = [];
+      this.userAssignatures.forEach((assignature) => {
+        if (assignature.status == "open") open.push(assignature);
+      });
+      return open;
+    },
   },
   mounted() {
     this.getDisplayMode();

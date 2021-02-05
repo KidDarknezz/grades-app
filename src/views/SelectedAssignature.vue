@@ -34,7 +34,7 @@
               v-if="selectedAssignature.status == 'open'"
               clickable
               @click="
-                archiveAssignature(selectedAssignature);
+                archiveUnarchiveAssignature('closed');
                 $router.push('/closed-assignatures');
               "
             >
@@ -48,7 +48,7 @@
               clickable
               v-if="selectedAssignature.status == 'closed'"
               @click="
-                unarchiveAssignature(selectedAssignature);
+                archiveUnarchiveAssignature('open');
                 $router.push('/my-assignatures');
               "
             >
@@ -531,10 +531,9 @@ export default {
       "deleteItem",
       "deleteGrade",
       "editItem",
-      "archiveAssignature",
+      "archiveUnarchiveAssignature",
       "editAssignature",
       "editGrade",
-      "unarchiveAssignature",
     ]),
 
     selectItem(index) {

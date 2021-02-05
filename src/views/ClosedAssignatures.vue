@@ -1,16 +1,13 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="row q-mt-lg q-mb-lg" v-if="closedUserAssignatures.length > 0">
+    <div class="row q-mt-lg q-mb-lg" v-if="returnClosedAssignatures.length > 0">
       <div class="text-subtitle2 text-grey-7">Closed assignatures</div>
     </div>
-    <template v-if="closedUserAssignatures.length > 0">
+    <template v-if="returnClosedAssignatures.length > 0">
       <div
         class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
-        @click="
-          selectAssignature({ index: i, ass: closedUserAssignatures[i] });
-          $router.push('/selected-assignature');
-        "
-        v-for="(assignature, i) in closedUserAssignatures"
+        @click="$router.push(`/selected-assignature/${assignature.id}`)"
+        v-for="(assignature, i) in returnClosedAssignatures"
         :key="i"
       >
         <div class="col-xs-10">
@@ -325,18 +322,18 @@ export default {
   computed: {
     ...mapState("myAssignaturesStore", [
       "userData",
+      "userAssignatures",
       "loadingStatus",
       "selectedAssignature",
       "closedUserAssignatures",
     ]),
 
-    validPercentage() {
-      let sum = 0;
-      this.selectedAssignature.items.forEach((item) => {
-        sum += parseInt(item.percentage);
+    returnClosedAssignatures() {
+      let closed = [];
+      this.userAssignatures.forEach((assignature) => {
+        if (assignature.status == "closed") closed.push(assignature);
       });
-      if (this.dialogText == "Edit") sum -= this.selectedItem.percentage;
-      return sum + parseInt(this.newItem.percentage);
+      return closed;
     },
   },
   watch: {

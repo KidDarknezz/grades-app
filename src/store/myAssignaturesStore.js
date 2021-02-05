@@ -42,9 +42,6 @@ const mutations = {
   setSelectedAssignature(state, payload) {
     state.selectedAssignature = payload;
   },
-  setNewAssignature(state, payload) {
-    state.openUserAssignatures.push(payload);
-  },
   setNewItem(state, payload) {
     for (let i = 0; i < state.openUserAssignatures.length; i++) {
       if (state.openUserAssignatures[i].id == payload.assId) {
@@ -91,16 +88,6 @@ const mutations = {
     state.openUserAssignatures[payload.ass].items[payload.itm].grades[
       payload.grd
     ].name = payload.name;
-  },
-  setArchiveAssignature(state, payload) {
-    state.openUserAssignatures[payload].status = "closed";
-    state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
-    state.openUserAssignatures.splice(payload, 1);
-  },
-  setUnarchiveAssignature(state, payload) {
-    state.closedUserAssignatures[payload].status = "open";
-    state.openUserAssignatures.push(state.closedUserAssignatures[payload]);
-    state.closedUserAssignatures.splice(payload, 1);
   },
   setLoadingStatus(state, payload) {
     state.loadingStatus = payload;
@@ -238,22 +225,13 @@ const actions = {
         });
     }
   },
-  archiveAssignature({ commit }, payload) {
+  archiveUnarchiveAssignature({}, payload) {
     if (confirm("Close assignature?")) {
       firebase
-        .database()
-        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
-        .update({ status: "closed" });
-    }
-    commit("setArchiveAssignature", payload.index);
-  },
-  unarchiveAssignature({ commit }, payload) {
-    if (confirm("Re-open assignature?")) {
-      firebase
-        .database()
-        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
-        .update({ status: "open" });
-      commit("setUnarchiveAssignature", payload.index);
+        .firestore()
+        .collection("assignatures")
+        .doc(state.selectedAssignature.id)
+        .update({ status: payload });
     }
   },
   deleteItem({ commit }, payload) {
