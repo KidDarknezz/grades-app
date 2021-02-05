@@ -605,10 +605,7 @@ export default {
     },
     submitItemDialog(data) {
       if (this.dialogText == "Create") {
-        this.createNewItem({
-          item: data,
-          assId: this.selectedAssignature.id,
-        });
+        this.createNewItem(data);
       }
       if (this.dialogText == "Edit") {
         this.editItem({

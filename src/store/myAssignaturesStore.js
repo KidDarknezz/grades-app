@@ -170,26 +170,15 @@ const actions = {
       .collection("assignatures")
       .add(assignature);
   },
-  createNewItem({ commit }, payload) {
-    let item = {
-      name: payload.item.name,
-      percentage: payload.item.percentage,
-    };
-    firebase
-      .database()
-      .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.assId
-        }/items`
-      )
-      .push(item)
-      .then((response) => {
-        console.log(response);
-        item.id = response.key;
-        item.assId = payload.assId;
-        item.grades = [];
-        commit("setNewItem", item);
-      });
+  createNewItem({}, payload) {
+    payload.grades = [];
+    let assignatureRef = firebase
+      .firestore()
+      .collection("assignatures")
+      .doc(state.selectedAssignature.id);
+    assignatureRef.update({
+      items: firebase.firestore.FieldValue.arrayUnion(payload),
+    });
   },
   createNewGrade({ commit }, payload) {
     let g = {
