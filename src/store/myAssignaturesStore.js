@@ -148,7 +148,11 @@ const actions = {
       .doc(payload)
       .onSnapshot((snapshot) => {
         let selected = snapshot.data();
-        selected.id = payload;
+        try {
+          selected.id = payload;
+        } catch (err) {
+          console.log(err);
+        }
         commit("setSelectedAssignature", selected);
       });
   },
@@ -211,7 +215,6 @@ const actions = {
   },
   deleteAssignature({}, payload) {
     if (confirm("Delete assignature?")) {
-      console.log(payload);
       firebase
         .firestore()
         .collection("assignatures")
