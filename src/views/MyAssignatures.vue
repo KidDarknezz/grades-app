@@ -46,20 +46,17 @@
       </template>
     </q-banner>
     <div class="q-pa-md">
-      <div class="row q-mt-lg q-mb-lg" v-if="openUserAssignatures.length > 0">
+      <div class="row q-mt-lg q-mb-lg" v-if="userAssignatures.length > 0">
         <div class="text-subtitle2 text-grey-7">
           Open assignatures
         </div>
       </div>
-      <template v-if="openUserAssignatures.length > 0">
+      <template v-if="userAssignatures.length > 0">
         <div
           class="row bg-white q-py-lg q-pl-lg full-width assignature-card q-mb-md"
-          @click="
-            selectAssignature({ index: i, ass: userAssignatures[i] });
-            $router.push('/selected-assignature');
-          "
           v-for="(assignature, i) in userAssignatures"
           :key="i"
+          @click="$router.push(`/selected-assignature/${assignature.id}`)"
         >
           <div class="col-xs-10">
             <div :class="`text-h6 w700 text-${assignature.color}`">

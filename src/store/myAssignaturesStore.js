@@ -3,10 +3,7 @@ import "firebase/database";
 import "firebase/firestore";
 
 const state = {
-  userData: {
-    assignatures: [],
-  },
-  userInfo: {},
+  userData: {},
   userAssignatures: [],
   openUserAssignatures: [],
   closedUserAssignatures: [],
@@ -15,14 +12,22 @@ const state = {
 };
 
 const mutations = {
-  setUserInfo(state, payload) {
-    state.userInfo = payload;
+  setUserData(state, payload) {
+    state.userData = payload;
   },
   setUserAssignatures(state, payload) {
     state.userAssignatures = payload;
   },
-  setUserData(state, payload) {
-    state.userData = payload;
+  setAddedAssignature(state, payload) {
+    state.userAssignatures.push(payload);
+  },
+  setRemovedAssignature(state, payload) {
+    state.userAssignatures.splice(payload, 1);
+  },
+  setModifiedAssignature(state, payload) {
+    state.userAssignatures[payload.index].name = payload.ass.name;
+    state.userAssignatures[payload.index].color = payload.ass.color;
+    state.userAssignatures[payload.index].status = payload.ass.status;
   },
   setOpenAndClosedAssignatures(state, payload) {
     let open = [];
@@ -49,7 +54,6 @@ const mutations = {
     }
   },
   setNewGrade(state, payload) {
-    console.log(payload);
     state.openUserAssignatures[payload.assIndex].items[
       payload.itmIndex
     ].grades.push(payload.grade);
@@ -116,86 +120,62 @@ const actions = {
       .firestore()
       .collection("users")
       .doc(payload)
-      .get()
-      .then((snapshot) => {
-        commit("setUserInfo", snapshot.data());
+      .onSnapshot((snapshot) => {
+        let user = snapshot.data();
+        user.uid = firebase.auth().currentUser.uid;
+        commit("setUserData", user);
         firebase
           .firestore()
           .collection("assignatures")
           .where("owner", "==", payload)
+          .orderBy("createdAt")
           .onSnapshot((snapshot) => {
             let changes = snapshot.docChanges();
-            let allAss = [];
             let ass = {};
             changes.forEach((change) => {
-              if (change.type == "added" || change.type == "modified") {
+              if (change.type == "added") {
                 ass = change.doc.data();
                 ass.id = change.doc.id;
-                allAss.push(ass);
+                commit("setAddedAssignature", ass);
+              } else if (change.type == "modified") {
+                ass = change.doc.data();
+                ass.id = change.doc.id;
+                commit("setModifiedAssignature", {
+                  ass: ass,
+                  index: change.oldIndex,
+                });
               } else if (change.type == "removed") {
+                commit("setRemovedAssignature", change.oldIndex);
               }
             });
-            commit("setUserAssignatures", allAss);
+            setTimeout(function() {
+              commit("setLoadingStatus", false);
+            }, 1000);
           });
-      });
-
-    let allAssignatures = [];
-    let assignature = {};
-    firebase
-      .database()
-      .ref(`${payload}`)
-      .once("value", (snapshot) => {
-        for (let ass in snapshot.val().assignatures) {
-          assignature = snapshot.val().assignatures[ass];
-          assignature.id = ass;
-          let allItems = [];
-          let item = {};
-          for (let itm in assignature.items) {
-            item = assignature.items[itm];
-            item.id = itm;
-            let allGrades = [];
-            let grade = {};
-            for (let grd in item.grades) {
-              grade = assignature.items[itm].grades[grd];
-              grade.id = grd;
-              allGrades.push(grade);
-            }
-            assignature.items[itm].grades = allGrades;
-            allItems.push(item);
-          }
-          assignature.items = allItems;
-          allAssignatures.push(assignature);
-        }
-        let data = snapshot.val();
-        data.assignatures = allAssignatures;
-        commit("setUserData", data);
-        commit("setOpenAndClosedAssignatures", data);
-        setTimeout(function() {
-          commit("setLoadingStatus", false);
-        }, 1000);
       });
   },
   selectAssignature({ commit }, payload) {
-    let ass = payload.ass;
-    ass.index = payload.index;
-    commit("setSelectedAssignature", ass);
+    firebase
+      .firestore()
+      .collection("assignatures")
+      .doc(payload)
+      .onSnapshot((snapshot) => {
+        commit("setSelectedAssignature", snapshot.data());
+      });
   },
-  createNewAssignature({ commit }, payload) {
+  createNewAssignature({}, payload) {
     let assignature = {
+      createdAt: Date.now(),
       name: payload.name,
       color: payload.color,
       status: "open",
+      owner: state.userData.uid,
+      items: [],
     };
     firebase
-      .database()
-      .ref(`${localStorage.getItem("mgAppUid")}/assignatures`)
-      .push(assignature)
-      .then((response) => {
-        console.log(response);
-        assignature.id = response.key;
-        assignature.items = [];
-        commit("setNewAssignature", assignature);
-      });
+      .firestore()
+      .collection("assignatures")
+      .add(assignature);
   },
   createNewItem({ commit }, payload) {
     let item = {
@@ -240,13 +220,20 @@ const actions = {
         });
       });
   },
-  deleteAssignature({ commit }, payload) {
+  deleteAssignature({}, payload) {
     if (confirm("Delete assignature?")) {
+      console.log(payload);
       firebase
-        .database()
-        .ref(`${localStorage.getItem("mgAppUid")}/assignatures/${payload.id}`)
-        .remove();
-      commit("setDeleteAssignature", payload);
+        .firestore()
+        .collection("assignatures")
+        .doc(payload)
+        .delete()
+        .then(() => {
+          console.log("Assignature deleted");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
   archiveAssignature({ commit }, payload) {

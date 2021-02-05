@@ -37,7 +37,7 @@ const routes = [
         },
       },
       {
-        path: "/selected-assignature",
+        path: "/selected-assignature/:assId",
         name: "SelectedAssignature",
         component: SelectedAssignature,
         meta: {

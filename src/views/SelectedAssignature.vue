@@ -62,7 +62,7 @@
             <q-item
               clickable
               @click="
-                deleteAssignature(selectedAssignature);
+                deleteAssignature($route.params.assId);
                 $router.go(-1);
               "
             >
@@ -518,6 +518,7 @@ export default {
   },
   methods: {
     ...mapActions("myAssignaturesStore", [
+      "selectAssignature",
       "createNewItem",
       "createNewGrade",
       "deleteAssignature",
@@ -699,7 +700,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.selectedAssignature.id) this.$router.push("/");
+    this.selectAssignature(this.$route.params.assId);
   },
 };
 </script>
