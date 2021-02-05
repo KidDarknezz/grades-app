@@ -227,7 +227,7 @@ const actions = {
         .update({ status: payload });
     }
   },
-  deleteItem({ commit }, payload) {
+  deleteItem({}, payload) {
     if (confirm("Delete item?")) {
       console.log(payload);
       let assignatureRef = firebase
@@ -237,18 +237,6 @@ const actions = {
       assignatureRef.update({
         items: firebase.firestore.FieldValue.arrayRemove(payload),
       });
-      // firebase
-      //   .database()
-      //   .ref(
-      //     `${localStorage.getItem("mgAppUid")}/assignatures/${
-      //       payload.ass.id
-      //     }/items/${payload.itm.id}`
-      //   )
-      //   .remove();
-      // commit("setDeleteItem", {
-      //   ass: payload.ass.index,
-      //   itm: payload.itm.index,
-      // });
     }
   },
   deleteGrade({ commit }, payload) {
@@ -268,20 +256,15 @@ const actions = {
       });
     }
   },
-  editItem({ commit }, payload) {
+  editItem({}, payload) {
+    let items = state.selectedAssignature.items;
+    items[payload.index].name = payload.newValues.name;
+    items[payload.index].percentage = payload.newValues.percentage;
     firebase
-      .database()
-      .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.ass.id
-        }/items/${payload.itm.id}`
-      )
-      .update(payload.newValues);
-    commit("setNewItemValues", {
-      ass: payload.ass.index,
-      itm: payload.itm.index,
-      new: payload.newValues,
-    });
+      .firestore()
+      .collection("assignatures")
+      .doc(state.selectedAssignature.id)
+      .update({ items: items });
   },
   editAssignature({}, payload) {
     firebase

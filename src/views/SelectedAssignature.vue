@@ -132,7 +132,13 @@
             </div>
 
             <div class="col-auto" v-if="selectedAssignature.status == 'open'">
-              <q-btn color="grey-7" round flat icon="more_vert">
+              <q-btn
+                color="grey-7"
+                round
+                flat
+                icon="more_vert"
+                @click="itemIndex = i"
+              >
                 <q-menu cover auto-close>
                   <q-list>
                     <q-item clickable @click="itemAction(i, 'edit')">
@@ -441,6 +447,7 @@ export default {
         grade: "",
       },
       selectedItem: {},
+      itemIndex: "",
       selectedGrade: {},
       colorOptions: [
         {
@@ -605,8 +612,7 @@ export default {
       }
       if (this.dialogText == "Edit") {
         this.editItem({
-          ass: this.selectedAssignature,
-          itm: this.selectedItem,
+          index: this.itemIndex,
           newValues: data,
         });
       }
