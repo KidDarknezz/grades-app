@@ -1,4 +1,6 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import 'firebase/auth'
+import 'firebase/database'
 import router from "../router";
 
 const state = {
@@ -22,17 +24,17 @@ const mutations = {
 const actions = {
   getDisplayMode({ commit }, payload) {
     let displayMode = "browser tab";
-      if (navigator.standalone) {
-        displayMode = "standalone-ios";
-      }
-      if (window.matchMedia("(display-mode: standalone)").matches) {
-        displayMode = "standalone";
-      }
-      if (displayMode == "browser tab") {
-        commit("setBrowserMode", true)
-      } else {
-        commit("setBrowserMode", false)
-      }
+    if (navigator.standalone) {
+      displayMode = "standalone-ios";
+    }
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      displayMode = "standalone";
+    }
+    if (displayMode == "browser tab") {
+      commit("setBrowserMode", true)
+    } else {
+      commit("setBrowserMode", false)
+    }
   },
   triggerUpdateBanner({ commit }, payload) {
     commit("setUpdateBanner", payload)
@@ -88,7 +90,7 @@ const actions = {
         }
       );
   },
-  logoutCurrentUser({}, payload) {
+  logoutCurrentUser({ }, payload) {
     if (confirm("Confirm logout")) {
       firebase.auth().signOut();
       localStorage.removeItem("mgAppUid");
