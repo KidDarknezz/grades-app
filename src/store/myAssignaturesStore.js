@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import 'firebase/database'
 
 const state = {
   userData: {
@@ -133,7 +134,7 @@ const actions = {
         data.assignatures = allAssignatures;
         commit("setUserData", data);
         commit("setOpenAndClosedAssignatures", data);
-        setTimeout(function() {
+        setTimeout(function () {
           commit("setLoadingStatus", false);
         }, 1000);
       });
@@ -168,8 +169,7 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.assId
+        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.assId
         }/items`
       )
       .push(item)
@@ -189,8 +189,7 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
         }/items/${payload.itm.id}/grades`
       )
       .push(g)
@@ -235,8 +234,7 @@ const actions = {
       firebase
         .database()
         .ref(
-          `${localStorage.getItem("mgAppUid")}/assignatures/${
-            payload.ass.id
+          `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
           }/items/${payload.itm.id}`
         )
         .remove();
@@ -251,8 +249,7 @@ const actions = {
       firebase
         .database()
         .ref(
-          `${localStorage.getItem("mgAppUid")}/assignatures/${
-            payload.ass.id
+          `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
           }/items/${payload.itm.id}/grades/${payload.grd.id}`
         )
         .remove();
@@ -267,8 +264,7 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
         }/items/${payload.itm.id}`
       )
       .update(payload.newValues);
@@ -282,8 +278,7 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.assignature.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.assignature.id
         }`
       )
       .update(payload.newValues);
@@ -296,8 +291,7 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${
-          payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
         }/items/${payload.itm.id}/grades/${payload.grd.id}`
       )
       .update({ grd: payload.newValuesGrade, name: payload.newValuesName });
