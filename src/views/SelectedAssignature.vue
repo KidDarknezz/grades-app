@@ -380,15 +380,16 @@
               filled
               type="number"
               label="Grade"
-              v-model="newGrade.grade"
+              v-model.number="newGrade.grade"
+              step=".01"
               :color="selectedAssignature.color"
               class="q-mb-md"
               :rules="[
                 (val) =>
                   (val !== null && val !== '') || 'Please insert a value',
                 (val) =>
-                  (val > 0 && val <= 100) ||
-                  'Please insert a value between 1 and 100',
+                  (val >= 0 && val <= 100) ||
+                  'Please insert a value between 0 and 100',
               ]"
             />
           </q-card-section>
