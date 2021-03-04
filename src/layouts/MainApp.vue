@@ -26,7 +26,7 @@
           @click="createNewAssignature = !createNewAssignature"
           v-if="
             $route.fullPath.includes('my-assignatures') ||
-              $route.fullPath.includes('calendar')
+            $route.fullPath.includes('calendar')
           "
         />
       </q-toolbar>

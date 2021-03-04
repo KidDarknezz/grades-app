@@ -13,11 +13,11 @@
         </q-card-section>
         <q-card-section>
           <q-list separator>
-            <q-item>
+            <q-item v-for="(event, i) in 3" :key="i">
               <q-item-section avatar>
                 <div
                   class="bg-purple full-width"
-                  style="padding: 4px;border-radius: 4px;"
+                  style="padding: 4px; border-radius: 4px"
                 ></div>
               </q-item-section>
               <q-item-section>
@@ -127,6 +127,7 @@
             label="Create"
             type="submit"
             :color="userData.profileColor"
+            @click="createNewEvent(newEvent)"
           />
         </q-card-actions>
       </q-card>
@@ -155,16 +156,19 @@ export default {
     ...mapState("myAssignaturesStore", [
       "userData",
       "loadingStatus",
-      "selectedAssignature",
       "openUserAssignatures",
     ]),
-    ...mapState("authStore", ["browserMode", "newContent"]),
   },
   methods: {
+    ...mapActions("myEventsStore", ["createNewEvent"]),
+
     returnAssignaturesArray() {
       let options = [];
       this.openUserAssignatures.forEach((assignature) => {
-        options.push({ label: assignature.name, value: assignature.id });
+        options.push({
+          label: assignature.name,
+          value: { assId: assignature.id, assColor: assignature.color },
+        });
       });
       this.assignaturesList = options;
     },
@@ -177,10 +181,17 @@ export default {
       today = yyyy + "/" + mm + "/" + dd;
       return today;
     },
+    sortEventsByDate() {
+      for (event in this.userData.events) {
+        console.log(event);
+      }
+    },
+  },
+  mounted() {
+    this.sortEventsByDate();
   },
   watch: {
-    new: function() {
-      // this.newE = "Create";
+    new: function () {
       this.returnAssignaturesArray();
       this.newEventDialog = true;
     },
