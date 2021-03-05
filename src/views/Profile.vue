@@ -1,9 +1,7 @@
 <template>
   <q-page>
     <q-form @submit="editProfileActions()">
-      <div class="text-h6 text-center text-bold q-mt-md">
-        My Profile
-      </div>
+      <div class="text-h6 text-center text-bold q-mt-md">My Profile</div>
       <div class="text-caption text-center q-mb-lg text-grey-6">
         {{ userData.email }}
       </div>
@@ -156,9 +154,7 @@
         </div>
       </div>
       <div class="row q-px-md q-mb-md">
-        <div class="text-caption text-grey-4 column flex-center">
-          v. 1.2.5
-        </div>
+        <div class="text-caption text-grey-4 column flex-center">v. 1.3.0</div>
         <q-space />
         <q-btn
           class="w700"
