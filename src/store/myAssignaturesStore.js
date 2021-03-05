@@ -101,7 +101,6 @@ const mutations = {
   },
 
   //MY EVENTS MUTATIONS
-
   setMyEvents(state, payload) {
     let allEvents = []
     for (let event in payload) {
@@ -112,14 +111,20 @@ const mutations = {
     state.myEvents = allEvents
   },
   setNewEvent(state, payload) {
-    console.log('trigger mutation')
-    state.userData.events[payload.id] = payload.newE
+    state.myEvents.push(payload)
+  },
+  setRemoveEvent(state, payload) {
+    for (let i = 0; i < state.myEvents.length; i++) {
+      if (state.myEvents[i].id == payload) {
+        state.myEvents.splice(i, 1)
+        break
+      }
+    }
   }
 };
 
 const actions = {
   //MY ASSIGNATURES ACTIONS
-
   getUserInfoAndAssignatures({ commit }, payload) {
     commit("setLoadingStatus", true);
     let allAssignatures = [];
@@ -332,7 +337,6 @@ const actions = {
   },
 
   //MY EVENTS ACTIONS
-
   createNewEvent({ commit }, payload) {
     let newEvent = {
       name: payload.name,
@@ -347,10 +351,21 @@ const actions = {
       .ref(`${localStorage.getItem("mgAppUid")}/events`)
       .push(newEvent)
       .then((response) => {
-        // console.log(response.key);
-        // newEvent.id = response.key;
-        commit("setNewEvent", { newE: newEvent, id: response.key });
+        newEvent.id = response.key;
+        commit("setNewEvent", newEvent);
       });
+  },
+  deleteExistingEvent({ commit }, payload) {
+    console.log('deleting event:', payload)
+    if (confirm("Delete event?")) {
+      firebase
+        .database()
+        .ref(
+          `${localStorage.getItem("mgAppUid")}/events/${payload}`
+        )
+        .remove();
+      commit("setRemoveEvent", payload)
+    }
   }
 };
 

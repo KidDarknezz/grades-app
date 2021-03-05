@@ -1,13 +1,26 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row q-mt-lg q-mb-lg">
-      <div class="text-subtitle2 text-grey-7">Upcoming events</div>
+      <div class="text-subtitle2 text-grey-7">
+        {{ upcomingOnly ? "Upcoming" : "Past" }} events
+      </div>
+      <q-space />
+      <q-btn
+        :label="upcomingOnly ? 'see past events' : 'see upcoming events'"
+        flat
+        size="sm"
+        :color="userData.profileColor"
+        rounded
+        @click="upcomingOnly = !upcomingOnly"
+      />
     </div>
 
     <q-card
       flat
       class="assignature-card q-mb-md"
-      v-for="(event, i) in sortEventsByDate"
+      v-for="(event, i) in upcomingOnly
+        ? returnUpcomingEvents
+        : returnPastEvents"
       :key="i"
     >
       <q-card-section>
@@ -40,9 +53,15 @@
               >
             </q-item-section>
             <q-item-section avatar>
-              <q-btn-group flat rounded>
-                <q-btn dense icon="close" class="text-red" size="sm" />
-                <q-btn dense icon="edit" class="text-warning" size="sm" />
+              <q-btn-group flat rounded v-if="upcomingOnly">
+                <q-btn
+                  dense
+                  icon="close"
+                  class="text-red"
+                  size="sm"
+                  @click="deleteExistingEvent(e.id)"
+                />
+                <!-- <q-btn dense icon="edit" class="text-warning" size="sm" /> -->
               </q-btn-group>
             </q-item-section>
           </q-item>
@@ -52,96 +71,126 @@
 
     <q-dialog v-model="newEventDialog" persistent>
       <q-card style="min-width: 350px" class="assignature-card">
-        <q-card-section>
-          <div :class="`text-h6 gapp-font w700 text-${userData.profileColor}`">
-            New event
-          </div>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            label="Event name"
-            filled
-            :color="userData.profileColor"
-            class="q-mb-md"
-            v-model="newEvent.name"
-          />
-          <q-select
-            filled
-            label="Assignature"
-            class="q-mb-md"
-            :options="assignaturesList"
-            :color="userData.profileColor"
-            v-model="newEvent.assignature"
-            map-options
-            emit-value
-          />
-          <q-input
-            filled
-            v-model="newEvent.date"
-            mask="date"
-            :color="userData.profileColor"
-            class="q-mb-md"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date
-                    v-model="newEvent.date"
-                    :color="userData.profileColor"
+        <q-form
+          @submit="
+            createNewEvent(newEvent);
+            cleanNewEventForm();
+            newEventDialog = false;
+          "
+        >
+          <q-card-section>
+            <div
+              :class="`text-h6 gapp-font w700 text-${userData.profileColor}`"
+            >
+              New event
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              label="Event name"
+              filled
+              :color="userData.profileColor"
+              class="q-mb-md"
+              v-model="newEvent.name"
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please insert a name',
+              ]"
+            />
+            <q-select
+              filled
+              label="Assignature"
+              class="q-mb-md"
+              :options="assignaturesList"
+              :color="userData.profileColor"
+              v-model="newEvent.assignature"
+              map-options
+              emit-value
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') ||
+                  'Please select an assignature',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="newEvent.date"
+              mask="date"
+              :color="userData.profileColor"
+              class="q-mb-md"
+              readonly
+              :rules="[
+                (val) =>
+                  val >= returnTodayDate() ||
+                  'Cannot create events in the past',
+              ]"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    ref="qDateProxy"
+                    transition-show="scale"
+                    transition-hide="scale"
                   >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Set"
-                        :color="userData.profileColor"
-                        flat
-                      />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <q-input
-            filled
-            v-model="newEvent.time"
-            :color="userData.profileColor"
-          >
-            <template v-slot:append>
-              <q-icon name="access_time" class="cursor-pointer">
-                <q-popup-proxy transition-show="scale" transition-hide="scale">
-                  <q-time
-                    v-model="newEvent.time"
-                    :color="userData.profileColor"
+                    <q-date
+                      v-model="newEvent.date"
+                      :color="userData.profileColor"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Set"
+                          :color="userData.profileColor"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input
+              filled
+              v-model="newEvent.time"
+              :color="userData.profileColor"
+              readonly
+              :rules="[
+                (val) => (val !== null && val !== '') || 'Please select time',
+              ]"
+            >
+              <template v-slot:append>
+                <q-icon name="access_time" class="cursor-pointer">
+                  <q-popup-proxy
+                    transition-show="scale"
+                    transition-hide="scale"
                   >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Set"
-                        :color="userData.profileColor"
-                        flat
-                      />
-                    </div>
-                  </q-time>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" color="grey-6" v-close-popup />
-          <q-btn
-            flat
-            label="Create"
-            type="submit"
-            :color="userData.profileColor"
-            @click="createNewEvent(newEvent)"
-          />
-        </q-card-actions>
+                    <q-time
+                      v-model="newEvent.time"
+                      :color="userData.profileColor"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Set"
+                          :color="userData.profileColor"
+                          flat
+                        />
+                      </div>
+                    </q-time>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" color="grey-6" v-close-popup />
+            <q-btn
+              flat
+              label="Create"
+              type="submit"
+              :color="userData.profileColor"
+            />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
     <div style="height: 45px" />
@@ -164,6 +213,7 @@ export default {
         date: this.returnTodayDate(),
         time: "",
       },
+      upcomingOnly: true,
     };
   },
   computed: {
@@ -175,7 +225,6 @@ export default {
     ]),
 
     sortEventsByDate() {
-      let uniqueDates = [];
       let eventsByDate = {};
       this.myEvents.forEach((event) => {
         if (eventsByDate[`${event.date}`] === undefined) {
@@ -183,11 +232,36 @@ export default {
         }
         eventsByDate[`${event.date}`].push(event);
       });
-      return eventsByDate;
+      const orderedEventsByDate = Object.keys(eventsByDate)
+        .sort()
+        .reduce((obj, key) => {
+          obj[key] = eventsByDate[key];
+          return obj;
+        }, {});
+      return orderedEventsByDate;
+    },
+    returnUpcomingEvents() {
+      const today = this.returnTodayDate();
+      let upcoming = [];
+      for (let event in this.sortEventsByDate) {
+        if (event >= today) upcoming.push(this.sortEventsByDate[event]);
+      }
+      return upcoming;
+    },
+    returnPastEvents() {
+      const today = this.returnTodayDate();
+      let past = [];
+      for (let event in this.sortEventsByDate) {
+        if (event < today) past.push(this.sortEventsByDate[event]);
+      }
+      return past;
     },
   },
   methods: {
-    ...mapActions("myAssignaturesStore", ["createNewEvent"]),
+    ...mapActions("myAssignaturesStore", [
+      "createNewEvent",
+      "deleteExistingEvent",
+    ]),
 
     returnAssignaturesArray() {
       let options = [];
@@ -212,7 +286,20 @@ export default {
       return moment(date, currFormat).locale("en").format(format);
     },
     calculateRelativeTime(format, date) {
-      return moment(date, format).fromNow();
+      if (
+        this.formatDate("YYYYMMDD", date, "YYYY/MM/DD") ==
+        this.formatDate("YYYYMMDD", this.returnTodayDate(), "YYYY/MM/DD")
+      )
+        return "Today";
+      else return moment(date, format).fromNow();
+    },
+    cleanNewEventForm() {
+      this.newEvent = {
+        name: "",
+        assignature: "",
+        date: this.returnTodayDate(),
+        time: "",
+      };
     },
   },
   watch: {
