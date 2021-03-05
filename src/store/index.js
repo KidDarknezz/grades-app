@@ -3,7 +3,6 @@ import Vuex from "vuex";
 
 import authStore from "./authStore";
 import myAssignaturesStore from "./myAssignaturesStore";
-import myEventsStore from './myEventsStore'
 
 Vue.use(Vuex);
 
@@ -12,7 +11,6 @@ export default function () {
     modules: {
       authStore,
       myAssignaturesStore,
-      myEventsStore
     },
     strict: process.env.DEV,
   });

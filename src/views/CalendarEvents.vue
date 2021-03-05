@@ -3,40 +3,52 @@
     <div class="row q-mt-lg q-mb-lg">
       <div class="text-subtitle2 text-grey-7">Upcoming events</div>
     </div>
-    <div class="col">
-      <q-card flat class="assignature-card q-mb-md">
-        <q-card-section>
-          <q-item>
-            <q-item-section>February 14, 2020</q-item-section>
-            <q-item-section avatar><em>12 days until</em></q-item-section>
+
+    <q-card
+      flat
+      class="assignature-card q-mb-md"
+      v-for="(event, i) in sortEventsByDate"
+      :key="i"
+    >
+      <q-card-section>
+        <q-item>
+          <q-item-section>{{
+            formatDate("ddd MMMM Do YYYY", event[0].date, "YYYY/MM/DD")
+          }}</q-item-section>
+          <q-item-section avatar
+            ><em>{{
+              calculateRelativeTime("YYYYMMDD", event[0].date)
+            }}</em></q-item-section
+          >
+        </q-item>
+      </q-card-section>
+      <q-card-section>
+        <q-list separator>
+          <q-item v-for="(e, i) in event" :key="i">
+            <q-item-section avatar>
+              <div
+                :class="`bg-${e.parentColor} full-width`"
+                style="padding: 4px; border-radius: 4px"
+              ></div>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-black"
+                ><div class="text-bold q-mb-sm">{{ e.name }}</div>
+                <div>
+                  {{ formatDate("hh:mm a", e.time, "hh:mm") }}
+                </div></q-item-label
+              >
+            </q-item-section>
+            <q-item-section avatar>
+              <q-btn-group flat rounded>
+                <q-btn dense icon="close" class="text-red" size="sm" />
+                <q-btn dense icon="edit" class="text-warning" size="sm" />
+              </q-btn-group>
+            </q-item-section>
           </q-item>
-        </q-card-section>
-        <q-card-section>
-          <q-list separator>
-            <q-item v-for="(event, i) in 3" :key="i">
-              <q-item-section avatar>
-                <div
-                  class="bg-purple full-width"
-                  style="padding: 4px; border-radius: 4px"
-                ></div>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text-black"
-                  ><div class="text-bold q-mb-sm">Parcial 1 Matematicas</div>
-                  <div>14:30 P.M.</div></q-item-label
-                >
-              </q-item-section>
-              <q-item-section avatar>
-                <q-btn-group flat rounded>
-                  <q-btn dense icon="close" class="text-red" size="sm" />
-                  <q-btn dense icon="edit" class="text-warning" size="sm" />
-                </q-btn-group>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-card-section>
-      </q-card>
-    </div>
+        </q-list>
+      </q-card-section>
+    </q-card>
 
     <q-dialog v-model="newEventDialog" persistent>
       <q-card style="min-width: 350px" class="assignature-card">
@@ -132,11 +144,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <div style="height: 45px" />
   </q-page>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import moment from "moment";
 
 export default {
   props: ["new"],
@@ -157,10 +171,23 @@ export default {
       "userData",
       "loadingStatus",
       "openUserAssignatures",
+      "myEvents",
     ]),
+
+    sortEventsByDate() {
+      let uniqueDates = [];
+      let eventsByDate = {};
+      this.myEvents.forEach((event) => {
+        if (eventsByDate[`${event.date}`] === undefined) {
+          eventsByDate[`${event.date}`] = [];
+        }
+        eventsByDate[`${event.date}`].push(event);
+      });
+      return eventsByDate;
+    },
   },
   methods: {
-    ...mapActions("myEventsStore", ["createNewEvent"]),
+    ...mapActions("myAssignaturesStore", ["createNewEvent"]),
 
     returnAssignaturesArray() {
       let options = [];
@@ -181,14 +208,12 @@ export default {
       today = yyyy + "/" + mm + "/" + dd;
       return today;
     },
-    sortEventsByDate() {
-      for (event in this.userData.events) {
-        console.log(event);
-      }
+    formatDate(format, date, currFormat) {
+      return moment(date, currFormat).locale("en").format(format);
     },
-  },
-  mounted() {
-    this.sortEventsByDate();
+    calculateRelativeTime(format, date) {
+      return moment(date, format).fromNow();
+    },
   },
   watch: {
     new: function () {

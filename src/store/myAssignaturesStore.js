@@ -8,6 +8,7 @@ const state = {
   openUserAssignatures: [],
   closedUserAssignatures: [],
   selectedAssignature: {},
+  myEvents: [],
   loadingStatus: false,
 };
 
@@ -98,9 +99,27 @@ const mutations = {
     state.userData.profileColor = payload.profileColor;
     state.userData.profileAvatar = payload.profileAvatar;
   },
+
+  //MY EVENTS MUTATIONS
+
+  setMyEvents(state, payload) {
+    let allEvents = []
+    for (let event in payload) {
+      let e = payload[event]
+      e.id = event
+      allEvents.push(e)
+    }
+    state.myEvents = allEvents
+  },
+  setNewEvent(state, payload) {
+    console.log('trigger mutation')
+    state.userData.events[payload.id] = payload.newE
+  }
 };
 
 const actions = {
+  //MY ASSIGNATURES ACTIONS
+
   getUserInfoAndAssignatures({ commit }, payload) {
     commit("setLoadingStatus", true);
     let allAssignatures = [];
@@ -134,6 +153,7 @@ const actions = {
         data.assignatures = allAssignatures;
         commit("setUserData", data);
         commit("setOpenAndClosedAssignatures", data);
+        commit("setMyEvents", data.events)
         setTimeout(function () {
           commit("setLoadingStatus", false);
         }, 1000);
@@ -310,6 +330,28 @@ const actions = {
       .update(payload);
     commit("setNewProfileValues", payload);
   },
+
+  //MY EVENTS ACTIONS
+
+  createNewEvent({ commit }, payload) {
+    let newEvent = {
+      name: payload.name,
+      date: payload.date,
+      time: payload.time,
+      parentAssignature: payload.assignature.assId,
+      parentColor: payload.assignature.assColor
+    }
+    console.log(newEvent)
+    firebase
+      .database()
+      .ref(`${localStorage.getItem("mgAppUid")}/events`)
+      .push(newEvent)
+      .then((response) => {
+        // console.log(response.key);
+        // newEvent.id = response.key;
+        commit("setNewEvent", { newE: newEvent, id: response.key });
+      });
+  }
 };
 
 const getters = {};
