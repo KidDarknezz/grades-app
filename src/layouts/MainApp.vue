@@ -24,7 +24,10 @@
           :color="userData.profileColor"
           icon="add"
           @click="createNewAssignature = !createNewAssignature"
-          v-if="$route.fullPath.includes('my-assignatures')"
+          v-if="
+            $route.fullPath.includes('my-assignatures') ||
+            $route.fullPath.includes('calendar')
+          "
         />
       </q-toolbar>
     </q-header>
@@ -68,6 +71,23 @@
                 : 'black'
             "
             to="/closed-assignatures"
+          />
+        </div>
+      </div>
+      <div class="col">
+        <div class="justify-center row">
+          <q-btn
+            flat
+            round
+            dense
+            icon="today"
+            size="lg"
+            :color="
+              $route.fullPath.includes('calendar')
+                ? userData.profileColor
+                : 'black'
+            "
+            to="/calendar"
           />
         </div>
       </div>

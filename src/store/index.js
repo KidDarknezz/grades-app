@@ -6,7 +6,7 @@ import myAssignaturesStore from "./myAssignaturesStore";
 
 Vue.use(Vuex);
 
-export default function() {
+export default function () {
   const Store = new Vuex.Store({
     modules: {
       authStore,
