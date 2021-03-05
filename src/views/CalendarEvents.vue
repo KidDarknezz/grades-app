@@ -68,6 +68,21 @@
         </q-list>
       </q-card-section>
     </q-card>
+    <div
+      class="fixed-center full-width text-center"
+      v-if="returnUpcomingEvents.length == 0 && upcomingOnly"
+    >
+      <i class="far fa-calendar fa-6x text-grey-4 q-mb-md"></i>
+      <div class="text-h6 text-grey-5">No events yet.</div>
+    </div>
+
+    <div
+      class="fixed-center full-width text-center"
+      v-if="returnPastEvents.length == 0 && !upcomingOnly"
+    >
+      <i class="far fa-calendar fa-6x text-grey-4 q-mb-md"></i>
+      <div class="text-h6 text-grey-5">No past events yet.</div>
+    </div>
 
     <q-dialog v-model="newEventDialog" persistent>
       <q-card style="min-width: 350px" class="assignature-card">
