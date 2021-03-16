@@ -120,6 +120,15 @@ const mutations = {
         break
       }
     }
+  },
+  setEventsFromAssignatureColor(state, payload) {
+    let i = 0
+    for (let event of state.myEvents) {
+      if (event.parentAssignature == payload.assId) {
+        state.myEvents[i].parentColor = payload.newColor
+      }
+      i++
+    }
   }
 };
 
@@ -311,6 +320,7 @@ const actions = {
       ass: payload.assignature.index,
       new: payload.newValues,
     });
+    commit("setEventsFromAssignatureColor", { assId: payload.assignature.id, newColor: payload.newValues.color })
   },
   editGrade({ commit }, payload) {
     firebase
