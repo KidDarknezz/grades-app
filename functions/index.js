@@ -20,9 +20,8 @@ function updateEventColor(userId, assId, newColor) {
   admin.database().ref(`${userId}/events`).once('value', snapshot => {
     let allEvents = snapshot.val()
     for (let event in allEvents) {
-      if (allEvents[event].parentId == assId) {
+      if (allEvents[event].parentAssignature == assId) 
         admin.database().ref(`${userId}/events/${event}`).update({ parentColor: newColor })
-      }
     }
   })
 }
