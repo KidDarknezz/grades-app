@@ -20,7 +20,7 @@
       class="assignature-card q-mb-md"
       v-for="(event, i) in upcomingOnly
         ? returnUpcomingEvents
-        : returnPastEvents"
+        : returnPastEvents.reverse()"
       :key="i"
     >
       <q-card-section>
