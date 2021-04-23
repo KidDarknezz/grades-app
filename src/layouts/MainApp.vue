@@ -26,7 +26,7 @@
           @click="createNewAssignature = !createNewAssignature"
           v-if="
             $route.fullPath.includes('my-assignatures') ||
-            $route.fullPath.includes('calendar')
+              $route.fullPath.includes('calendar')
           "
         />
       </q-toolbar>
@@ -37,7 +37,11 @@
       </transition>
     </q-page-container>
     <div
-      class="row fixed-bottom bg-grey-2 q-py-xs"
+      :class="
+        checkIfIphone
+          ? 'row fixed-bottom bg-grey-2 q-pb-lg q-pt-sm'
+          : 'row fixed-bottom bg-grey-2 q-py-sm'
+      "
       v-if="!$route.fullPath.includes('selected-assignature')"
     >
       <div class="col">
@@ -138,6 +142,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { Platform } from "quasar";
 
 export default {
   props: ["prompt"],
@@ -181,6 +186,10 @@ export default {
   computed: {
     ...mapState("myAssignaturesStore", ["userData", "loadingStatus"]),
     ...mapState("authStore", ["browserMode"]),
+
+    checkIfIphone() {
+      return Platform.is.iphone;
+    },
   },
   mounted() {
     this.getUserInfoAndAssignatures(localStorage.getItem("mgAppUid"));
