@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import 'firebase/database'
+import "firebase/database";
 
 const state = {
   userData: {
@@ -23,14 +23,14 @@ const mutations = {
       if (assignature.status == "open") open.push(assignature);
       if (assignature.status == "closed") closed.push(assignature);
     });
-    state.openUserAssignatures = open;
+    state.openUserAssignatures = open.reverse();
     state.closedUserAssignatures = closed;
   },
   setSelectedAssignature(state, payload) {
     state.selectedAssignature = payload;
   },
   setNewAssignature(state, payload) {
-    state.openUserAssignatures.push(payload);
+    state.openUserAssignatures.unshift(payload);
   },
   setNewItem(state, payload) {
     for (let i = 0; i < state.openUserAssignatures.length; i++) {
@@ -82,7 +82,7 @@ const mutations = {
   },
   setArchiveAssignature(state, payload) {
     state.openUserAssignatures[payload].status = "closed";
-    state.closedUserAssignatures.push(state.openUserAssignatures[payload]);
+    state.closedUserAssignatures.unshift(state.openUserAssignatures[payload]);
     state.openUserAssignatures.splice(payload, 1);
   },
   setUnarchiveAssignature(state, payload) {
@@ -102,34 +102,34 @@ const mutations = {
 
   //MY EVENTS MUTATIONS
   setMyEvents(state, payload) {
-    let allEvents = []
+    let allEvents = [];
     for (let event in payload) {
-      let e = payload[event]
-      e.id = event
-      allEvents.push(e)
+      let e = payload[event];
+      e.id = event;
+      allEvents.push(e);
     }
-    state.myEvents = allEvents
+    state.myEvents = allEvents;
   },
   setNewEvent(state, payload) {
-    state.myEvents.push(payload)
+    state.myEvents.push(payload);
   },
   setRemoveEvent(state, payload) {
     for (let i = 0; i < state.myEvents.length; i++) {
       if (state.myEvents[i].id == payload) {
-        state.myEvents.splice(i, 1)
-        break
+        state.myEvents.splice(i, 1);
+        break;
       }
     }
   },
   setEventsFromAssignatureColor(state, payload) {
-    let i = 0
+    let i = 0;
     for (let event of state.myEvents) {
       if (event.parentAssignature == payload.assId) {
-        state.myEvents[i].parentColor = payload.newColor
+        state.myEvents[i].parentColor = payload.newColor;
       }
-      i++
+      i++;
     }
-  }
+  },
 };
 
 const actions = {
@@ -167,8 +167,8 @@ const actions = {
         data.assignatures = allAssignatures;
         commit("setUserData", data);
         commit("setOpenAndClosedAssignatures", data);
-        commit("setMyEvents", data.events)
-        setTimeout(function () {
+        commit("setMyEvents", data.events);
+        setTimeout(function() {
           commit("setLoadingStatus", false);
         }, 1000);
       });
@@ -203,7 +203,8 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.assId
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.assId
         }/items`
       )
       .push(item)
@@ -223,7 +224,8 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.ass.id
         }/items/${payload.itm.id}/grades`
       )
       .push(g)
@@ -268,7 +270,8 @@ const actions = {
       firebase
         .database()
         .ref(
-          `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
+          `${localStorage.getItem("mgAppUid")}/assignatures/${
+            payload.ass.id
           }/items/${payload.itm.id}`
         )
         .remove();
@@ -283,7 +286,8 @@ const actions = {
       firebase
         .database()
         .ref(
-          `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
+          `${localStorage.getItem("mgAppUid")}/assignatures/${
+            payload.ass.id
           }/items/${payload.itm.id}/grades/${payload.grd.id}`
         )
         .remove();
@@ -298,7 +302,8 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.ass.id
         }/items/${payload.itm.id}`
       )
       .update(payload.newValues);
@@ -312,7 +317,8 @@ const actions = {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.assignature.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.assignature.id
         }`
       )
       .update(payload.newValues);
@@ -320,13 +326,17 @@ const actions = {
       ass: payload.assignature.index,
       new: payload.newValues,
     });
-    commit("setEventsFromAssignatureColor", { assId: payload.assignature.id, newColor: payload.newValues.color })
+    commit("setEventsFromAssignatureColor", {
+      assId: payload.assignature.id,
+      newColor: payload.newValues.color,
+    });
   },
   editGrade({ commit }, payload) {
     firebase
       .database()
       .ref(
-        `${localStorage.getItem("mgAppUid")}/assignatures/${payload.ass.id
+        `${localStorage.getItem("mgAppUid")}/assignatures/${
+          payload.ass.id
         }/items/${payload.itm.id}/grades/${payload.grd.id}`
       )
       .update({ grd: payload.newValuesGrade, name: payload.newValuesName });
@@ -353,9 +363,9 @@ const actions = {
       date: payload.date,
       time: payload.time,
       parentAssignature: payload.assignature.assId,
-      parentColor: payload.assignature.assColor
-    }
-    console.log(newEvent)
+      parentColor: payload.assignature.assColor,
+    };
+    console.log(newEvent);
     firebase
       .database()
       .ref(`${localStorage.getItem("mgAppUid")}/events`)
@@ -366,17 +376,15 @@ const actions = {
       });
   },
   deleteExistingEvent({ commit }, payload) {
-    console.log('deleting event:', payload)
+    console.log("deleting event:", payload);
     if (confirm("Delete event?")) {
       firebase
         .database()
-        .ref(
-          `${localStorage.getItem("mgAppUid")}/events/${payload}`
-        )
+        .ref(`${localStorage.getItem("mgAppUid")}/events/${payload}`)
         .remove();
-      commit("setRemoveEvent", payload)
+      commit("setRemoveEvent", payload);
     }
-  }
+  },
 };
 
 const getters = {};
