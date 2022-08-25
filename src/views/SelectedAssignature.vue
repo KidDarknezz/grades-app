@@ -74,7 +74,9 @@
         </q-menu>
       </q-btn>
       <div
-        :class="`text-h6 full-width text-center w700 text-${selectedAssignature.color}-11 q-mb-md`"
+        :class="
+          `text-h6 full-width text-center w700 text-${selectedAssignature.color}-11 q-mb-md`
+        "
       >
         {{ selectedAssignature.name }}
       </div>
@@ -130,7 +132,9 @@
                     <q-item clickable @click="itemAction(i, 'edit')">
                       <q-item-section
                         ><span
-                          :class="`gapp-font w600 text-${selectedAssignature.color}`"
+                          :class="
+                            `gapp-font w600 text-${selectedAssignature.color}`
+                          "
                           >Edit</span
                         ></q-item-section
                       >
@@ -216,7 +220,9 @@
         >
           <q-card-section>
             <div
-              :class="`text-h6 gapp-font w700 text-${selectedAssignature.color}`"
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
             >
               {{ dialogText }} assignature
             </div>
@@ -292,7 +298,9 @@
         >
           <q-card-section>
             <div
-              :class="`text-h6 gapp-font w700 text-${selectedAssignature.color}`"
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
             >
               {{ dialogText }} item
             </div>
@@ -314,7 +322,8 @@
               filled
               label="Percentage"
               :color="selectedAssignature.color"
-              v-model="newItem.percentage"
+              v-model.number="newItem.percentage"
+              step=".01"
               class="q-mb-md gapp-font"
               :rules="[
                 (val) =>
@@ -352,7 +361,9 @@
         <q-form @submit="submitGradeDialog(newGrade)">
           <q-card-section>
             <div
-              :class="`text-h6 gapp-font w700 text-${selectedAssignature.color}`"
+              :class="
+                `text-h6 gapp-font w700 text-${selectedAssignature.color}`
+              "
             >
               {{ dialogText }} grade
             </div>
